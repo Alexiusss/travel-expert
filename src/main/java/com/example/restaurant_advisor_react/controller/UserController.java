@@ -1,5 +1,6 @@
 package com.example.restaurant_advisor_react.controller;
 
+import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.servise.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -25,7 +27,8 @@ public class UserController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> addUser(User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        user.setRoles(Set.of(Role.USER));
         User savedUser = userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
