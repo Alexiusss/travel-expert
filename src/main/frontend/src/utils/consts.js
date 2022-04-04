@@ -1,1 +1,1 @@
-export const USERS_ROUTE = '/users'
+export const USERS_ROUTE = '/users/'

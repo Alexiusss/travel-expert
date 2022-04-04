@@ -18,8 +18,7 @@ const update = data => {
 }
 
 const remove = id => {
-    return httpClient.delete(USERS_ROUTE  + {id});
-   // return httpClient.delete(USERS_ROUTE, ${id});
+    return httpClient.delete(USERS_ROUTE +`${id}`);
 }
 
 export default { getAll, create, get, update, remove };
