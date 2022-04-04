@@ -21,7 +21,8 @@ const UsersList = () => {
 
     const [modal, setModal] = useState(false)
 
-    const createUser = () => {
+    const createUser = (newUser) => {
+        setUsers([...users, newUser])
         setModal(false)
     }
 

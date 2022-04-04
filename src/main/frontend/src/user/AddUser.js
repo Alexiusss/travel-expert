@@ -8,7 +8,6 @@ const AddUser = ({create}) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const history = useHistory();
     const {id} = useParams();
 
     const cleanForm = () => {
@@ -27,9 +26,7 @@ const AddUser = ({create}) => {
         } else {
             userService.create(user)
                 .then(response => {
-                    console.log("user added successfully", response.data);
-                    history.push(USERS_ROUTE);
-                    create()
+                    create(response.data)
                     cleanForm()
                 })
                 .catch(error => {
