@@ -26,6 +26,10 @@ const UsersList = () => {
         setModal(false)
     }
 
+    const removeUser = (user) => {
+        setUsers(users.filter(u => u.id !== user.id))
+    }
+
     return (
         <div>
             <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
@@ -41,8 +45,7 @@ const UsersList = () => {
                 Users list
             </h2>
 
-            <UserTable  promiseInProgress={promiseInProgress} users={users}/>
-
+            <UserTable remove={removeUser} promiseInProgress={promiseInProgress} users={users}/>
         </div>
     );
 };

@@ -32,4 +32,10 @@ public class UserController {
         User savedUser = userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<HttpStatus> deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }
