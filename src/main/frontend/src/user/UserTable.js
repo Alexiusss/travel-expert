@@ -16,6 +16,19 @@ const UserTable = (props) => {
                 console.log('Something went wrong', error);
             })
     }
+
+    const updateUser = (user) => {
+        userService.get(user.id)
+            .then(response => {
+                    props.userFromDB(response.data)
+                    props.modalVisible(true);
+                }
+            )
+            .catch(error => {
+                console.log('Something went wrong', error);
+            })
+
+    }
     return (
         <div className="container">
             <table className="table table-striped">
@@ -34,17 +47,23 @@ const UserTable = (props) => {
                     ? <tr>
                         <td>Wait, the data is downloading!</td>
                     </tr>
-                    : props.users.map((user) =>
-                        <tr key={user.id}>
+                    : props.users.map((user, index) =>
+                        <tr key={index}>
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
                             <td><input type="checkbox" checked={user.enabled} readOnly={true}/></td>
                             <td>{user.roles}</td>
                             <td>
+                                <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>
+                                    updateUser(user)
+                                }>
+                                    Edit
+                                </MyButton>
                                 <MyButton className="btn btn-outline-danger ml-2 btn-sm" onClick={() => {
                                     handleDelete(user)
-                                }}>Delete</MyButton>
+                                }}>
+                                    Delete</MyButton>
                             </td>
                         </tr>
                     )

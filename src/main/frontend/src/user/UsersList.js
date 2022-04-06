@@ -12,6 +12,7 @@ const UsersList = () => {
     const area = 'users';
     const {promiseInProgress} = usePromiseTracker({area});
     const [users, setUsers] = useState([])
+    const [userFromDB, setUserFromDB] = useState([])
 
     useEffect(() => {
         trackPromise(userService.getAll(), area).then(({data}) => {
@@ -26,6 +27,27 @@ const UsersList = () => {
         setModal(false)
     }
 
+    // https://www.codingdeft.com/posts/react-usestate-array/
+    const updateUser = (updatedUser) => {
+        setModal(false)
+
+        setUsers(users => {
+            return users.map(user => {
+                return user.id === updatedUser.id
+                    ?
+                    {
+                        ...user,
+                        email: updatedUser.email,
+                        firstName: updatedUser.firstName,
+                        lastName: updatedUser.lastName,
+                        password: updatedUser.password
+                    }
+                    :
+                    user
+            })
+        })
+    }
+
     const removeUser = (user) => {
         setUsers(users.filter(u => u.id !== user.id))
     }
@@ -37,7 +59,7 @@ const UsersList = () => {
                 Добавить
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
-                <AddUser create={createUser}/>
+                <AddUser userFromDB={userFromDB} create={createUser} update={updateUser} modal={modal}/>
             </MyModal>
             <hr style={{margin: '15px 0'}}/>
 
@@ -45,7 +67,8 @@ const UsersList = () => {
                 Users list
             </h2>
 
-            <UserTable remove={removeUser} promiseInProgress={promiseInProgress} users={users}/>
+            <UserTable promiseInProgress={promiseInProgress} users={users} remove={removeUser} modalVisible={setModal}
+                       userFromDB={setUserFromDB}/>
         </div>
     );
 };

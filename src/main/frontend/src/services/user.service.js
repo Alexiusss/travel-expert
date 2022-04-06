@@ -10,11 +10,11 @@ const create = data => {
 }
 
 const get = id => {
-    return httpClient.get(USERS_ROUTE + {id});
+    return httpClient.get(USERS_ROUTE + `${id}`);
 }
 
-const update = data => {
-    return httpClient.put(USERS_ROUTE, data);
+const update = (data, id) => {
+    return httpClient.put(USERS_ROUTE +`${id}`, data);
 }
 
 const remove = id => {

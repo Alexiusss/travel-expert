@@ -1,39 +1,61 @@
-import React, {useState, useRef} from 'react';
-import {Link, useHistory, useParams} from "react-router-dom";
+import React, {useState, useRef, useEffect} from 'react';
 import userService from '../services/user.service'
-import {USERS_ROUTE} from "../utils/consts";
 
-const AddUser = ({create}) => {
+const AddUser = (props) => {
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const {id} = useParams();
+    const [id, setId] = useState('')
 
     const cleanForm = () => {
         setEmail('');
         setFirstName('');
         setLastName('');
         setPassword('');
+        setId('');
     };
 
     const saveUser = (e) => {
         e.preventDefault()
-
         const user = {email, firstName, lastName, password, id}
         if (id) {
-            //update
-        } else {
-            userService.create(user)
+            userService.update(user, id)
                 .then(response => {
-                    create(response.data)
+                    props.update(response.data)
                     cleanForm()
                 })
                 .catch(error => {
-                    console.log('something went wrong', error);
+                    console.log("Something went wrong", error)
+                })
+
+        } else {
+            userService.create(user)
+                .then(response => {
+                    props.create(response.data)
+                    cleanForm()
+                })
+                .catch(error => {
+                    console.log('Something went wrong', error);
                 })
         }
     }
+
+    useEffect(() => {
+        if(!props.modal) {
+            cleanForm()
+        }
+    })
+
+    useEffect(() => {
+        if (props.userFromDB) {
+            setEmail('' + props.userFromDB.email)
+            setFirstName('' + props.userFromDB.firstName)
+            setLastName('' + props.userFromDB.lastName)
+            setId('' + props.userFromDB.id)
+        }
+    }, [props.userFromDB])
+
 
     return (
         <div className='container'>
@@ -46,7 +68,7 @@ const AddUser = ({create}) => {
                         className="form-control col-4"
                         id="email"
                         value={email}
-                        onChange={(e => setEmail(e.target.value))}
+                        onChange={e => setEmail(e.target.value)}
                         placeholder="Enter email"
                     />
                 </div>
