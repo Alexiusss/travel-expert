@@ -5,10 +5,8 @@ import userService from "../services/user.service";
 const UserTable = (props) => {
 
     const handleDelete = (user) => {
-        console.log('Printing id', user.id);
         userService.remove(user.id)
             .then(response => {
-                console.log('user deleted successfully');
                 props.remove(user)
                 }
             )
@@ -30,7 +28,7 @@ const UserTable = (props) => {
 
     }
     return (
-        <div className="container">
+        <div>
             <table className="table table-striped">
                 <thead>
                 <tr>

@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import MyButton from "../components/button/MyButton";
 import AddUser from "./AddUser";
 import MyModal from "../components/modal/MyModal";
 import userService from '../services/user.service'
 import UserTable from "./UserTable";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
+import ItemFilter from "../components/ItemFilter";
 
 const UsersList = () => {
 
     // https://habr.com/ru/post/521902/#comment_22151160
     const area = 'users';
     const {promiseInProgress} = usePromiseTracker({area});
-    const [users, setUsers] = useState([])
-    const [userFromDB, setUserFromDB] = useState([])
+    const [users, setUsers] = useState([]);
+    const [userFromDB, setUserFromDB] = useState([]);
 
     useEffect(() => {
         trackPromise(userService.getAll(), area).then(({data}) => {
@@ -20,7 +21,22 @@ const UsersList = () => {
         });
     }, [setUsers]);
 
-    const [modal, setModal] = useState(false)
+    const [filter, setFilter] = useState({query: ''})
+    const [modal, setModal] = useState(false);
+
+    const searchColumns = ["email", "firstName", "lastName"]
+
+    // https://www.cluemediator.com/search-filter-for-multiple-object-in-reactjs
+    const searchedUsers = useMemo(() => {
+        if(filter.query === '') return users;
+
+        const lowerCasedQuery = filter.query.toLowerCase().trim();
+        return users.filter(user => {
+            return Object.keys(user).some(key =>
+                searchColumns.includes(key) ? user[key].toString().toLowerCase().includes(lowerCasedQuery) : false
+            )
+        });
+    }, [filter.query, users])
 
     const createUser = (newUser) => {
         setUsers([...users, newUser])
@@ -53,21 +69,26 @@ const UsersList = () => {
     }
 
     return (
-        <div>
+        <div className='container'>
             <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
                       onClick={() => setModal(true)}>
-                Добавить
+                Add
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
                 <AddUser userFromDB={userFromDB} create={createUser} update={updateUser} modal={modal}/>
             </MyModal>
             <hr style={{margin: '15px 0'}}/>
-
             <h2 style={{textAlign: "center"}}>
                 Users list
             </h2>
 
-            <UserTable promiseInProgress={promiseInProgress} users={users} remove={removeUser} modalVisible={setModal}
+            <ItemFilter
+                filter={filter}
+                setFilter={setFilter}
+            />
+
+            <UserTable promiseInProgress={promiseInProgress} users={searchedUsers} remove={removeUser}
+                       modalVisible={setModal}
                        userFromDB={setUserFromDB}/>
         </div>
     );
