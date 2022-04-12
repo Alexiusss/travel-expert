@@ -1,13 +1,14 @@
 import React from 'react';
 import MyButton from "../components/button/MyButton";
 import userService from "../services/user.service";
+import "./UserTable.css"
 
 const UserTable = (props) => {
 
     const handleDelete = (user) => {
         userService.remove(user.id)
             .then(response => {
-                props.remove(user)
+                    props.remove(user)
                 }
             )
             .catch(error => {
@@ -27,17 +28,74 @@ const UserTable = (props) => {
             })
 
     }
+
+    const {items: users, requestSort, sortConfig} = props.users;
+
+    const getClassNamesFor = (name) => {
+        if (!sortConfig) {
+            return;
+        }
+        return sortConfig.key === name ? sortConfig.direction : undefined;
+    };
+
     return (
         <div>
             <table className="table table-striped">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Last name</th>
-                    <th>Email</th>
-                    <th>Enabled</th>
-                    <th>Roles</th>
-                    <th>Actions</th>
+                    <th>
+                        <button
+                            type="button"
+                            onClick={() => requestSort('firstName')}
+                              className={getClassNamesFor('firstName')}
+                        >
+                            First Name
+                        </button>
+
+                    </th>
+                    <th>
+                        <button
+                            type="button"
+                            onClick={() => requestSort('lastName')}
+                            className={getClassNamesFor('lastName')}
+                            >
+                            Last Name
+                        </button>
+                    </th>
+                    <th>
+                        <button
+                            type="button"
+                            onClick={() => requestSort('email')}
+                            className={getClassNamesFor('email')}
+                        >
+                            Email
+                        </button>
+                    </th>
+                    <th>
+                        <button
+                            type="button"
+                            onClick={() => requestSort('enabled')}
+                            className={getClassNamesFor('enabled')}
+                        >
+                            Enabled
+                        </button>
+                    </th>
+                    <th>
+                        <button
+                            type="button"
+                            onClick={() => requestSort('roles')}
+                            className={getClassNamesFor('roles')}
+                        >
+                            Roles
+                        </button>
+                    </th>
+                    <th>
+                        <button
+                            type="button"
+                        >
+                            Actions
+                        </button>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,7 +103,7 @@ const UserTable = (props) => {
                     ? <tr>
                         <td>Wait, the data is downloading!</td>
                     </tr>
-                    : props.users.map((user, index) =>
+                    : users.map((user, index) =>
                         <tr key={index}>
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>

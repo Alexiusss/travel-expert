@@ -6,6 +6,7 @@ import userService from '../services/user.service'
 import UserTable from "./UserTable";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import ItemFilter from "../components/ItemFilter";
+import {useSortableData} from "../hooks/UseData";
 
 const UsersList = () => {
 
@@ -21,10 +22,13 @@ const UsersList = () => {
         });
     }, [setUsers]);
 
-    const [filter, setFilter] = useState({query: ''})
+    const [filter, setFilter] = useState({config: null, query: ''})
     const [modal, setModal] = useState(false);
 
-    const searchColumns = ["email", "firstName", "lastName"]
+    //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
+    const sortedUsers = useSortableData(users, filter.config);
+
+    const searchColumns = ["email", "firstName", "lastName"];
 
     // https://www.cluemediator.com/search-filter-for-multiple-object-in-reactjs
     const searchedUsers = useMemo(() => {
@@ -36,7 +40,7 @@ const UsersList = () => {
                 searchColumns.includes(key) ? user[key].toString().toLowerCase().includes(lowerCasedQuery) : false
             )
         });
-    }, [filter.query, users])
+    }, [filter.query, users]);
 
     const createUser = (newUser) => {
         setUsers([...users, newUser])
@@ -87,9 +91,9 @@ const UsersList = () => {
                 setFilter={setFilter}
             />
 
-            <UserTable promiseInProgress={promiseInProgress} users={searchedUsers} remove={removeUser}
-                       modalVisible={setModal}
-                       userFromDB={setUserFromDB}/>
+            <UserTable promiseInProgress={promiseInProgress} users={sortedUsers}
+                       userFromDB={setUserFromDB} remove={removeUser} modalVisible={setModal}
+                       />
         </div>
     );
 };
