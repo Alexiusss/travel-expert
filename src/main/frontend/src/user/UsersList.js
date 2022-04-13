@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MyButton from "../components/button/MyButton";
 import AddUser from "./AddUser";
 import MyModal from "../components/modal/MyModal";
@@ -6,7 +6,7 @@ import userService from '../services/user.service'
 import UserTable from "./UserTable";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import ItemFilter from "../components/ItemFilter";
-import {useSortableData} from "../hooks/UseData";
+import {useItems} from "../hooks/UseData";
 
 const UsersList = () => {
 
@@ -23,24 +23,10 @@ const UsersList = () => {
     }, [setUsers]);
 
     const [filter, setFilter] = useState({config: null, query: ''})
+    const searchedColumns = ["email", "firstName", "lastName"];
+    const sortedAndSearchedUsers = useItems(users, filter.config, filter.query, searchedColumns);
+
     const [modal, setModal] = useState(false);
-
-    //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
-    const sortedUsers = useSortableData(users, filter.config);
-
-    const searchColumns = ["email", "firstName", "lastName"];
-
-    // https://www.cluemediator.com/search-filter-for-multiple-object-in-reactjs
-    const searchedUsers = useMemo(() => {
-        if(filter.query === '') return users;
-
-        const lowerCasedQuery = filter.query.toLowerCase().trim();
-        return users.filter(user => {
-            return Object.keys(user).some(key =>
-                searchColumns.includes(key) ? user[key].toString().toLowerCase().includes(lowerCasedQuery) : false
-            )
-        });
-    }, [filter.query, users]);
 
     const createUser = (newUser) => {
         setUsers([...users, newUser])
@@ -91,7 +77,7 @@ const UsersList = () => {
                 setFilter={setFilter}
             />
 
-            <UserTable promiseInProgress={promiseInProgress} users={sortedUsers}
+            <UserTable promiseInProgress={promiseInProgress} users={sortedAndSearchedUsers}
                        userFromDB={setUserFromDB} remove={removeUser} modalVisible={setModal}
                        />
         </div>
