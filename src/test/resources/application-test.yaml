@@ -1,0 +1,9 @@
+#https://medium.com/javarevisited/spring-boot-testing-testcontainers-and-flyway-df4a71376db4
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:12.10:///test_database
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
