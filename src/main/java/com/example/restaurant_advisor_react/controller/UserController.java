@@ -16,9 +16,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(path = UserController.URL, produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 public class UserController {
-    static final String URL = "/api/v1/users";
+    static final String REST_URL = "/api/v1/users";
     @Autowired
     UserService userService;
 
