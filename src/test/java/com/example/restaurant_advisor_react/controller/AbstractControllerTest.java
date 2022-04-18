@@ -13,6 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Sql(value = {"/data.sql"})
 class AbstractControllerTest {
 
     @Autowired
