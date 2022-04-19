@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
@@ -49,6 +50,17 @@ public class User extends BaseEntity implements HasIdAndEmail {
     private Set<Role> roles;
 
     public User(String email, String firstName, String lastName, String password, boolean enabled, String activationCode, Collection<Role> roles) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.enabled = enabled;
+        this.activationCode = activationCode;
+        setRoles(roles);
+    }
+
+    public User(String id, Instant createdAt, Instant modifiedAt, int version, String email, String firstName, String lastName, String password, boolean enabled, String activationCode, Collection<Role> roles) {
+        super(id, createdAt, modifiedAt, version);
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;

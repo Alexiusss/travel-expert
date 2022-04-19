@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.example.restaurant_advisor_react.util.UserTestData.ADMIN_ID;
-import static com.example.restaurant_advisor_react.util.UserTestData.USER_ID;
+import static com.example.restaurant_advisor_react.util.UserTestData.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,14 +22,16 @@ public class UserControllerTest extends AbstractControllerTest {
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(USER_MATCHER.contentJson(USER_LIST));
     }
 
     @Test
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(USER_MATCHER.contentJson(ADMIN));
     }
 
     @Test
