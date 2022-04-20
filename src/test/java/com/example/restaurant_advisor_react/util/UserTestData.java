@@ -5,13 +5,12 @@ import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import lombok.experimental.UtilityClass;
 
-import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
 @UtilityClass
 public class UserTestData {
-    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "createdAt", "password");
+    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class,"createdAt","modifiedAt", "password");
 
     public static final String ADMIN_ID = "1";
     public static final String MODER_ID = "2";
@@ -22,4 +21,15 @@ public class UserTestData {
     public static final User USER = new User(USER_ID, null, null, 0, "user@gmail.com", "User", "UserLast", "1", true, null, Collections.singleton(Role.USER));
 
     public static final List<User> USER_LIST = List.of(ADMIN, MODER, USER);
+
+    public static User getNew() {
+       return new User("new_user@gmail.com", "New user", "NewUserLast", "1", false, null, Collections.singleton(Role.USER));
+    }
+
+    public static User getUpdated() {
+       return new User(USER_ID, null, null, 0, "user@gmail.com", "Updated user name", "Updated UserLast", "newPass", true, null, Collections.singleton(Role.USER));
+    }
+
+    public static String jsonWithPassword(User user, String passw) {
+        return JsonUtil.writeAdditionProps(user, "password", passw);}
 }

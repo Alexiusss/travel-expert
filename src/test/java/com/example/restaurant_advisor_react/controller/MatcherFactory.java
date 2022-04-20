@@ -2,6 +2,7 @@ package com.example.restaurant_advisor_react.controller;
 
 import com.example.restaurant_advisor_react.util.JsonUtil;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.io.UnsupportedEncodingException;
@@ -28,8 +29,8 @@ public class MatcherFactory {
     }
 
     public static class Matcher<T> {
-        private final Class<T>clazz;
-        private final BiConsumer<T,T> assertion;
+        private final Class<T> clazz;
+        private final BiConsumer<T, T> assertion;
         private final BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion;
 
         public Matcher(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
@@ -56,6 +57,12 @@ public class MatcherFactory {
 
         public ResultMatcher contentJson(Iterable<T> expected) {
             return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
+        }
+
+        public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
+            {
+                return JsonUtil.readValue(getContent(action.andReturn()), clazz);
+            }
         }
     }
 }
