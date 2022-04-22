@@ -3,6 +3,8 @@ package com.example.restaurant_advisor_react.servise;
 import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -35,15 +37,15 @@ public class UserService {
         return userFromDB;
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
-
     public void deleteUser(String id) {
         userRepository.delete(id);
     }
 
     public Optional<User> get(String id) {
         return userRepository.findById(id);
+    }
+
+    public Page<User> findAllPaginated(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

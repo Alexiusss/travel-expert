@@ -4,6 +4,8 @@ import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.servise.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +27,19 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
         final Optional<User> user = userService.get(id);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user.get());
     }
 
     @GetMapping
-    public List<User> getAll() {
-        return userService.getAll();
+    public List<User> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<User> userPage = userService.findAllPaginated(PageRequest.of(page, size));
+        return userPage.getContent();
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
