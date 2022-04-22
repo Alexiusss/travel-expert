@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,6 +29,14 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(USER_MATCHER.contentJson(USER_LIST));
+    }
+
+    @Test
+    void getAllPaginated() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .param("size", "2")
+                .param("page", "1"))
+                .andExpect(USER_MATCHER.contentJson(List.of(USER)));
     }
 
     @Test
