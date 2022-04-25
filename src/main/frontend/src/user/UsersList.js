@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import MyButton from "../components/button/MyButton";
+import MyButton from "../components/UI/button/MyButton";
 import AddUser from "./AddUser";
-import MyModal from "../components/modal/MyModal";
+import MyModal from "../components/UI/modal/MyModal";
 import userService from '../services/user.service'
 import UserTable from "./UserTable";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import ItemFilter from "../components/ItemFilter";
-import {useItems} from "../hooks/UseData";
+import {useItems} from "../components/hooks/UseData";
+import Pagination from "../components/UI/pagination/Pagination";
 
 const UsersList = () => {
 

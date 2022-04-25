@@ -1,5 +1,5 @@
 import React from 'react';
-import MyInput from "./input/MyInput";
+import MyInput from "./UI/input/MyInput";
 
 const ItemFilter = ({filter, setFilter}) => {
     return (

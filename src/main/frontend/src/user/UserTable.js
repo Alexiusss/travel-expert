@@ -1,5 +1,5 @@
 import React from 'react';
-import MyButton from "../components/button/MyButton";
+import MyButton from "../components/UI/button/MyButton";
 import userService from "../services/user.service";
 import "./UserTable.css"
 
