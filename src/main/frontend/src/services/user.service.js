@@ -1,8 +1,13 @@
 import httpClient from "../http-common";
 import {USERS_ROUTE} from "../utils/consts";
 
-const getAll = () => {
-    return httpClient.get(USERS_ROUTE)
+const getAll = (size = 20, page = 1) => {
+    return httpClient.get(USERS_ROUTE , {
+        params: {
+            size: size,
+            page: (page - 1)
+        }
+    });
 }
 
 const create = data => {

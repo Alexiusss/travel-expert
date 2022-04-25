@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,12 +33,11 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAll(
+    public Page<User> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "20") int size
     ) {
-        Page<User> userPage = userService.findAllPaginated(PageRequest.of(page, size));
-        return userPage.getContent();
+        return userService.findAllPaginated(PageRequest.of(page, size));
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)

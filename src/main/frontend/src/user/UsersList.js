@@ -7,7 +7,7 @@ import UserTable from "./UserTable";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import ItemFilter from "../components/ItemFilter";
 import {useItems} from "../components/hooks/UseData";
-import Pagination from "../components/UI/pagination/Pagination";
+import Pagination from "@material-ui/lab/Pagination";
 
 const UsersList = () => {
 
@@ -15,13 +15,19 @@ const UsersList = () => {
     const area = 'users';
     const {promiseInProgress} = usePromiseTracker({area});
     const [users, setUsers] = useState([]);
+    // https://www.bezkoder.com/react-pagination-hooks/
+    const [totalPages, setTotalPages] = useState(0);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const pageSizes = [20, 50, 100];
     const [userFromDB, setUserFromDB] = useState([]);
 
     useEffect(() => {
-        trackPromise(userService.getAll(), area).then(({data}) => {
-            setUsers(data);
+        trackPromise(userService.getAll(size, page), area).then(({data}) => {
+            setUsers(data.content);
+            setTotalPages(data.totalPages)
         });
-    }, [setUsers]);
+    }, [setUsers, page, size]);
 
     const [filter, setFilter] = useState({config: null, query: ''})
     const searchedColumns = ["email", "firstName", "lastName"];
@@ -59,6 +65,15 @@ const UsersList = () => {
         setUsers(users.filter(u => u.id !== user.id))
     }
 
+    const changePage = (event, value) => {
+        setPage(value);
+    }
+
+    const changeSize = (event) => {
+        setSize(event.target.value);
+        setPage(1);
+    }
+
     return (
         <div className='container'>
             <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
@@ -69,18 +84,28 @@ const UsersList = () => {
                 <AddUser userFromDB={userFromDB} create={createUser} update={updateUser} modal={modal}/>
             </MyModal>
             <hr style={{margin: '15px 0'}}/>
-            <h2 style={{textAlign: "center"}}>
-                Users list
-            </h2>
-
             <ItemFilter
                 filter={filter}
                 setFilter={setFilter}
             />
+            <h2 style={{textAlign: "center"}}>
+                Users list
+            </h2>
+
+            {"Items per Page: "}
+            <select onChange={changeSize} value={size}>
+                {pageSizes.map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                        {pageSize}
+                    </option>
+                ))}
+            </select>
 
             <UserTable promiseInProgress={promiseInProgress} users={sortedAndSearchedUsers}
                        userFromDB={setUserFromDB} remove={removeUser} modalVisible={setModal}
-                       />
+            />
+
+            <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
         </div>
     );
 };
