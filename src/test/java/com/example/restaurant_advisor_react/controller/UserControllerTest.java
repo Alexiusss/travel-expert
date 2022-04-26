@@ -8,13 +8,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class UserControllerTest extends AbstractControllerTest {
 
@@ -24,19 +22,16 @@ public class UserControllerTest extends AbstractControllerTest {
     private UserRepository userRepository;
 
     @Test
-    void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(USER_MATCHER.contentJson(USER_LIST));
-    }
-
-    @Test
     void getAllPaginated() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL)
+       perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("size", "2")
                 .param("page", "1"))
-                .andExpect(USER_MATCHER.contentJson(List.of(USER)));
+                .andExpect(jsonPath("$.content[0].id", equalTo(USER.id())))
+                .andExpect(jsonPath("$.content[0].version", equalTo(USER.getVersion())))
+                .andExpect(jsonPath("$.content[0].email", equalTo(USER.getEmail())))
+                .andExpect(jsonPath("$.content[0].firstName", equalTo(USER.getFirstName())))
+                .andExpect(jsonPath("$.content[0].lastName", equalTo(USER.getLastName())))
+                .andExpect(jsonPath("$.content[0].enabled", equalTo(USER.isEnabled())));
     }
 
     @Test
