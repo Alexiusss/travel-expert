@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.example.restaurant_advisor_react.util.JsonUtil.asParsedJson;
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,12 +27,7 @@ public class UserControllerTest extends AbstractControllerTest {
        perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("size", "2")
                 .param("page", "1"))
-                .andExpect(jsonPath("$.content[0].id", equalTo(USER.id())))
-                .andExpect(jsonPath("$.content[0].version", equalTo(USER.getVersion())))
-                .andExpect(jsonPath("$.content[0].email", equalTo(USER.getEmail())))
-                .andExpect(jsonPath("$.content[0].firstName", equalTo(USER.getFirstName())))
-                .andExpect(jsonPath("$.content[0].lastName", equalTo(USER.getLastName())))
-                .andExpect(jsonPath("$.content[0].enabled", equalTo(USER.isEnabled())));
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(USER))));
     }
 
     @Test

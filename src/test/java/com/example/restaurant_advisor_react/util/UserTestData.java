@@ -5,6 +5,8 @@ import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import lombok.experimental.UtilityClass;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,13 +17,12 @@ public class UserTestData {
     public static final String ADMIN_ID = "1";
     public static final String MODER_ID = "2";
     public static final String USER_ID = "3";
+    public static final Instant USER_INSTANT = Timestamp.valueOf("2022-04-27 19:16:53.292882").toInstant();
     public static final String NOT_FOUND = "1000";
 
     public static final User ADMIN = new User(ADMIN_ID, null, null, 0, "admin@gmail.com", "Admin", "AdminLast", "1", true, null, List.of(Role.ADMIN, Role.MODERATOR, Role.USER));
     public static final User MODER = new User(MODER_ID, null, null, 0, "moder@gmail.com", "Moder", "ModerLast", "1", true, null, List.of(Role.MODERATOR, Role.USER));
-    public static final User USER = new User(USER_ID, null, null, 0, "user@gmail.com", "User", "UserLast", "1", true, null, Collections.singleton(Role.USER));
-
-    public static final List<User> USER_LIST = List.of(ADMIN, MODER, USER);
+    public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, "user@gmail.com", "User", "UserLast", "1", true, null, Collections.singleton(Role.USER));
 
     public static User getNew() {
        return new User("new_user@gmail.com", "New user", "NewUserLast", "1", false, null, Collections.singleton(Role.USER));

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.experimental.UtilityClass;
+import com.jayway.jsonpath.JsonPath;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,5 +52,11 @@ public class JsonUtil {
         Map<String, Object> map = mapper.convertValue(obj, new TypeReference<>() {});
         map.putAll(addProps);
         return writeValue(map);
+    }
+
+    // https://stackoverflow.com/a/56993787
+    public static <T> T asParsedJson(Object obj) {
+        String json = writeValue(obj);
+        return JsonPath.read(json, "$");
     }
 }
