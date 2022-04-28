@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {Suspense} from "react";
 import './App.css';
 import {BrowserRouter} from "react-router-dom";
 import AppRouter from "./components/AppRouter";
@@ -7,8 +7,8 @@ import NavBar from "./components/NavBar";
 function App() {
     return (
         <BrowserRouter>
-            <NavBar />
-            <AppRouter />
+            <NavBar/>
+            <AppRouter/>
         </BrowserRouter>
     );
 }
