@@ -1,4 +1,23 @@
 {
   "lang": "Lang",
-  "users": "Users"
+  "add": "Add",
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete",
+  "search": "Search...",
+  "items per page": "Items per Page: ",
+  "data loading": "Wait, the data is downloading!",
+
+  "user list": "User list",
+  "users": "Users",
+  "user editor": "User editor",
+  "enter email": "Enter email",
+  "enter first name": "Enter first name",
+  "enter last name": "Enter last name",
+  "enter password": "Enter password",
+  "first name": "First name",
+  "last name": "Last name",
+  "email": "Email",
+  "enabled": "Enabled",
+  "roles": "Roles"
 }

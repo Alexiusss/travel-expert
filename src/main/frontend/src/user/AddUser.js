@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import userService from '../services/user.service'
+import { useTranslation } from "react-i18next";
 
 const AddUser = (props) => {
     const [email, setEmail] = useState('');
@@ -7,6 +8,7 @@ const AddUser = (props) => {
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [id, setId] = useState('')
+    const {t} = useTranslation();
 
     const cleanForm = () => {
         setEmail('');
@@ -59,7 +61,7 @@ const AddUser = (props) => {
 
     return (
         <div className='container'>
-            <h4>User editor</h4>
+            <h4>{t("user editor")}</h4>
             <hr/>
             <form>
                 <div className="form-group">
@@ -69,7 +71,7 @@ const AddUser = (props) => {
                         id="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        placeholder="Enter email"
+                        placeholder={t("enter email")}
                     />
                 </div>
 
@@ -80,7 +82,7 @@ const AddUser = (props) => {
                         id="firstName"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Enter first name"
+                        placeholder={t("enter first name")}
                     />
                 </div>
 
@@ -91,7 +93,7 @@ const AddUser = (props) => {
                         id="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Enter last name"
+                        placeholder={t("enter last name")}
                     />
                 </div>
 
@@ -102,12 +104,12 @@ const AddUser = (props) => {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter password"
+                        placeholder={t("enter password")}
                     />
                 </div>
                 <div>
                     <button onClick={(e => saveUser(e))} className="btn btn-outline-primary ml-2 btn-sm"
-                            style={{marginTop: 10}}>Save
+                            style={{marginTop: 10}}>{t("save")}
                     </button>
                 </div>
             </form>

@@ -8,12 +8,14 @@ import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import ItemFilter from "../components/ItemFilter";
 import {useItems} from "../components/hooks/UseData";
 import Pagination from "@material-ui/lab/Pagination";
+import { useTranslation } from "react-i18next";
 
 const UsersList = () => {
 
     // https://habr.com/ru/post/521902/#comment_22151160
     const area = 'users';
     const {promiseInProgress} = usePromiseTracker({area});
+    const {t} = useTranslation();
     const [users, setUsers] = useState([]);
     // https://www.bezkoder.com/react-pagination-hooks/
     const [totalPages, setTotalPages] = useState(0);
@@ -78,7 +80,7 @@ const UsersList = () => {
         <div className='container'>
             <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
                       onClick={() => setModal(true)}>
-                Add
+                {t("add")}
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
                 <AddUser userFromDB={userFromDB} create={createUser} update={updateUser} modal={modal}/>
@@ -89,10 +91,10 @@ const UsersList = () => {
                 setFilter={setFilter}
             />
             <h2 style={{textAlign: "center"}}>
-                Users list
+                {t("user list")}
             </h2>
 
-            {"Items per Page: "}
+            {t("items per page")}
             <select onChange={changeSize} value={size}>
                 {pageSizes.map((pageSize) => (
                     <option key={pageSize} value={pageSize}>

@@ -2,6 +2,7 @@ import React from 'react';
 import MyButton from "../components/UI/button/MyButton";
 import userService from "../services/user.service";
 import "./UserTable.css"
+import { useTranslation } from "react-i18next";
 
 const UserTable = (props) => {
 
@@ -38,6 +39,8 @@ const UserTable = (props) => {
         return sortConfig.key === name ? sortConfig.direction : undefined;
     };
 
+    const {t} = useTranslation();
+
     return (
         <div>
             <table className="table table-striped">
@@ -49,7 +52,7 @@ const UserTable = (props) => {
                             onClick={() => requestSort('firstName')}
                               className={getClassNamesFor('firstName')}
                         >
-                            First Name
+                            {t("first name")}
                         </button>
 
                     </th>
@@ -59,7 +62,7 @@ const UserTable = (props) => {
                             onClick={() => requestSort('lastName')}
                             className={getClassNamesFor('lastName')}
                             >
-                            Last Name
+                            {t("last name")}
                         </button>
                     </th>
                     <th>
@@ -68,7 +71,7 @@ const UserTable = (props) => {
                             onClick={() => requestSort('email')}
                             className={getClassNamesFor('email')}
                         >
-                            Email
+                            {t("email")}
                         </button>
                     </th>
                     <th>
@@ -77,7 +80,7 @@ const UserTable = (props) => {
                             onClick={() => requestSort('enabled')}
                             className={getClassNamesFor('enabled')}
                         >
-                            Enabled
+                            {t("enabled")}
                         </button>
                     </th>
                     <th>
@@ -86,14 +89,7 @@ const UserTable = (props) => {
                             onClick={() => requestSort('roles')}
                             className={getClassNamesFor('roles')}
                         >
-                            Roles
-                        </button>
-                    </th>
-                    <th>
-                        <button
-                            type="button"
-                        >
-                            Actions
+                            {t("roles")}
                         </button>
                     </th>
                 </tr>
@@ -101,7 +97,7 @@ const UserTable = (props) => {
                 <tbody>
                 {props.promiseInProgress
                     ? <tr>
-                        <td>Wait, the data is downloading!</td>
+                        <td>{t("data loading")}</td>
                     </tr>
                     : users.map((user, index) =>
                         <tr key={index}>
@@ -114,12 +110,12 @@ const UserTable = (props) => {
                                 <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>
                                     updateUser(user)
                                 }>
-                                    Edit
+                                    {t("edit")}
                                 </MyButton>
                                 <MyButton className="btn btn-outline-danger ml-2 btn-sm" onClick={() => {
                                     handleDelete(user)
                                 }}>
-                                    Delete</MyButton>
+                                    {t("delete")}</MyButton>
                             </td>
                         </tr>
                     )
