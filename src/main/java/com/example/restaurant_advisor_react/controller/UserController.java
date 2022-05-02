@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,14 +42,14 @@ public class UserController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         user.setRoles(Set.of(Role.USER));
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable String id) {
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
         Optional<User> updatedUser = userService.updateUser(user, id);
         if (updatedUser.isEmpty()) {
             return ResponseEntity.notFound().build();

@@ -10,6 +10,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -24,17 +27,26 @@ import java.util.Set;
 public class User extends BaseEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email
+    @NotBlank
+    @Size(max = 128)
     private String email;
 
     @Column(name = "first_name")
+    @NotBlank
+    @Size(max = 128)
     private String firstName;
 
     @Column(name = "last_name")
+    @NotBlank
+    @Size(max = 128)
     private String lastName;
 
     @Column(name = "password", nullable = false)
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank
+    @Size(max = 256)
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default false")
