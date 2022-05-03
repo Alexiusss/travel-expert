@@ -24,7 +24,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllPaginated() throws Exception {
-       perform(MockMvcRequestBuilders.get(REST_URL)
+        perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("size", "2")
                 .param("page", "1"))
                 .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(USER))));
@@ -67,6 +67,30 @@ public class UserControllerTest extends AbstractControllerTest {
         newUser.setVersion(newVersion);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userRepository.getById(newId), newUser);
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        User invalidUser = getNew();
+        invalidUser.setEmail("");
+        invalidUser.setFirstName("");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(invalidUser, invalidUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+
+    @Test
+    void updateInvalid() throws Exception {
+        User invalidUser = USER;
+        invalidUser.setFirstName("");
+        invalidUser.setEmail("");
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(invalidUser, invalidUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+
     }
 
     @Test
