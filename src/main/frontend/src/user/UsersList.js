@@ -8,7 +8,8 @@ import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import ItemFilter from "../components/ItemFilter";
 import {useItems} from "../components/hooks/UseData";
 import Pagination from "@material-ui/lab/Pagination";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
+import MyNotification from "../components/UI/notification/MyNotification";
 
 const UsersList = () => {
 
@@ -36,6 +37,10 @@ const UsersList = () => {
     const sortedAndSearchedUsers = useItems(users, filter.config, filter.query, searchedColumns);
 
     const [modal, setModal] = useState(false);
+
+    const [open, setOpen] = useState(false);
+    const [message, setMessage] = useState('');
+    const [severity, setSeverity] = useState("info");
 
     const createUser = (newUser) => {
         setUsers([...users, newUser])
@@ -83,7 +88,9 @@ const UsersList = () => {
                 {t("add")}
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
-                <AddUser userFromDB={userFromDB} create={createUser} update={updateUser} modal={modal}/>
+                <AddUser userFromDB={userFromDB} create={createUser} update={updateUser}
+                         modal={modal}
+                         open={setOpen} message={setMessage} severity={setSeverity}/>
             </MyModal>
             <hr style={{margin: '15px 0'}}/>
             <ItemFilter
@@ -108,6 +115,8 @@ const UsersList = () => {
             />
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+
+            <MyNotification open={open} setOpen={setOpen} message={message} severity={severity}/>
         </div>
     );
 };

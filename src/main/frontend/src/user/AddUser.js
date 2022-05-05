@@ -26,21 +26,31 @@ const AddUser = (props) => {
                 .then(response => {
                     props.update(response.data)
                     cleanForm()
+                    openAlert(t('record saved'), "success")
                 })
                 .catch(error => {
-                    console.log("Something went wrong", error)
+                    openAlert(error.response.data.message, "error");
                 })
 
         } else {
             userService.create(user)
                 .then(response => {
+                    console.table(response.data)
                     props.create(response.data)
                     cleanForm()
+                    openAlert(t('record saved'), "success")
                 })
+                //https://mui.com/material-ui/react-snackbar/
                 .catch(error => {
-                    console.log('Something went wrong', error);
+                    openAlert(error.response.data.message, "error");
                 })
         }
+    }
+
+    const openAlert = (msg, severity) => {
+        props.severity(severity);
+        props.message(msg);
+        props.open(true);
     }
 
     useEffect(() => {
