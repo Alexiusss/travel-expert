@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import userService from '../services/user.service'
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 
 const AddUser = (props) => {
     const [email, setEmail] = useState('');
@@ -29,7 +29,7 @@ const AddUser = (props) => {
                     openAlert(t('record saved'), "success")
                 })
                 .catch(error => {
-                    openAlert(error.response.data.message, "error");
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
                 })
 
         } else {
@@ -42,7 +42,7 @@ const AddUser = (props) => {
                 })
                 //https://mui.com/material-ui/react-snackbar/
                 .catch(error => {
-                    openAlert(error.response.data.message, "error");
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
                 })
         }
     }
@@ -53,8 +53,15 @@ const AddUser = (props) => {
         props.open(true);
     }
 
+    const getLocalizedErrorMessages = (messages) => {
+        return messages.split('\n').map(message => {
+            let index = message.indexOf(']');
+            return message.substring(0, index + 2) + t(message.substring(index + 2, message.length));
+        });
+    }
+
     useEffect(() => {
-        if(!props.modal) {
+        if (!props.modal) {
             cleanForm()
         }
     })

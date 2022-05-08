@@ -9,6 +9,8 @@
   "data loading": "Wait, the data is downloading!",
   "record saved": "Record saved",
 
+  "must not be blank": "must not be empty",
+
   "user list": "User list",
   "users": "Users",
   "user editor": "User editor",

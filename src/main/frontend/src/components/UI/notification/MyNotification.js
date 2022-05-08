@@ -8,18 +8,13 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const MyNotification = (props) => {
-    let messages;
-    if (props.message) {
-        messages = props.message.split('\n');
-    }
-
-    return (
+       return (
         <React.Fragment>
             <Snackbar open={props.open} autoHideDuration={3000} onClose={() => props.setOpen(false)}
                       anchorOrigin={{vertical: "bottom", horizontal: "right"}}>
                 <Alert severity={props.severity}>
-                    {messages ?
-                        messages.map((msg, index) =>
+                    {props.message ?
+                        props.message.map((msg, index) =>
                             <AlertTitle key={index}>{msg}</AlertTitle>
                         ) : ""}
                 </Alert>
