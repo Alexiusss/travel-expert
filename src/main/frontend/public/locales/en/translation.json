@@ -10,6 +10,9 @@
   "record saved": "Record saved",
 
   "must not be blank": "must not be empty",
+  "must be a well-formed email address": "Invalid format of email",
+  "size must be between 0 and 128": "Size must be between 0 and 128",
+  "size must be between 5 and 128": "Size must be between 5 and 128",
 
   "user list": "User list",
   "users": "Users",
