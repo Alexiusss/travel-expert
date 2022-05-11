@@ -29,12 +29,12 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @Column(name = "email", nullable = false, unique = true)
     @Email
     @NotBlank
-    @Size(max = 128)
+    @Size(min = 5, max = 128)
     private String email;
 
     @Column(name = "first_name")
     @NotBlank
-    @Size(max = 128)
+    @Size(min = 5, max = 128)
     private String firstName;
 
     @Column(name = "last_name")
@@ -46,7 +46,7 @@ public class User extends BaseEntity implements HasIdAndEmail {
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank
-    @Size(max = 256)
+    @Size(min = 5, max = 128)
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default false")
