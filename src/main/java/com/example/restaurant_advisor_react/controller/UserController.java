@@ -14,6 +14,8 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.assureIdConsistent;
+import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.checkNew;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*")
@@ -43,6 +45,7 @@ public class UserController {
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        checkNew(user);
         user.setRoles(Set.of(Role.USER));
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
@@ -50,6 +53,7 @@ public class UserController {
 
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
+        assureIdConsistent(user, id);
         Optional<User> updatedUser = userService.updateUser(user, id);
         if (updatedUser.isEmpty()) {
             return ResponseEntity.notFound().build();
