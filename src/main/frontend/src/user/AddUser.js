@@ -7,7 +7,7 @@ const AddUser = (props) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const [id, setId] = useState('')
+    const [id, setId] = useState(null)
     const {t} = useTranslation();
 
     const cleanForm = () => {
@@ -15,7 +15,7 @@ const AddUser = (props) => {
         setFirstName('');
         setLastName('');
         setPassword('');
-        setId('');
+        setId(null);
     };
 
     const saveUser = (e) => {
@@ -26,7 +26,7 @@ const AddUser = (props) => {
                 .then(response => {
                     props.update(response.data)
                     cleanForm()
-                    openAlert(t('record saved'), "success")
+                    openAlert([t('record saved')], "success")
                 })
                 .catch(error => {
                     openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
@@ -35,10 +35,9 @@ const AddUser = (props) => {
         } else {
             userService.create(user)
                 .then(response => {
-                    console.table(response.data)
                     props.create(response.data)
                     cleanForm()
-                    openAlert(t('record saved'), "success")
+                    openAlert([t('record saved')], "success")
                 })
                 //https://mui.com/material-ui/react-snackbar/
                 .catch(error => {
