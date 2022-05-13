@@ -3,6 +3,8 @@ package com.example.restaurant_advisor_react.util.validation;
 import com.example.restaurant_advisor_react.HasId;
 import com.example.restaurant_advisor_react.error.IllegalRequestDataException;
 import lombok.experimental.UtilityClass;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.lang.NonNull;
 
 @UtilityClass
 public class ValidationUtil {
@@ -26,5 +28,12 @@ public class ValidationUtil {
         if (count == 0) {
             throw new IllegalRequestDataException("Entity with id=" + id + " not found");
         }
+    }
+
+    //  https://stackoverflow.com/a/65442410/548473
+    @NonNull
+    public static Throwable getRootCause(@NonNull Throwable t) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        return rootCause != null ? rootCause : t;
     }
 }
