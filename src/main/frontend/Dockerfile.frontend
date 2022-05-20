@@ -1,0 +1,12 @@
+FROM node:17-alpine3.15
+
+WORKDIR /usr/local/app
+
+ENV PATH /usr/local/app/node_modules/.bin:$PATH
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . ./
+
+CMD ["npm", "start"]
