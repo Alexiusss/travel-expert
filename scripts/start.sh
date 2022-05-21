@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mvn clean package -DskipTests
+mvn clean package #-DskipTests
 
 scp target/restaurant_advisor_react-0.0.1-SNAPSHOT.jar \
     docker/back-end/
