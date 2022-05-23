@@ -15,3 +15,6 @@ spring:
   data:
     rest:
       base-path: /api
+
+application-description: Service designed to assist people in choosing a restaurant
+application-version: 1.0.0
