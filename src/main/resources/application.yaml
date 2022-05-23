@@ -9,7 +9,7 @@ spring:
           lob:
             non-contextual-creation: true
   datasource:
-    url: jdbc:postgresql://localhost/restaurant_advisor_react
+    url: jdbc:postgresql://localhost/restaurant_advisor
     username: postgres
     password: 1234
   data:
