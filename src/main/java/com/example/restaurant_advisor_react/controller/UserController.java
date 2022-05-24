@@ -3,6 +3,7 @@ package com.example.restaurant_advisor_react.controller;
 import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.servise.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
+@Slf4j
 public class UserController {
     static final String REST_URL = "/api/v1/users";
     @Autowired
@@ -28,6 +30,7 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
+        log.info("get {}", id);
         final Optional<User> user = userService.get(id);
         if (user.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -40,11 +43,13 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
+        log.info("getAll");
         return userService.findAllPaginated(PageRequest.of(page, size));
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        log.info("create {}", user);
         checkNew(user);
         user.setRoles(Set.of(Role.USER));
         User savedUser = userService.saveUser(user);
@@ -53,6 +58,7 @@ public class UserController {
 
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
+        log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
         Optional<User> updatedUser = userService.updateUser(user, id);
         if (updatedUser.isEmpty()) {
@@ -63,6 +69,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<HttpStatus> deleteUser(@PathVariable String id) {
+        log.info("delete {}", id);
         userService.deleteUser(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

@@ -16,5 +16,11 @@ spring:
     rest:
       base-path: /api
 
+logging:
+  level:
+    root: WARN
+    com.example.restaurant_advisor_react: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
 application-description: Service designed to assist people in choosing a restaurant
 application-version: 1.0.0
