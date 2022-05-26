@@ -36,6 +36,12 @@ public class UserService {
         return userFromDB;
     }
 
+    @Transactional
+    public void enableUser(String id, boolean enable) {
+        User user = userRepository.getById(id);
+        user.setEnabled(enable);
+    }
+
     public void deleteUser(String id) {
         userRepository.deleteExisted(id);
     }

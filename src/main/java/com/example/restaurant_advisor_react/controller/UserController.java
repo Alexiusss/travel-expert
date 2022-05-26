@@ -67,10 +67,17 @@ public class UserController {
         return ResponseEntity.ok(updatedUser.get());
     }
 
+    @PatchMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void enableUser(@PathVariable String id, @RequestParam boolean enable) {
+        log.info(enable ? "enable {}" : "disable {}", id);
+        userService.enableUser(id, enable);
+    }
+
     @DeleteMapping("/{id}")
-    ResponseEntity<HttpStatus> deleteUser(@PathVariable String id) {
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable String id) {
         log.info("delete {}", id);
         userService.deleteUser(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
