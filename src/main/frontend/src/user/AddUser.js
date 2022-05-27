@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import userService from '../services/user.service'
 import {useTranslation} from "react-i18next";
 
