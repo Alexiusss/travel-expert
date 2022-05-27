@@ -2,11 +2,11 @@ import React from 'react';
 import MyButton from "../components/UI/button/MyButton";
 import userService from "../services/user.service";
 import "./UserTable.css"
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 
 const UserTable = (props) => {
 
-    const handleDelete = (user) => {
+    const deleteUser = (user) => {
         userService.remove(user.id)
             .then(response => {
                     props.remove(user)
@@ -30,6 +30,15 @@ const UserTable = (props) => {
 
     }
 
+    const enableUser = (user, enable) => {
+        user.enabled = enable;
+        userService.enable(user.id, enable)
+            .then(props.enable(user))
+            .catch(error => {
+                console.log('Something went wrong', error);
+            })
+    }
+
     const {items: users, requestSort, sortConfig} = props.users;
 
     const getClassNamesFor = (name) => {
@@ -50,7 +59,7 @@ const UserTable = (props) => {
                         <button
                             type="button"
                             onClick={() => requestSort('firstName')}
-                              className={getClassNamesFor('firstName')}
+                            className={getClassNamesFor('firstName')}
                         >
                             {t("first name")}
                         </button>
@@ -61,7 +70,7 @@ const UserTable = (props) => {
                             type="button"
                             onClick={() => requestSort('lastName')}
                             className={getClassNamesFor('lastName')}
-                            >
+                        >
                             {t("last name")}
                         </button>
                     </th>
@@ -104,7 +113,7 @@ const UserTable = (props) => {
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
-                            <td><input type="checkbox" checked={user.enabled} readOnly={true}/></td>
+                            <td><input type="checkbox" checked={user.enabled} onClick={() => enableUser(user, !user.enabled)}/></td>
                             <td>{user.roles}</td>
                             <td>
                                 <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>
@@ -113,7 +122,7 @@ const UserTable = (props) => {
                                     {t("edit")}
                                 </MyButton>
                                 <MyButton className="btn btn-outline-danger ml-2 btn-sm" onClick={() => {
-                                    handleDelete(user)
+                                    deleteUser(user)
                                 }}>
                                     {t("delete")}</MyButton>
                             </td>

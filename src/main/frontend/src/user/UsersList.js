@@ -21,7 +21,7 @@ const UsersList = () => {
     // https://www.bezkoder.com/react-pagination-hooks/
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
-    const [size, setSize] = useState(10);
+    const [size, setSize] = useState(20);
     const pageSizes = [20, 50, 100];
     const [userFromDB, setUserFromDB] = useState([]);
 
@@ -60,7 +60,8 @@ const UsersList = () => {
                         email: updatedUser.email,
                         firstName: updatedUser.firstName,
                         lastName: updatedUser.lastName,
-                        password: updatedUser.password
+                        password: updatedUser.password,
+                        enabled: updatedUser.enabled
                     }
                     :
                     user
@@ -111,7 +112,8 @@ const UsersList = () => {
             </select>
 
             <UserTable promiseInProgress={promiseInProgress} users={sortedAndSearchedUsers}
-                       userFromDB={setUserFromDB} remove={removeUser} modalVisible={setModal}
+                       userFromDB={setUserFromDB} remove={removeUser} enable={updateUser}
+                       modalVisible={setModal}
             />
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>

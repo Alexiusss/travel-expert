@@ -2,7 +2,7 @@ import httpClient from "../http-common";
 import {USERS_ROUTE} from "../utils/consts";
 
 const getAll = (size = 20, page = 1) => {
-    return httpClient.get(USERS_ROUTE , {
+    return httpClient.get(USERS_ROUTE, {
         params: {
             size: size,
             page: (page - 1)
@@ -19,11 +19,15 @@ const get = id => {
 }
 
 const update = (data, id) => {
-    return httpClient.put(USERS_ROUTE +`${id}`, data);
+    return httpClient.put(USERS_ROUTE + `${id}`, data);
+}
+
+const enable = (id, enabled) => {
+    return httpClient.patch(USERS_ROUTE +`${id}` + "?enable=" + enabled)
 }
 
 const remove = id => {
-    return httpClient.delete(USERS_ROUTE +`${id}`);
+    return httpClient.delete(USERS_ROUTE + `${id}`);
 }
 
-export default { getAll, create, get, update, remove };
+export default {getAll, create, get, update, enable, remove};
