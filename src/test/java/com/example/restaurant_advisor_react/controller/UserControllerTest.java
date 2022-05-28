@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.example.restaurant_advisor_react.error.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
 import static com.example.restaurant_advisor_react.util.JsonUtil.asParsedJson;
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -88,6 +89,31 @@ public class UserControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(invalidUser, invalidUser.getPassword())))
                 .andExpect(status().isUnprocessableEntity());
 
+    }
+
+    @Test
+    void updateForbidden() throws Exception {
+        User updatedAdmin = ADMIN;
+        updatedAdmin.setPassword("newAminPassword");
+        perform(MockMvcRequestBuilders.put(REST_URL + ADMIN_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(updatedAdmin, updatedAdmin.getPassword())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
+    }
+    @Test
+    void deleteForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + ADMIN_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
+    }
+
+    @Test
+    void disableForbidden() throws Exception{
+        perform(MockMvcRequestBuilders.patch(REST_URL + ADMIN_ID)
+                .param("enable", "false"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
     }
 
     @Test
