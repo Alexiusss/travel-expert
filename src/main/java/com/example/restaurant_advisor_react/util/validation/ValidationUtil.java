@@ -2,6 +2,7 @@ package com.example.restaurant_advisor_react.util.validation;
 
 import com.example.restaurant_advisor_react.HasId;
 import com.example.restaurant_advisor_react.error.IllegalRequestDataException;
+import com.example.restaurant_advisor_react.error.ModificationRestrictionException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
@@ -35,5 +36,11 @@ public class ValidationUtil {
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);
         return rootCause != null ? rootCause : t;
+    }
+
+    public static void checkModificationAllowed(String id) {
+        if (id.equals("1")) {
+            throw new ModificationRestrictionException();
+        }
     }
 }

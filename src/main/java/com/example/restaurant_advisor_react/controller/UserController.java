@@ -15,8 +15,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.assureIdConsistent;
-import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.checkNew;
+import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*")
@@ -59,6 +58,7 @@ public class UserController {
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
         log.info("update {} with id={}", user, id);
+        checkModificationAllowed(id);
         assureIdConsistent(user, id);
         Optional<User> updatedUser = userService.updateUser(user, id);
         if (updatedUser.isEmpty()) {
@@ -71,6 +71,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void enableUser(@PathVariable String id, @RequestParam boolean enable) {
         log.info(enable ? "enable {}" : "disable {}", id);
+        checkModificationAllowed(id);
         userService.enableUser(id, enable);
     }
 
@@ -78,6 +79,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
         log.info("delete {}", id);
+        checkModificationAllowed(id);
         userService.deleteUser(id);
     }
 }

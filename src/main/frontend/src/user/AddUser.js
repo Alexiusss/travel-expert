@@ -54,8 +54,11 @@ const AddUser = (props) => {
 
     const getLocalizedErrorMessages = (messages) => {
         return messages.split('\n').map(message => {
-            let index = message.indexOf(']');
-            return message.substring(0, index + 2) + t(message.substring(index + 2, message.length));
+            let splitMessage = message.match('(?<=(\\[\\w*\\] )).+');
+            if(splitMessage) {
+                return splitMessage[1] + t(splitMessage[0]);
+            }
+            return t(message);
         });
     }
 
