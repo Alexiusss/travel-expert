@@ -113,7 +113,7 @@ const UserTable = (props) => {
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
-                            <td><input type="checkbox" checked={user.enabled} onClick={() => enableUser(user, !user.enabled)}/></td>
+                            <td><input type="checkbox" checked={user.enabled} onChange={() => enableUser(user, !user.enabled)}/></td>
                             <td>{user.roles}</td>
                             <td>
                                 <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>

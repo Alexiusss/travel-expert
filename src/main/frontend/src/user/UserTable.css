@@ -5,7 +5,7 @@ thead th {
 
 thead button {
     border: 0;
-    border-radius: none;
+    border-radius: unset;
     font-family: inherit;
     font-weight: 700;
     font-size: inherit;
@@ -14,13 +14,13 @@ thead button {
 }
 
 thead button.ascending::after {
-    content: '🠗';
+    content: ' \21E9';
     display: inline-block;
     margin-left: 1em;
 }
 
 thead button.descending::after {
-    content: '🠕️';
+    content: '\21E7';
     display: inline-block;
     margin-left: 1em;
 }
