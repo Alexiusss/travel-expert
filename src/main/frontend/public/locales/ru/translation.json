@@ -8,6 +8,7 @@
   "items per page": "Элементов на странице: ",
   "data loading": "Данные загружаются.",
   "record saved": "Запись сохранена",
+  "record deleted": "Запись удалена",
 
   "must not be blank": "не должно быть пустым",
   "must be a well-formed email address": "Неверный формат электронной почты",

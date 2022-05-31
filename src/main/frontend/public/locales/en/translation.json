@@ -8,6 +8,7 @@
   "items per page": "Items per Page: ",
   "data loading": "Wait, the data is downloading!",
   "record saved": "Record saved",
+  "record deleted": "Record deleted",
 
   "must not be blank": "must not be empty",
   "must be a well-formed email address": "Invalid format of email",

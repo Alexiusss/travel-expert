@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import userService from '../services/user.service'
 import {useTranslation} from "react-i18next";
+import {getLocalizedErrorMessages} from "../utils/consts";
 
 const AddUser = (props) => {
     const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ const AddUser = (props) => {
             userService.update(user, id)
                 .then(response => {
                     props.update(response.data)
-                    cleanForm()
+                    cleanForm();
                     openAlert([t('record saved')], "success")
                 })
                 .catch(error => {
@@ -36,7 +37,7 @@ const AddUser = (props) => {
             userService.create(user)
                 .then(response => {
                     props.create(response.data)
-                    cleanForm()
+                    cleanForm();
                     openAlert([t('record saved')], "success")
                 })
                 //https://mui.com/material-ui/react-snackbar/
@@ -50,16 +51,6 @@ const AddUser = (props) => {
         props.severity(severity);
         props.message(msg);
         props.open(true);
-    }
-
-    const getLocalizedErrorMessages = (messages) => {
-        return messages.split('\n').map(message => {
-            let splitMessage = message.match('(?<=(\\[\\w*\\] )).+');
-            if(splitMessage) {
-                return splitMessage[1] + t(splitMessage[0]);
-            }
-            return t(message);
-        });
     }
 
     useEffect(() => {

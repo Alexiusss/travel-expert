@@ -114,7 +114,7 @@ const UsersList = () => {
             <UserTable promiseInProgress={promiseInProgress} users={sortedAndSearchedUsers}
                        userFromDB={setUserFromDB} remove={removeUser} enable={updateUser}
                        modalVisible={setModal}
-            />
+                       open={setOpen} message={setMessage} severity={setSeverity}/>
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
 
