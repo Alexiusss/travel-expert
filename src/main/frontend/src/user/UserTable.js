@@ -123,7 +123,7 @@ const UserTable = (props) => {
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
                             <td><input type="checkbox" checked={user.enabled} onChange={() => enableUser(user, !user.enabled)}/></td>
-                            <td>{user.roles}</td>
+                            <td>{user.roles.join(', ')}</td>
                             <td>
                                 <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>
                                     updateUser(user)
