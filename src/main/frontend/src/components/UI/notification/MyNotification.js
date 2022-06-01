@@ -10,7 +10,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const MyNotification = (props) => {
        return (
         <React.Fragment>
-            <Snackbar open={props.open} autoHideDuration={3000} onClose={() => props.setOpen(false)}
+            <Snackbar open={props.open} autoHideDuration={3000} onClose={() => props.setOpen({...props, open: false})}
                       anchorOrigin={{vertical: "bottom", horizontal: "right"}}>
                 <Alert severity={props.severity}>
                     {props.message ?

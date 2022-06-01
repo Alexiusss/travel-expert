@@ -38,9 +38,7 @@ const UsersList = () => {
 
     const [modal, setModal] = useState(false);
 
-    const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState('');
-    const [severity, setSeverity] = useState("info");
+    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
 
     const createUser = (newUser) => {
         setUsers([...users, newUser])
@@ -90,8 +88,7 @@ const UsersList = () => {
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
                 <AddUser userFromDB={userFromDB} create={createUser} update={updateUser}
-                         modal={modal}
-                         open={setOpen} message={setMessage} severity={setSeverity}/>
+                         modal={modal} setAlert={setAlert}/>
             </MyModal>
             <hr style={{margin: '15px 0'}}/>
             <ItemFilter
@@ -113,12 +110,11 @@ const UsersList = () => {
 
             <UserTable promiseInProgress={promiseInProgress} users={sortedAndSearchedUsers}
                        userFromDB={setUserFromDB} remove={removeUser} enable={updateUser}
-                       modalVisible={setModal}
-                       open={setOpen} message={setMessage} severity={setSeverity}/>
+                       modalVisible={setModal} setAlert={setAlert}/>
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
 
-            <MyNotification open={open} setOpen={setOpen} message={message} severity={severity}/>
+            <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </div>
     );
 };

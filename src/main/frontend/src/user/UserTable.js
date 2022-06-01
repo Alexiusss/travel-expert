@@ -34,9 +34,7 @@ const UserTable = (props) => {
     }
 
     const openAlert = (msg, severity) => {
-        props.severity(severity);
-        props.message(msg);
-        props.open(true);
+        props.setAlert({severity: severity, message: msg, open: true})
     }
 
     const enableUser = (user, enable) => {
@@ -45,6 +43,7 @@ const UserTable = (props) => {
             .then(props.enable(user))
             .catch(error => {
                 console.log('Something went wrong', error);
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
             })
     }
 

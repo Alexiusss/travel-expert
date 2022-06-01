@@ -48,9 +48,7 @@ const AddUser = (props) => {
     }
 
     const openAlert = (msg, severity) => {
-        props.severity(severity);
-        props.message(msg);
-        props.open(true);
+        props.setAlert({severity: severity, message: msg, open: true})
     }
 
     useEffect(() => {
