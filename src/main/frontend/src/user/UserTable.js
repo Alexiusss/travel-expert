@@ -128,12 +128,14 @@ const UserTable = (props) => {
                                        onChange={() => enableUser(user, !user.enabled)}/></td>
                             <td>{user.roles.join(', ')}</td>
                             <td>
-                                <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>
+                                <MyButton className="btn btn-outline-info btn-sm" onClick={() =>
                                     updateUser(user)
                                 }>
                                     {t("edit")}
                                 </MyButton>
-                                <MyButton className="btn btn-outline-danger ml-2 btn-sm" onClick={() => {
+                            </td>
+                            <td>
+                                <MyButton className="btn btn-outline-danger btn-sm" onClick={() => {
                                     deleteUser(user)
                                 }}>
                                     {t("delete")}</MyButton>

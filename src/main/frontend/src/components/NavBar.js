@@ -14,7 +14,7 @@ const NavBar = () => {
     }
     return (
         <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
                 <a href="/" className="navbar-brand">
                     Restaurant advisor
                 </a>
