@@ -38,9 +38,12 @@ const UserTable = (props) => {
     }
 
     const enableUser = (user, enable) => {
-        user.enabled = enable;
         userService.enable(user.id, enable)
-            .then(props.enable(user))
+            .then(() => {
+                    user.enabled = enable;
+                    props.enable(user);
+                }
+            )
             .catch(error => {
                 console.log('Something went wrong', error);
                 openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
@@ -121,7 +124,8 @@ const UserTable = (props) => {
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
-                            <td><input type="checkbox" checked={user.enabled} onChange={() => enableUser(user, !user.enabled)}/></td>
+                            <td><input type="checkbox" checked={user.enabled}
+                                       onChange={() => enableUser(user, !user.enabled)}/></td>
                             <td>{user.roles.join(', ')}</td>
                             <td>
                                 <MyButton className="btn btn-outline-info ml-2 btn-sm" onClick={() =>
