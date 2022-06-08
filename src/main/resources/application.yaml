@@ -25,8 +25,8 @@ logging:
     com.example.restaurant_advisor_react: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
-jwt.secret: = 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
-jwt.ExpirationMs: 2592000
+jwt.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
+jwt.ExpirationMs: 2592000000
 
 application-description: Service designed to assist people in choosing a restaurant
 application-version: 1.0.0
