@@ -4,6 +4,7 @@ import com.example.restaurant_advisor_react.AuthUser;
 import com.example.restaurant_advisor_react.model.dto.AuthRequest;
 
 import com.example.restaurant_advisor_react.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,10 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -51,4 +50,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateToken(@RequestParam String token, @AuthenticationPrincipal AuthUser user) {
+        try {
+            Boolean isValidToken = JwtUtil.validateToken(token, user);
+            return ResponseEntity.ok(isValidToken);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
+
 }
