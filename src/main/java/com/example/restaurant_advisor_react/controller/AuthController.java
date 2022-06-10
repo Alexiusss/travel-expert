@@ -2,11 +2,10 @@ package com.example.restaurant_advisor_react.controller;
 
 import com.example.restaurant_advisor_react.AuthUser;
 import com.example.restaurant_advisor_react.model.dto.AuthRequest;
-
+import com.example.restaurant_advisor_react.model.dto.JwtResponse;
 import com.example.restaurant_advisor_react.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +19,7 @@ import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = AuthController.AUTH_URL, produces = APPLICATION_JSON_VALUE)
 public class AuthController {
@@ -41,11 +41,8 @@ public class AuthController {
 
             AuthUser user = (AuthUser) authentication.getPrincipal();
 
-            return ResponseEntity.ok()
-                    .header(
-                            HttpHeaders.AUTHORIZATION,
-                            JwtUtil.generateToken(user)
-                    ).body(user);
+            JwtResponse jwtResponse = new JwtResponse(JwtUtil.generateToken(user), "");
+            return ResponseEntity.ok().body(jwtResponse);
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
