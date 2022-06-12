@@ -1,6 +1,5 @@
 package com.example.restaurant_advisor_react.controller;
 
-import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.servise.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.*;
+import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.assureIdConsistent;
+import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.checkModificationAllowed;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
@@ -49,8 +48,6 @@ public class UserController {
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         log.info("create {}", user);
-        checkNew(user);
-        user.setRoles(Set.of(Role.USER));
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }

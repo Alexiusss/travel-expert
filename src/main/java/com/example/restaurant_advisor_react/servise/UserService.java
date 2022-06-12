@@ -1,6 +1,7 @@
 package com.example.restaurant_advisor_react.servise;
 
 import com.example.restaurant_advisor_react.AuthUser;
+import com.example.restaurant_advisor_react.model.Role;
 import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
+import java.util.Set;
+
+import static com.example.restaurant_advisor_react.util.UserUtil.prepareToSave;
+import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.checkNew;
 
 @Service
 @Slf4j
@@ -24,7 +29,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User saveUser(User user) {
-        return userRepository.save(user);
+        checkNew(user);
+        user.setRoles(Set.of(Role.USER));
+        return userRepository.save(prepareToSave(user));
     }
 
     @Transactional
@@ -37,6 +44,7 @@ public class UserService implements UserDetailsService {
 
             if (!ObjectUtils.isEmpty(user.getPassword())) {
                 userFromDB.get().setPassword(user.getPassword());
+                prepareToSave(userFromDB.get());
             }
         }
         return userFromDB;
