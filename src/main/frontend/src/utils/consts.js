@@ -12,3 +12,11 @@ export const getLocalizedErrorMessages = (messages) => {
         return t(message);
     });
 }
+
+export const getAccessToken = () => {
+    let accessToken = localStorage.getItem('access-token');
+    if (accessToken === "undefined" || accessToken === null) {
+        accessToken = '';
+    }
+    return accessToken;
+}

@@ -1,4 +1,5 @@
 import axios from "axios";
+import {getAccessToken} from "../utils/consts";
 
 export const API_URL = "http://localhost:8080/api/v1";
 
@@ -11,7 +12,7 @@ const $api = axios.create({
 });
 
 $api.interceptors.request.use((config) => {
-    config.headers.Authorization = 'Bearer ' + localStorage.getItem('access-token');
+    config.headers.Authorization = `Bearer ${getAccessToken()}`;
     return config;
 });
 
