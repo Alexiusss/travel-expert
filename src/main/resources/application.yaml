@@ -28,5 +28,7 @@ logging:
 jwt.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
 jwt.ExpirationMs: 2592000000
 
+cookies.domain: localhost
+
 application-description: Service designed to assist people in choosing a restaurant
 application-version: 1.0.0

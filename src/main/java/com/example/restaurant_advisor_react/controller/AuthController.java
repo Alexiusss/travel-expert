@@ -1,12 +1,16 @@
 package com.example.restaurant_advisor_react.controller;
 
+import ch.qos.logback.core.util.Duration;
 import com.example.restaurant_advisor_react.AuthUser;
 import com.example.restaurant_advisor_react.model.dto.AuthRequest;
 import com.example.restaurant_advisor_react.model.dto.JwtResponse;
 import com.example.restaurant_advisor_react.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,6 +33,9 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Value("${cookies.domain}")
+    private String domain;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
         try {
@@ -41,8 +48,20 @@ public class AuthController {
 
             AuthUser user = (AuthUser) authentication.getPrincipal();
 
-            JwtResponse jwtResponse = new JwtResponse(JwtUtil.generateToken(user), "");
-            return ResponseEntity.ok().body(jwtResponse);
+            String accessToken = JwtUtil.generateToken(user);
+
+            ResponseCookie cookie = ResponseCookie.from("access-token", accessToken)
+                    .domain(domain)
+                    .path("/")
+                    .maxAge(Duration.buildByDays(365).getMilliseconds())
+                    .secure(true)
+                    .build();
+
+            JwtResponse jwtResponse = new JwtResponse(accessToken, "");
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(jwtResponse);
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
