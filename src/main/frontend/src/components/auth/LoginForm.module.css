@@ -1,0 +1,6 @@
+.myForm {
+    height: 200px;
+    display: flex;
+    align-items: safe center;
+    justify-content: center;
+}

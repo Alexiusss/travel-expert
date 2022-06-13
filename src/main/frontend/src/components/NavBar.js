@@ -36,6 +36,13 @@ const NavBar = () => {
                             <MenuItem value={"ru"} onClick={() => changeLanguage("ru")}>Русский</MenuItem>
                         </Select>
                     </FormControl>
+                    <div className="navbar-nav mr-auto">
+                        <li className="nav-item">
+                            <Link to="/login" className="nav-link">
+                                Login
+                            </Link>
+                        </li>
+                    </div>
                 </div>
             </nav>
         </div>
