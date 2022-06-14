@@ -15,6 +15,6 @@ public class AuthRequest {
     String email;
 
     @NotBlank
-    @Size(min = 1, max = 128)
+    @Size(min = 5, max = 128)
     String password;
 }

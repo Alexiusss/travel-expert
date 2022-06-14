@@ -2,11 +2,18 @@ import React, {useState} from 'react';
 import authService from '../../services/AuthService.js'
 import classes from './LoginForm.module.css'
 import {useTranslation} from "react-i18next";
+import MyNotification from "../UI/notification/MyNotification";
+import {getLocalizedErrorMessages} from "../../utils/consts";
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
+
+    const openAlert = (msg, severity) => {
+        setAlert({severity: severity, message: msg, open: true})
+    }
 
     const login = (e) => {
         e.preventDefault()
@@ -14,7 +21,9 @@ const LoginForm = () => {
             .then(response => {
                 localStorage.setItem('access-token', response.data.accessToken)
             })
-            .catch(err => console.error(err))
+            .catch(error =>
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error")
+            )
     }
 
     return (
@@ -44,6 +53,7 @@ const LoginForm = () => {
                     {t("sign in")}
                 </button>
             </form>
+            <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </div>
     );
 };
