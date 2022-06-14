@@ -68,7 +68,7 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<?> validateToken(@RequestParam String token, @AuthenticationPrincipal AuthUser user) {
+    public ResponseEntity<?> validateToken(@CookieValue(name = "access-token") String token, @AuthenticationPrincipal AuthUser user) {
         try {
             Boolean isValidToken = JwtUtil.validateToken(token, user);
             return ResponseEntity.ok(isValidToken);
@@ -77,4 +77,14 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout () {
+        ResponseCookie cookie = ResponseCookie.from("access-token", "")
+                .domain(domain)
+                .path("/")
+                .maxAge(0)
+                .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString()).body("logout");
+    }
 }
