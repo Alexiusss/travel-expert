@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import authService from '../../services/AuthService.js'
 import classes from './LoginForm.module.css'
 import {useTranslation} from "react-i18next";
-import MyNotification from "../UI/notification/MyNotification";
+import MyNotification from "../../components/UI/notification/MyNotification";
 import {getLocalizedErrorMessages} from "../../utils/consts";
 
 const LoginForm = () => {
