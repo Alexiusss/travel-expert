@@ -57,7 +57,7 @@ public class AuthController {
                     .secure(true)
                     .build();
 
-            JwtResponse jwtResponse = new JwtResponse(accessToken, "");
+            JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(),accessToken, "");
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())
