@@ -12,15 +12,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.example.restaurant_advisor_react.util.JwtUtil.generateCookie;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
@@ -29,9 +27,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AuthController {
 
     static final String AUTH_URL = "/api/v1/auth";
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Value("${cookies.domain}")
     private String domain;
@@ -44,18 +39,12 @@ public class AuthController {
         try {
             AuthUser user = authService.getAuthUser(request);
 
-            AuthUser user = (AuthUser) authentication.getPrincipal();
+            String accessToken = JwtUtil.generateAccessToken(user);
+            String refreshToken = JwtUtil.generateRefreshToken(user);
 
-            String accessToken = JwtUtil.generateToken(user);
+            ResponseCookie cookie = generateCookie(refreshToken, domain);
 
-            ResponseCookie cookie = ResponseCookie.from("access-token", accessToken)
-                    .domain(domain)
-                    .path("/")
-                    .maxAge(Duration.buildByDays(365).getMilliseconds())
-                    .secure(true)
-                    .build();
-
-            JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(),accessToken, "");
+            JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(), accessToken);
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())

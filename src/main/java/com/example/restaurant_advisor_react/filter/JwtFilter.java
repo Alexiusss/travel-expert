@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         Optional<Cookie> jwtOpt = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("access-token"))
+                .filter(cookie -> cookie.getName().equals("refresh-token"))
                 .findAny();
 
         if (jwtOpt.isEmpty()) {

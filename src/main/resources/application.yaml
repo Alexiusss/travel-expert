@@ -25,8 +25,11 @@ logging:
     com.example.restaurant_advisor_react: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
-jwt.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
-jwt.ExpirationMs: 2592000000
+access.token.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
+refresh.token.secret: uigyugt87TGFB*&t76V!YHHBbugy870909nby8998u0u0ohibg9yh9hy9yh9hhGv87
+
+access.token.expiration: 60
+refresh.token.expiration: 30
 
 cookies.domain: localhost
 
