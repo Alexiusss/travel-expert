@@ -1,9 +1,9 @@
 package com.example.restaurant_advisor_react.controller;
 
-import ch.qos.logback.core.util.Duration;
 import com.example.restaurant_advisor_react.AuthUser;
 import com.example.restaurant_advisor_react.model.dto.AuthRequest;
 import com.example.restaurant_advisor_react.model.dto.JwtResponse;
+import com.example.restaurant_advisor_react.servise.AuthService;
 import com.example.restaurant_advisor_react.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +36,13 @@ public class AuthController {
     @Value("${cookies.domain}")
     private String domain;
 
+    @Autowired
+    AuthService authService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
         try {
-            Authentication authentication = authenticationManager
-                    .authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    request.getEmail(), request.getPassword()
-                            )
-                    );
+            AuthUser user = authService.getAuthUser(request);
 
             AuthUser user = (AuthUser) authentication.getPrincipal();
 
