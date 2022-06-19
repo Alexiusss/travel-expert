@@ -17,8 +17,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
-import static com.example.restaurant_advisor_react.util.JwtUtil.generateCookie;
+import static com.example.restaurant_advisor_react.util.JwtUtil.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
@@ -39,8 +40,8 @@ public class AuthController {
         try {
             AuthUser user = authService.getAuthUser(request);
 
-            String accessToken = JwtUtil.generateAccessToken(user);
-            String refreshToken = JwtUtil.generateRefreshToken(user);
+            String accessToken = generateAccessToken(user);
+            String refreshToken = generateRefreshToken(user);
 
             ResponseCookie cookie = generateCookie(refreshToken, domain);
 
@@ -52,6 +53,16 @@ public class AuthController {
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token, @AuthenticationPrincipal AuthUser user) {
+
+        if (JwtUtil.validateToken(token, user)) {
+            String accessToken = generateAccessToken(user);
+            return ResponseEntity.ok().body(Map.of("access-token", accessToken));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @GetMapping("/validate")
