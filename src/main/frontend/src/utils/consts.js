@@ -1,4 +1,5 @@
 import {t} from "i18next";
+import {store} from "../store";
 
 export const USERS_ROUTE = '/users/'
 export const LOGIN = '/auth/login/'
@@ -14,7 +15,7 @@ export const getLocalizedErrorMessages = (messages) => {
 }
 
 export const getAccessToken = () => {
-    let accessToken = localStorage.getItem('access-token');
+    let accessToken = store.getState().user.token;
     if (accessToken === "undefined" || accessToken === null) {
         accessToken = '';
     }

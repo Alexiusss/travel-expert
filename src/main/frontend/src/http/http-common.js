@@ -1,5 +1,6 @@
 import axios from "axios";
 import {getAccessToken} from "../utils/consts";
+import {store} from "../store";
 
 export const API_URL = "http://localhost:8080/api/v1";
 
@@ -12,7 +13,9 @@ const $api = axios.create({
 });
 
 $api.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${getAccessToken()}`;
+    if(!!store.getState().user.token) {
+        config.headers.Authorization = `Bearer ${getAccessToken()}`;
+    }
     return config;
 });
 
