@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.example.restaurant_advisor_react.util.JwtUtil.validateToken;
+import static com.example.restaurant_advisor_react.util.JwtUtil.validateAccessToken;
 
 @Component
 @AllArgsConstructor
@@ -40,9 +40,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final String token = header.split(" ")[1].trim();
 
-        UserDetails userDetails = userService.loadUserByUsername(JwtUtil.getUserEmailFromToken(token));
+        UserDetails userDetails = userService.loadUserByUsername(JwtUtil.getUserEmailFromAccessToken(token));
 
-        if (!validateToken(token, userDetails)) {
+        if (!validateAccessToken(token, userDetails)) {
             filterChain.doFilter(request, response);
             return;
         }

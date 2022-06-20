@@ -49,31 +49,47 @@ public class JwtUtil {
     }
 
 
-    public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
+    public static Boolean validateAccessToken(String token, UserDetails userDetails) {
+        return validateToken(token, userDetails, accessTokenSecret);
     }
 
-    public static Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(accessTokenSecret).parseClaimsJws(token).getBody();
-        //return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    public static Boolean validateRefreshToken(String token, UserDetails userDetails) {
+        return validateToken(token, userDetails, refreshTokenSecret);
     }
 
-    public static Boolean validateToken(String token, UserDetails userDetails) {
+    public static Boolean validateToken(String token, UserDetails userDetails, String secret) {
         if (!StringUtils.hasText(token)) {
             return false;
         }
-        final String username = getUserEmailFromToken(token);
-        return (userDetails != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String username = getUserEmailFromToken(token, secret);
+        return (userDetails != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token, secret));
     }
 
-    public static Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
+    public static String getUserEmailFromAccessToken(String token) {
+        return getClaimFromToken(token, Claims::getSubject, accessTokenSecret);
     }
 
-    private static Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
+    public static String getUserEmailFromToken(String token, String secret) {
+        return getClaimFromToken(token, Claims::getSubject, secret);
+    }
+
+    public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver, String secret) {
+        final Claims claims = getAllClaimsFromToken(token, secret);
+        return claimsResolver.apply(claims);
+    }
+
+    public static Claims getAllClaimsFromToken(String token, String secret) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        //return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    }
+
+    private static Boolean isTokenExpired(String token, String secret) {
+        final Date expiration = getExpirationDateFromToken(token , secret);
         return expiration.before(new Date());
+    }
+
+    public static Date getExpirationDateFromToken(String token, String secret) {
+        return getClaimFromToken(token, Claims::getExpiration, secret);
     }
 
     public static String generateAccessToken(UserDetails userDetails) {
@@ -107,8 +123,5 @@ public class JwtUtil {
                 .maxAge(Duration.buildByDays(30).getMilliseconds())
                 .secure(true)
                 .build();
-    }
-    public static String getUserEmailFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
     }
 }

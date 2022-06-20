@@ -58,7 +58,7 @@ public class AuthController {
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token, @AuthenticationPrincipal AuthUser user) {
 
-        if (JwtUtil.validateToken(token, user)) {
+        if (JwtUtil.validateRefreshToken(token, user)) {
             String accessToken = generateAccessToken(user);
             return ResponseEntity.ok().body(Map.of("access-token", accessToken));
         }
@@ -66,9 +66,9 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<?> validateToken(@CookieValue(name = "access-token") String token, @AuthenticationPrincipal AuthUser user) {
+    public ResponseEntity<?> validateToken(@CookieValue(name = "refresh-token") String token, @AuthenticationPrincipal AuthUser user) {
         try {
-            Boolean isValidToken = JwtUtil.validateToken(token, user);
+            Boolean isValidToken = JwtUtil.validateRefreshToken(token, user);
             return ResponseEntity.ok(isValidToken);
         } catch (ExpiredJwtException e) {
             return ResponseEntity.ok(false);
