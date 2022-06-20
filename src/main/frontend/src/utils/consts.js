@@ -3,6 +3,7 @@ import {store} from "../store";
 
 export const USERS_ROUTE = '/users/'
 export const LOGIN = '/auth/login/'
+export const LOGOUT = '/auth/logout/'
 
 export const getLocalizedErrorMessages = (messages) => {
     return messages.split('\n').map(message => {

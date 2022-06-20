@@ -80,7 +80,6 @@ public class JwtUtil {
 
     public static Claims getAllClaimsFromToken(String token, String secret) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-        //return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
     private static Boolean isTokenExpired(String token, String secret) {
@@ -122,6 +121,15 @@ public class JwtUtil {
                 .path("/")
                 .maxAge(Duration.buildByDays(30).getMilliseconds())
                 .secure(true)
+                .build();
+    }
+
+    public static ResponseCookie generateLogoutCookie(String domain) {
+        return ResponseCookie.from("refresh-token", "")
+                .domain(domain)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
                 .build();
     }
 }

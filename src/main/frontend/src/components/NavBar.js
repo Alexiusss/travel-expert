@@ -1,16 +1,32 @@
 import React from 'react';
+import {useDispatch} from 'react-redux'
 import {USERS_ROUTE} from "../utils/consts";
 import {Link} from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import {useAuth} from "./hooks/UseAuth";
+import MyButton from "./UI/button/MyButton";
+import authService from "services/AuthService"
+import {removeUser} from "../store/slices/userSlice";
 
 const NavBar = () => {
     const {t, i18n} = useTranslation();
     const changeLanguage = (language) => {
         i18n.changeLanguage(language);
+    }
+    const {isAuth} = useAuth();
+    const dispatch = useDispatch();
+
+    const logout = () => {
+        authService.logout()
+            .then(
+                () => dispatch(removeUser())
+            )
+            .catch(error =>
+                console.error(error))
     }
     return (
         <div>
@@ -26,7 +42,7 @@ const NavBar = () => {
                     </li>
                 </div>
                 <div className="navbar-nav ms-auto">
-                    <FormControl sx={{ m: 1, minWidth: 80}}>
+                    <FormControl sx={{m: 1, minWidth: 80}}>
                         <InputLabel>{t("lang")}</InputLabel>
                         <Select
                             defaultValue={"en"}
@@ -38,9 +54,16 @@ const NavBar = () => {
                     </FormControl>
                     <div className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <Link to="/login" className="nav-link">
-                                Login
-                            </Link>
+                            {isAuth ?
+                                <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                                          onClick={() => logout()}>
+                                    Logout
+                                </MyButton>
+                                :
+                                < Link to="/login" className="nav-link">
+                                    Login
+                                </Link>
+                            }
                         </li>
                     </div>
                 </div>

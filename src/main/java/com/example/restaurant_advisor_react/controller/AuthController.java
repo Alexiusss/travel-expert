@@ -77,11 +77,7 @@ public class AuthController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout () {
-        ResponseCookie cookie = ResponseCookie.from("access-token", "")
-                .domain(domain)
-                .path("/")
-                .maxAge(0)
-                .build();
+        ResponseCookie cookie = generateLogoutCookie(domain);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString()).body("logout");
     }
