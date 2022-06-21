@@ -4,6 +4,7 @@ import com.example.restaurant_advisor_react.AuthUser;
 import com.example.restaurant_advisor_react.model.dto.AuthRequest;
 import com.example.restaurant_advisor_react.model.dto.JwtResponse;
 import com.example.restaurant_advisor_react.servise.AuthService;
+import com.example.restaurant_advisor_react.servise.UserService;
 import com.example.restaurant_advisor_react.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,6 +36,8 @@ public class AuthController {
 
     @Autowired
     AuthService authService;
+    @Autowired
+    UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
@@ -57,10 +61,10 @@ public class AuthController {
 
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token, @AuthenticationPrincipal AuthUser user) {
-
-        if (JwtUtil.validateRefreshToken(token, user)) {
-            String accessToken = generateAccessToken(user);
-            return ResponseEntity.ok().body(Map.of("access-token", accessToken));
+        UserDetails userDetails = userService.loadUserByUsername(getUserEmailFromRefreshToken(token));
+        if (JwtUtil.validateRefreshToken(token, userDetails)) {
+            String accessToken = generateAccessToken(userDetails);
+            return ResponseEntity.ok().body(Map.of("accessToken", accessToken));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

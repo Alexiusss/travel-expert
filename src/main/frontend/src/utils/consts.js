@@ -16,7 +16,8 @@ export const getLocalizedErrorMessages = (messages) => {
 }
 
 export const getAccessToken = () => {
-    let accessToken = store.getState().user.token;
+    //let accessToken = store.getState().user.token;
+    let accessToken = localStorage.getItem('access-token')
     if (accessToken === "undefined" || accessToken === null) {
         accessToken = '';
     }

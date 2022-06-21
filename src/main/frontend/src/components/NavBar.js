@@ -31,15 +31,19 @@ const NavBar = () => {
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-                <a href="/" className="navbar-brand">
+                < Link to="/" className="navbar-brand">
                     Restaurant advisor
-                </a>
+                </Link>
                 <div className="navbar-nav mr-auto">
-                    <li className="nav-item">
-                        <Link to={USERS_ROUTE} className="nav-link">
-                            {t("users")}
-                        </Link>
-                    </li>
+                    {isAuth ?
+                        <li className="nav-item">
+                            <Link to={USERS_ROUTE} className="nav-link">
+                                {t("users")}
+                            </Link>
+                        </li>
+                        :
+                        ""
+                    }
                 </div>
                 <div className="navbar-nav ms-auto">
                     <FormControl sx={{m: 1, minWidth: 80}}>

@@ -65,6 +65,10 @@ public class JwtUtil {
         return (userDetails != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token, secret));
     }
 
+    public static String getUserEmailFromRefreshToken(String token) {
+        return getClaimFromToken(token, Claims::getSubject, refreshTokenSecret);
+    }
+
     public static String getUserEmailFromAccessToken(String token) {
         return getClaimFromToken(token, Claims::getSubject, accessTokenSecret);
     }
@@ -83,7 +87,7 @@ public class JwtUtil {
     }
 
     private static Boolean isTokenExpired(String token, String secret) {
-        final Date expiration = getExpirationDateFromToken(token , secret);
+        final Date expiration = getExpirationDateFromToken(token, secret);
         return expiration.before(new Date());
     }
 
