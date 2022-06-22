@@ -1,7 +1,6 @@
 import axios from "axios";
-import {getAccessToken} from "../utils/consts";
-import {store} from "../store";
-
+import {getAccessToken, updateLocalAccessToken} from "../utils/consts";
+import store from "../store";
 export const API_URL = "http://localhost:8080/api/v1";
 
 const $api = axios.create({
@@ -27,7 +26,7 @@ $api.interceptors.response.use((config) => {
         originalRequest._isRetry = true;
         const response = await axios.get(`${API_URL}/auth/refresh`, {withCredentials: true})
         try {
-            localStorage.setItem('access-token', response.data.accessToken);
+            updateLocalAccessToken(response.data.accessToken)
             return $api.request(originalRequest)
         } catch (e) {
             console.error('Unauthorized')
