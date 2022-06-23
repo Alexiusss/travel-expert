@@ -4,8 +4,10 @@ import userService from "../services/user.service";
 import "./UserTable.css"
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
+import {useAuth} from "../components/hooks/UseAuth";
 
 const UserTable = (props) => {
+    const {isAdmin} = useAuth();
 
     const deleteUser = (user) => {
         userService.remove(user.id)
@@ -128,17 +130,25 @@ const UserTable = (props) => {
                                        onChange={() => enableUser(user, !user.enabled)}/></td>
                             <td>{user.roles.join(', ')}</td>
                             <td>
-                                <MyButton className="btn btn-outline-info btn-sm" onClick={() =>
-                                    updateUser(user)
-                                }>
-                                    {t("edit")}
-                                </MyButton>
+                                {isAdmin ?
+                                    <MyButton className="btn btn-outline-info btn-sm" onClick={() =>
+                                        updateUser(user)
+                                    }>
+                                        {t("edit")}
+                                    </MyButton>
+                                    :
+                                    ""
+                                }
                             </td>
                             <td>
-                                <MyButton className="btn btn-outline-danger btn-sm" onClick={() => {
-                                    deleteUser(user)
-                                }}>
-                                    {t("delete")}</MyButton>
+                                {isAdmin ?
+                                    <MyButton className="btn btn-outline-danger btn-sm" onClick={() => {
+                                        deleteUser(user)
+                                    }}>
+                                        {t("delete")}</MyButton>
+                                    :
+                                    ""
+                                }
                             </td>
                         </tr>
                     )

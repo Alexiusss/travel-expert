@@ -17,7 +17,7 @@ const NavBar = () => {
     const changeLanguage = (language) => {
         i18n.changeLanguage(language);
     }
-    const {isAuth} = useAuth();
+    const {isAuth, isAdmin, isModerator} = useAuth();
     const dispatch = useDispatch();
 
     const logout = () => {
@@ -35,7 +35,7 @@ const NavBar = () => {
                     Restaurant advisor
                 </Link>
                 <div className="navbar-nav mr-auto">
-                    {isAuth ?
+                    {isAdmin || isModerator ?
                         <li className="nav-item">
                             <Link to={USERS_ROUTE} className="nav-link">
                                 {t("users")}

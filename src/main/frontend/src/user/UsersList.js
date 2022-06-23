@@ -10,6 +10,7 @@ import {useItems} from "../components/hooks/UseData";
 import Pagination from "@material-ui/lab/Pagination";
 import {useTranslation} from "react-i18next";
 import MyNotification from "../components/UI/notification/MyNotification";
+import {useAuth} from "../components/hooks/UseAuth";
 
 const UsersList = () => {
 
@@ -39,6 +40,8 @@ const UsersList = () => {
     const [modal, setModal] = useState(false);
 
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
+
+    const {isAdmin} = useAuth();
 
     const createUser = (newUser) => {
         setUsers([...users, newUser])
@@ -82,10 +85,14 @@ const UsersList = () => {
 
     return (
         <div className='container'>
-            <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                      onClick={() => setModal(true)}>
-                {t("add")}
-            </MyButton>
+            {isAdmin ?
+                <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                          onClick={() => setModal(true)}>
+                    {t("add")}
+                </MyButton>
+                :
+                ""
+            }
             <MyModal visible={modal} setVisible={setModal}>
                 <AddUser userFromDB={userFromDB} create={createUser} update={updateUser}
                          modal={modal} setAlert={setAlert}/>

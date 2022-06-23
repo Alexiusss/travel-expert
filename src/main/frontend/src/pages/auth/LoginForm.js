@@ -25,12 +25,13 @@ const LoginForm = () => {
         authService.login(email, password)
             .then(response => {
                 dispatch(setUser({
-                email: response.data.email,
-                id: response.data.userId,
-                token: response.data.accessToken,
-            }));
+                    email: response.data.email,
+                    id: response.data.userId,
+                    token: response.data.accessToken,
+                    authorities: response.data.authorities,
+                }));
                 push('/');
-           })
+            })
             .catch(error =>
                 openAlert(getLocalizedErrorMessages(error.response.data.message), "error")
             )
