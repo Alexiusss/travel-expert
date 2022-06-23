@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.Set;
 
 import static com.example.restaurant_advisor_react.util.JwtUtil.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -49,7 +50,7 @@ public class AuthController {
 
             ResponseCookie cookie = generateCookie(refreshToken, domain);
 
-            JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(), accessToken);
+            JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(), accessToken, Set.copyOf(user.getAuthorities()));
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())

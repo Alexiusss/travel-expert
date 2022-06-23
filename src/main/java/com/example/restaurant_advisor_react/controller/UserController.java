@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
         log.info("get {}", id);
@@ -36,6 +38,7 @@ public class UserController {
         return ResponseEntity.ok(user.get());
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @GetMapping
     public Page<User> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -45,6 +48,7 @@ public class UserController {
         return userService.findAllPaginated(PageRequest.of(page, size));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         log.info("create {}", user);
@@ -52,6 +56,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
         log.info("update {} with id={}", user, id);
@@ -64,6 +69,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser.get());
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @PatchMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void enableUser(@PathVariable String id, @RequestParam boolean enable) {
@@ -72,6 +78,7 @@ public class UserController {
         userService.enableUser(id, enable);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
