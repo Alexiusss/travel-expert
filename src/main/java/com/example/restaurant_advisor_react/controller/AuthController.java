@@ -1,6 +1,7 @@
 package com.example.restaurant_advisor_react.controller;
 
 import com.example.restaurant_advisor_react.AuthUser;
+import com.example.restaurant_advisor_react.model.User;
 import com.example.restaurant_advisor_react.model.dto.AuthRequest;
 import com.example.restaurant_advisor_react.model.dto.JwtResponse;
 import com.example.restaurant_advisor_react.servise.AuthService;
@@ -17,8 +18,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,6 +61,16 @@ public class AuthController {
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody User user) {
+        User created = userService.saveUser(user);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(AUTH_URL + "/{id}")
+                .buildAndExpand(created.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @GetMapping("/refresh")

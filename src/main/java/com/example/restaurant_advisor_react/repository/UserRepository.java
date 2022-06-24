@@ -11,11 +11,6 @@ import java.util.Optional;
 public interface UserRepository extends BaseRepository<User>{
 
     @Override
-    @Modifying
-    @Transactional
-    User save(User user);
-
-    @Override
     @EntityGraph(attributePaths = {"roles"})
     List<User> findAll();
 

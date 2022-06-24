@@ -121,8 +121,8 @@ public class JwtUtil {
         return ResponseCookie.from("refresh-token", refreshToken)
                 .domain(domain)
                 .httpOnly(true)
-                //.path("/api/v1/auth")
-                .path("/")
+                .path("/api/v1/auth")
+                //.path("/")
                 .maxAge(Duration.buildByDays(30).getMilliseconds())
                 .secure(true)
                 .build();
