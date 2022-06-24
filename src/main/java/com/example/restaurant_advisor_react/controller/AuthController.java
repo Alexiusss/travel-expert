@@ -83,16 +83,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity<?> validateToken(@CookieValue(name = "refresh-token") String token, @AuthenticationPrincipal AuthUser user) {
-        try {
-            Boolean isValidToken = JwtUtil.validateRefreshToken(token, user);
-            return ResponseEntity.ok(isValidToken);
-        } catch (ExpiredJwtException e) {
-            return ResponseEntity.ok(false);
-        }
-    }
-
     @GetMapping("/logout")
     public ResponseEntity<?> logout () {
         ResponseCookie cookie = generateLogoutCookie(domain);
