@@ -1,5 +1,5 @@
 import $api from "../http/http-common";
-import {LOGIN, LOGOUT} from "../utils/consts";
+import {LOGIN, LOGOUT, REGISTER} from "../utils/consts";
 
 export default class AuthService {
     static async login(email, password) {
@@ -7,5 +7,8 @@ export default class AuthService {
     }
     static async logout() {
         return $api.get(LOGOUT)
+    }
+    static async register(firstName, lastName, email, password) {
+        return $api.post(REGISTER, {firstName, lastName, email, password})
     }
 }

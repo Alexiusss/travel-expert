@@ -3,6 +3,7 @@ import {Switch, Route} from 'react-router-dom'
 import UsersList from "../user/UsersList";
 import HomePage from "../pages/HomePage";
 import LoginForm from "../pages/auth/LoginForm";
+import RegisterForm from "../pages/auth/RegisterForm";
 import {useAuth} from "./hooks/UseAuth";
 
 const AppRouter = () => {
@@ -12,6 +13,7 @@ const AppRouter = () => {
         <Switch>
             <Route exact path={"/"} component={HomePage} />
             <Route exact path={"/login"} component={LoginForm} />
+            <Route exact path={"/register"} component={RegisterForm} />
             { isAdmin || isModerator ?
                 <Route exact path={"/users"}
                        component={UsersList}/>

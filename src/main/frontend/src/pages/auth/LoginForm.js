@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux';
 import {useHistory} from "react-router-dom";
 import {setUser} from 'store/slices/userSlice'
 import authService from 'services/AuthService.js'
-import classes from './LoginForm.module.css'
+import classes from './Form.module.css'
 import MyNotification from "components/UI/notification/MyNotification";
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "utils/consts";

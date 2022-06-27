@@ -74,7 +74,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token, @AuthenticationPrincipal AuthUser user) {
+    public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token) {
         UserDetails userDetails = userService.loadUserByUsername(getUserEmailFromRefreshToken(token));
         if (JwtUtil.validateRefreshToken(token, userDetails)) {
             String accessToken = generateAccessToken(userDetails);
