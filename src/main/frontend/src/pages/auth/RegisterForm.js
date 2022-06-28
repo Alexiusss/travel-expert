@@ -4,7 +4,6 @@ import {useHistory} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import MyNotification from "../../components/UI/notification/MyNotification";
 import authService from "../../services/AuthService";
-import {setUser} from "../../store/slices/userSlice";
 import {getLocalizedErrorMessages} from "../../utils/consts";
 
 const RegisterForm = () => {
@@ -14,7 +13,7 @@ const RegisterForm = () => {
     const [lastName, setLastName] = useState('');
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {push} = useHistory();
-     const {t} = useTranslation();
+    const {t} = useTranslation();
 
     const openAlert = (msg, severity) => {
         setAlert({severity: severity, message: msg, open: true})
@@ -23,6 +22,8 @@ const RegisterForm = () => {
     const register = (e) => {
         e.preventDefault()
         authService.register(firstName, lastName, email, password)
+            .then(() => openAlert(getLocalizedErrorMessages(t("success registration")), "success"))
+            .then(() => new Promise((resolve) => setTimeout(resolve, 3000)))
             .then(() => push('/login'))
             .catch(error =>
                 openAlert(getLocalizedErrorMessages(error.response.data.message), "error")
@@ -33,7 +34,7 @@ const RegisterForm = () => {
         <div>
             <div className={classes.myForm}>
                 <form>
-                    <div className="form-group" style={{marginTop: 10}} >
+                    <div className="form-group" style={{marginTop: 10}}>
                         <input
                             value={firstName}
                             onChange={e => setFirstName(e.target.value)}

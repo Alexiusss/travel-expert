@@ -1,7 +1,6 @@
 {
   "lang": "Lang",
-  "sign in": "Sign In",
-  "sign up": "Sign Up",
+
   "add": "Add",
   "save": "Save",
   "edit": "Edit",
@@ -21,6 +20,9 @@
 
   "user list": "User list",
   "users": "Users",
+  "sign in": "Sign In",
+  "sign up": "Sign Up",
+  "success registration": "Registration was successful. A confirmation email has been sent to your inbox.",
   "user editor": "User editor",
   "enter email": "Enter email",
   "enter first name": "Enter first name",
