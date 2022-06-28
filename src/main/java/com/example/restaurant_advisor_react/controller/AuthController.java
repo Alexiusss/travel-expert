@@ -7,7 +7,7 @@ import com.example.restaurant_advisor_react.model.dto.JwtResponse;
 import com.example.restaurant_advisor_react.servise.AuthService;
 import com.example.restaurant_advisor_react.servise.UserService;
 import com.example.restaurant_advisor_react.util.JwtUtil;
-import io.jsonwebtoken.ExpiredJwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,9 +24,11 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
+import static com.example.restaurant_advisor_react.controller.UserController.REST_URL;
 import static com.example.restaurant_advisor_react.util.JwtUtil.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Slf4j
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = AuthController.AUTH_URL, produces = APPLICATION_JSON_VALUE)
@@ -45,6 +46,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
+        log.info("Login {}", request.getEmail());
         try {
             AuthUser user = authService.getAuthUser(request);
 
@@ -65,9 +67,10 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
+        log.info("registration {}", user);
         User created = userService.saveUser(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(AUTH_URL + "/{id}")
+                .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -76,6 +79,7 @@ public class AuthController {
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token) {
         UserDetails userDetails = userService.loadUserByUsername(getUserEmailFromRefreshToken(token));
+        log.info("refresh token for {}", userDetails.getUsername());
         if (JwtUtil.validateRefreshToken(token, userDetails)) {
             String accessToken = generateAccessToken(userDetails);
             return ResponseEntity.ok().body(Map.of("accessToken", accessToken));
