@@ -68,13 +68,25 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         log.info("registration {}", user);
-        User created = userService.saveUser(user);
+        User created = authService.registerUser(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
+
+    @GetMapping("/activate/{code}")
+    public ResponseEntity<?> activate(@PathVariable String code) {
+        boolean isActivated = authService.activateUser(code);
+
+        if (isActivated) {
+            return ResponseEntity.ok("User successfully activated");
+        } else {
+            return ResponseEntity.ok("Activation code not found!");
+        }
+    }
+
 
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token) {
@@ -88,7 +100,7 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout () {
+    public ResponseEntity<?> logout() {
         ResponseCookie cookie = generateLogoutCookie(domain);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString()).body("logout");

@@ -18,12 +18,23 @@ spring:
   security:
     filter:
       order: 10
+  mail:
+    host: smtp.yandex.ru
+    username: maicl.svetlov@yandex.ru
+    password: unevqrlqmgafiymw
+    port: 465
+    protocol: smtps
+    properties:
+        mail:
+          debug: true
 
 logging:
   level:
     root: WARN
     com.example.restaurant_advisor_react: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+myhostname: localhost:8080
 
 access.token.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
 refresh.token.secret: uigyugt87TGFB*&t76V!YHHBbugy870909nby8998u0u0ohibg9yh9hy9yh9hhGv87

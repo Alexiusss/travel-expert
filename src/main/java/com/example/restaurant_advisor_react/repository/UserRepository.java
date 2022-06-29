@@ -15,4 +15,6 @@ public interface UserRepository extends BaseRepository<User>{
     List<User> findAll();
 
     Optional<User> findByEmailIgnoreCase(String email);
+
+    User findByActivationCode(String code);
 }
