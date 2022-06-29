@@ -55,7 +55,7 @@ public class AuthService {
 
         userRepository.save(prepareToSave(user));
         sendMessage(user);
-        
+
         return user;
     }
 
@@ -63,7 +63,7 @@ public class AuthService {
         if (!ObjectUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Restaurant Advisor. Please visit next link: <a href='http://%s/api/v1/auth/activate/%s'>link</a>",
+                            "Welcome to Restaurant Advisor. Please, visit next link: http://%s/api/v1/auth/activate/%s",
                     user.getFirstName(),
                     myHostName,
                     user.getActivationCode()
