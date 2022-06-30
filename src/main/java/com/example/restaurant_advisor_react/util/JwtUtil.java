@@ -122,7 +122,7 @@ public class JwtUtil {
                 .domain(domain)
                 .httpOnly(true)
                 .path("/api/v1/auth")
-                .maxAge(Duration.buildByDays(30).getMilliseconds())
+                .maxAge(Duration.buildByDays(30).getMilliseconds() / 1000)
                 .secure(true)
                 .build();
     }
