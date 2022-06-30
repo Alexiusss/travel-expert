@@ -20,9 +20,9 @@ public class UserTestData {
     public static final Instant USER_INSTANT = Timestamp.valueOf("2022-04-27 19:16:53.292882").toInstant();
     public static final String NOT_FOUND = "1000";
 
-    public static final User ADMIN = new User(ADMIN_ID, null, null, 0, "admin@gmail.com", "Admin", "AdminLast", "1", true, null, List.of(Role.ADMIN, Role.MODERATOR, Role.USER));
-    public static final User MODER = new User(MODER_ID, null, null, 0, "moder@gmail.com", "Moder", "ModerLast", "1", true, null, List.of(Role.MODERATOR, Role.USER));
-    public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, "user@gmail.com", "User", "UserLast", "1", true, null, Collections.singleton(Role.USER));
+    public static final User ADMIN = new User(ADMIN_ID, null, null, 0, "admin@gmail.com", "Admin", "AdminLast", "adminPassword", true, null, List.of(Role.ADMIN, Role.MODERATOR, Role.USER));
+    public static final User MODER = new User(MODER_ID, null, null, 0, "moder@gmail.com", "Moder", "ModerLast", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
+    public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, "user@gmail.com", "User", "UserLast", "userPassword", true, null, Collections.singleton(Role.USER));
 
     public static User getNew() {
        return new User("new_user@gmail.com", "New user", "NewUserLast", "NewPassword", false, null, Collections.singleton(Role.USER));

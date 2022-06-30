@@ -4,9 +4,9 @@ DELETE
 FROM users;
 
 INSERT INTO users (id, created_at, modified_at, version, activation_code, enabled, email, first_name, last_name, password)
-VALUES ('1', NOW(), NOW(), 0, null, true, 'admin@gmail.com', 'Admin', 'AdminLast','1'),
-       ('2', NOW(), NOW(), 0, null, true, 'moder@gmail.com', 'Moder', 'ModerLast','1'),
-       ('3', '2022-04-27 19:16:53.292882', '2022-04-27 19:16:53.292882', 0, null, true, 'user@gmail.com', 'User', 'UserLast','1');
+VALUES ('1', NOW(), NOW(), 0, null, true, 'admin@gmail.com', 'Admin', 'AdminLast','{bcrypt}$2a$10$7tv2rvUDR37OsFxUjXpQmeBHnBT9JGvro9F.igDQ0HsYlw/A1OCsK'),
+       ('2', NOW(), NOW(), 0, null, true, 'moder@gmail.com', 'Moder', 'ModerLast','{bcrypt}$2a$10$cvsdB43HwQaDeP13GhGGA.7.cBXTzjYErg1u6T2k6TpWyQPUETpiy'),
+       ('3', '2022-04-27 19:16:53.292882', '2022-04-27 19:16:53.292882', 0, null, true, 'user@gmail.com', 'User', 'UserLast','{bcrypt}$2a$10$MCR.pfu.PVQiPK4Tu6fAZukpR1bj1TD8YyF/GmSRIpxic2lHaqb5y');
 
 INSERT INTO user_role (role, user_id)
 VALUES ('ADMIN', 1),
