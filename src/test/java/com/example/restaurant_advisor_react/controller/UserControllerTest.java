@@ -5,6 +5,7 @@ import com.example.restaurant_advisor_react.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -15,6 +16,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WithUserDetails(ADMIN_MAIL)
 public class UserControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = UserController.REST_URL + "/";

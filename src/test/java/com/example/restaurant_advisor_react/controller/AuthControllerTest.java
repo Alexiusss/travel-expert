@@ -29,7 +29,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     void login() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(new AuthRequest(ADMIN.getEmail(), ADMIN.getPassword()))))
+                .content(JsonUtil.writeValue(new AuthRequest(ADMIN_MAIL, ADMIN.getPassword()))))
                 .andExpect(header().exists(HttpHeaders.SET_COOKIE))
                 .andExpect(status().isOk());
     }
@@ -47,7 +47,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     void failLogin() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(new AuthRequest(ADMIN.getEmail(), "InvalidPassword"))))
+                .content(JsonUtil.writeValue(new AuthRequest(ADMIN_MAIL, "InvalidPassword"))))
                 .andExpect(status().isUnauthorized())
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
 
