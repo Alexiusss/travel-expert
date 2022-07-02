@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -88,8 +87,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL + "register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("message", equalTo("[password] size must be between 5 and 128\n[password] must not be blank")));
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

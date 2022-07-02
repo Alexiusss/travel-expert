@@ -85,7 +85,6 @@ public class UserControllerTest extends AbstractControllerTest {
     void updateInvalid() throws Exception {
         User invalidUser = USER;
         invalidUser.setFirstName("");
-        invalidUser.setEmail("");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(invalidUser, invalidUser.getPassword())))
