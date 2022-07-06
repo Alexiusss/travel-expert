@@ -1,6 +1,6 @@
 import React from 'react';
 import {useDispatch} from 'react-redux'
-import {USERS_ROUTE} from "../utils/consts";
+import {PROFILE, USERS_ROUTE} from "../utils/consts";
 import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -39,6 +39,17 @@ const NavBar = () => {
                         <li className="nav-item">
                             <Link to={USERS_ROUTE} className="nav-link">
                                 {t("users")}
+                            </Link>
+                        </li>
+                        :
+                        ""
+                    }
+                </div>
+                <div className="navbar-nav mr-auto">
+                    {isAuth?
+                        <li className="nav-item">
+                            <Link to={PROFILE} className="nav-link">
+                                Profile
                             </Link>
                         </li>
                         :

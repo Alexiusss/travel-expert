@@ -2,6 +2,7 @@ import {t} from "i18next";
 import store from "../store";
 
 export const USERS_ROUTE = '/users/'
+export const PROFILE = '/profile/'
 export const LOGIN = '/auth/login/'
 export const REGISTER = '/auth/register/'
 export const LOGOUT = '/auth/logout/'
