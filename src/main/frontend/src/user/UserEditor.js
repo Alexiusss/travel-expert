@@ -1,15 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import userService from '../services/user.service'
+import authService from '../services/AuthService'
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
+import {useAuth} from "../components/hooks/UseAuth";
 
-const AddUser = (props) => {
+const UserEditor = (props) => {
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [id, setId] = useState(null)
     const {t} = useTranslation();
+    const currentUserId = useAuth().id;
 
     const cleanForm = () => {
         setEmail('');
@@ -23,16 +26,28 @@ const AddUser = (props) => {
         e.preventDefault()
         const user = {email, firstName, lastName, password, id}
         if (id) {
-            userService.update(user, id)
-                .then(response => {
-                    props.update(response.data)
-                    cleanForm();
-                    openAlert([t('record saved')], "success")
-                })
-                .catch(error => {
-                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
-                })
-
+            if (currentUserId === id) {
+                authService.updateProfile(user)
+                    .then(response => {
+                        props.update(response.data)
+                        cleanForm();
+                        openAlert([t('record saved')], "success")
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                    })
+            } else {
+                userService.update(user, id)
+                    .then(response => {
+                        props.update(response.data)
+                        cleanForm();
+                        openAlert([t('record saved')], "success")
+                    })
+                    .catch(error => {
+                        openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                    })
+            }
         } else {
             userService.create(user)
                 .then(response => {
@@ -125,4 +140,4 @@ const AddUser = (props) => {
     );
 };
 
-export default AddUser;
+export default UserEditor;

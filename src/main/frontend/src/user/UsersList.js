@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import MyButton from "../components/UI/button/MyButton";
-import AddUser from "./AddUser";
+import UserEditor from "./UserEditor";
 import MyModal from "../components/UI/modal/MyModal";
 import userService from '../services/user.service'
 import UserTable from "./UserTable";
@@ -94,8 +94,8 @@ const UsersList = () => {
                 ""
             }
             <MyModal visible={modal} setVisible={setModal}>
-                <AddUser userFromDB={userFromDB} create={createUser} update={updateUser}
-                         modal={modal} setAlert={setAlert}/>
+                <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
+                            modal={modal} setAlert={setAlert}/>
             </MyModal>
             <hr style={{margin: '15px 0'}}/>
             <ItemFilter

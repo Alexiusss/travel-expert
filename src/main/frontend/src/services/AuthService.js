@@ -16,4 +16,7 @@ export default class AuthService {
         return $api.get(PROFILE);
     }
 
+    static async updateProfile(data) {
+        return $api.put(PROFILE , data);
+    }
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = ProfileController.REST_URL, produces = APPLICATION_JSON_VALUE)
+@PreAuthorize("hasAnyAuthority('MODERATOR', 'USER')")
 public class ProfileController {
     static final String REST_URL = "/api/v1/profile";
 

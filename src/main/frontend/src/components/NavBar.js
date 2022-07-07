@@ -49,7 +49,7 @@ const NavBar = () => {
                     {isAuth?
                         <li className="nav-item">
                             <Link to={PROFILE} className="nav-link">
-                                Profile
+                                {t("profile")}
                             </Link>
                         </li>
                         :
