@@ -19,7 +19,6 @@ import static com.example.restaurant_advisor_react.util.validation.ValidationUti
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = ProfileController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAnyAuthority('MODERATOR', 'USER')")

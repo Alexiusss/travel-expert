@@ -29,7 +29,6 @@ import static com.example.restaurant_advisor_react.util.JwtUtil.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = AuthController.AUTH_URL, produces = APPLICATION_JSON_VALUE)
 public class AuthController {

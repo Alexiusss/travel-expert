@@ -18,7 +18,6 @@ import static com.example.restaurant_advisor_react.util.validation.ValidationUti
 import static com.example.restaurant_advisor_react.util.validation.ValidationUtil.checkModificationAllowed;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
