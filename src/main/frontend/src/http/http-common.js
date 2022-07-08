@@ -1,6 +1,7 @@
 import axios from "axios";
 import {getAccessToken, updateLocalAccessToken} from "../utils/consts";
 import store from "../store";
+import Cookies from "js-cookie";
 export const API_URL = "http://localhost:8080/api/v1";
 
 const $api = axios.create({
@@ -8,6 +9,7 @@ const $api = axios.create({
     baseURL: API_URL,
     headers: {
         "Content-Type": "application/json",
+        "X-XSRF-TOKEN": Cookies.get('XSRF-TOKEN'),
     },
 });
 
