@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -47,7 +48,8 @@ public class AuthControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(new AuthRequest(ADMIN_MAIL, "InvalidPassword"))))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo("Bad credentials")))
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
 
     }
