@@ -46,7 +46,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
         log.info("Login {}", request.getEmail());
-        try {
             AuthUser user = authService.getAuthUser(request);
 
             String accessToken = generateAccessToken(user);
@@ -59,9 +58,6 @@ public class AuthController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())
                     .body(jwtResponse);
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
     }
 
     @PostMapping("/register")

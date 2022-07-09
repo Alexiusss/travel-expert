@@ -14,6 +14,7 @@
   "must be a well-formed email address": "Неверный формат электронной почты",
   "size must be between 0 and 128": "Размер должен быть между 0 и 128",
   "size must be between 5 and 128": "Размер должен быть между 5 и 128",
+  "Bad credentials": "Адрес почты или пароль введены неверно",
 
   "modification is forbidden": "Модификация Admin запрещена",
 
