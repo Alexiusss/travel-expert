@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,7 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createResponseEntity(request, ex.getOptions(), null, ex.getStatus());
     }
 
-    @ExceptionHandler({EntityNotFoundException.class, BadCredentialsException.class})
+    @ExceptionHandler({EntityNotFoundException.class, BadCredentialsException.class, DisabledException.class})
     public ResponseEntity<?> entityNotFoundException(WebRequest request) {
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), null, HttpStatus.UNPROCESSABLE_ENTITY);
     }
