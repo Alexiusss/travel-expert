@@ -60,10 +60,15 @@ public class AuthControllerTest extends AbstractControllerTest {
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isCreated())
-                .andDo(print());
+                .andExpect(status().isCreated());
 
         User registeredUser = USER_MATCHER.readFromJson(action);
+
+        perform(MockMvcRequestBuilders.post(REST_URL + "login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(new AuthRequest(newUser.getEmail(), newUser.getPassword()))))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo("User is disabled")));
 
         perform(MockMvcRequestBuilders.get(REST_URL + "activate/" + registeredUser.getActivationCode()))
                 .andExpect(status().isOk())
