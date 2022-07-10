@@ -5,6 +5,7 @@ import com.example.restaurant_advisor_react.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,17 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final ErrorAttributes errorAttributes;
 
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "Duplicate email";
+
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
         return createResponseEntity(request, ex.getOptions(), null, ex.getStatus());
+    }
+
+    // https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> conflict(WebRequest request) {
+        return createResponseEntity(request, ErrorAttributeOptions.of(), EXCEPTION_DUPLICATE_EMAIL, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({EntityNotFoundException.class, BadCredentialsException.class, DisabledException.class})
