@@ -10,7 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.restaurant_advisor_react.controller.GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -84,6 +87,20 @@ public class AuthControllerTest extends AbstractControllerTest {
         USER_MATCHER.assertMatch(userFromDB, newUser);
         assertTrue(userFromDB.isEnabled());
         assertNull(userFromDB.getActivationCode());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void registerDuplicateEmail() throws Exception {
+        User duplicateUser = getNew();
+        duplicateUser.setEmail("user@gmail.com");
+
+        perform(MockMvcRequestBuilders.post(REST_URL + "register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(duplicateUser, duplicateUser.getPassword())))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", equalTo(EXCEPTION_DUPLICATE_EMAIL)));
     }
 
     @Test

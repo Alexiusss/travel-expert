@@ -8,12 +8,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.restaurant_advisor_react.error.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
 import static com.example.restaurant_advisor_react.util.JsonUtil.asParsedJson;
 import static com.example.restaurant_advisor_react.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WithUserDetails(ADMIN_MAIL)
@@ -68,6 +71,19 @@ public class UserControllerTest extends AbstractControllerTest {
         newUser.setVersion(newVersion);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userRepository.getById(newId), newUser);
+    }
+
+    // https://github.com/spring-projects/spring-boot/issues/5993#issuecomment-221550622
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void createDuplicate() throws Exception {
+        User newUser = getNew();
+        newUser.setEmail(USER_MAIL);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 
     @Test
