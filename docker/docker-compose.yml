@@ -32,7 +32,7 @@ services:
 
   frontend:
     build:
-      context: ../src/main/frontend
+      context: ../frontend
       dockerfile: Dockerfile.frontend
     image: restaurant-advisor-react-frontend
     ports:
