@@ -28,7 +28,7 @@ public abstract class BaseEntity implements Persistable<String>, HasId {
     @GeneratedValue(generator = "custom-generator",
             strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "custom-generator",
-            strategy = "com.example.restaurant_advisor_react.model.id.generator.BaseIdentifierGenerator")
+            strategy = "com.example.user.model.id.generator.BaseIdentifierGenerator")
     protected String id;
 
     @CreationTimestamp

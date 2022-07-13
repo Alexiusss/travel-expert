@@ -1,4 +1,9 @@
+server:
+  port: 8080
+
 spring:
+  application:
+    name: user
   jpa:
     generate-ddl: false
     show-sql: true
@@ -31,7 +36,7 @@ spring:
 logging:
   level:
     root: WARN
-    com.example.restaurant_advisor_react: DEBUG
+    com.example.user: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
 myhostname: localhost:8080
