@@ -16,7 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Transactional
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-@Sql(value = {"/src/test/resources/data.sql"})
+@Sql(value = {"/data.sql"})
 class AbstractControllerTest {
 
     @Autowired

@@ -13,7 +13,7 @@ services:
     environment:
       POSTGRES_PASSWORD: 1234
       POSTGRES_USER: postgres
-      POSTGRES_DB: restaurant_advisor
+      POSTGRES_DB: user
       PGDATA: /var/lib/postgresql/data/pgdata
     restart: always
 
@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile.backend
     image: restaurant-advisor-react-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/restaurant_advisor
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/user
     ports:
       - "8080:8080"
     restart: always

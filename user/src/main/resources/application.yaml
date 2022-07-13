@@ -14,7 +14,7 @@ spring:
           lob:
             non-contextual-creation: true
   datasource:
-    url: jdbc:postgresql://localhost/restaurant_advisor
+    url: jdbc:postgresql://localhost/user
     username: postgres
     password: 1234
   data:
