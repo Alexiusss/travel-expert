@@ -39,6 +39,11 @@ logging:
     com.example.user: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 myhostname: localhost:8080
 
 access.token.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
