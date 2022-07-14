@@ -1,0 +1,32 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: restaurant
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://localhost/restaurant
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
+logging:
+  level:
+    root: WARN
+    com.example.restaurant: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
