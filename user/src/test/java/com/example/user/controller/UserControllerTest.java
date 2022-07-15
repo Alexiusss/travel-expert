@@ -110,11 +110,9 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void updateForbidden() throws Exception {
-        User updatedAdmin = ADMIN;
-        updatedAdmin.setPassword("newAminPassword");
         perform(MockMvcRequestBuilders.put(REST_URL + ADMIN_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(updatedAdmin, updatedAdmin.getPassword())))
+                .content(jsonWithPassword(ADMIN, "newAminPassword")))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
     }
