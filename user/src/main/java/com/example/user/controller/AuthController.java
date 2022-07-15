@@ -1,5 +1,6 @@
 package com.example.user.controller;
 
+import com.example.clients.auth.AuthCheckResponse;
 import com.example.user.AuthUser;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthRequest;
@@ -14,12 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,18 +48,18 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
         log.info("Login {}", request.getEmail());
-            AuthUser user = authService.getAuthUser(request);
+        AuthUser user = authService.getAuthUser(request);
 
-            String accessToken = generateAccessToken(user);
-            String refreshToken = generateRefreshToken(user);
+        String accessToken = generateAccessToken(user);
+        String refreshToken = generateRefreshToken(user);
 
-            ResponseCookie cookie = generateCookie(refreshToken, domain);
+        ResponseCookie cookie = generateCookie(refreshToken, domain);
 
-            JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(), accessToken, Set.copyOf(user.getAuthorities()));
+        JwtResponse jwtResponse = new JwtResponse(user.id(), user.getUser().getEmail(), accessToken, Set.copyOf(user.getAuthorities()));
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                    .body(jwtResponse);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(jwtResponse);
     }
 
     @PostMapping("/register")
@@ -81,12 +84,23 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/validate")
+    public ResponseEntity<AuthCheckResponse> validateToken(@RequestHeader(name = "Authorization", defaultValue = "No token") String authorization,
+                                                           @AuthenticationPrincipal AuthUser user) {
+        String accessToken = authorization.split(" ")[1].trim();
+        if (JwtUtil.validateAccessToken(accessToken, user)) {
+            log.info("validate token for {}", user.getUser().getId());
+            return ResponseEntity.ok(new AuthCheckResponse(user.id(), user.getAuthorities()));
+        } else {
+            return ResponseEntity.ok(new AuthCheckResponse("", Collections.emptyList()));
+        }
+    }
 
     @GetMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String token) {
-        UserDetails userDetails = userService.loadUserByUsername(getUserEmailFromRefreshToken(token));
+    public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String refreshToken) {
+        UserDetails userDetails = userService.loadUserByUsername(getUserEmailFromRefreshToken(refreshToken));
         log.info("refresh token for {}", userDetails.getUsername());
-        if (JwtUtil.validateRefreshToken(token, userDetails)) {
+        if (JwtUtil.validateRefreshToken(refreshToken, userDetails)) {
             String accessToken = generateAccessToken(userDetails);
             return ResponseEntity.ok().body(Map.of("accessToken", accessToken));
         }
