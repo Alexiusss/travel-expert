@@ -8,6 +8,7 @@
         <module>user</module>
         <module>eureka-server</module>
         <module>restaurant</module>
+        <module>clients</module>
     </modules>
 
     <parent>
@@ -47,6 +48,11 @@
             <version>2021.0.3</version>
             <type>pom</type>
             <scope>import</scope>
+        </dependency>
+        <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-openfeign</artifactId>
+        <version>3.1.3</version>
         </dependency>
     </dependencies>
 
