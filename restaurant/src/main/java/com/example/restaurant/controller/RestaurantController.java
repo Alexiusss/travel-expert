@@ -1,10 +1,7 @@
 package com.example.restaurant.controller;
 
-import com.example.clients.auth.AuthCheckResponse;
-import com.example.clients.auth.AuthClient;
 import com.example.restaurant.model.Restaurant;
 import com.example.restaurant.service.RestaurantService;
-import feign.FeignException.Unauthorized;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 
 @RestController
 @RequestMapping(path = RestaurantController.REST_URL, produces = APPLICATION_JSON_VALUE)
@@ -26,7 +25,16 @@ public class RestaurantController {
     static final String REST_URL = "api/v1/restaurants";
 
     private final RestaurantService restaurantService;
-    private final AuthClient authClient;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Restaurant> get(@PathVariable String id) {
+        log.info("get restaurant{}", id);
+        final Optional<Restaurant> restaurant = restaurantService.get(id);
+        if (restaurant.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(restaurant.get());
+    }
 
     @GetMapping
     public Page<Restaurant> getAll(
@@ -40,17 +48,12 @@ public class RestaurantController {
     @PostMapping
     public ResponseEntity<Restaurant> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @RequestBody Restaurant restaurant) {
 
-        AuthCheckResponse authCheckResponse;
-        try {
-            authCheckResponse = authClient.isAuth(authorization);
-        } catch (Unauthorized e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (!authCheckResponse.getAuthorities().contains("ADMIN")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
+        if (isUnauthorized != null) return isUnauthorized;
 
         Restaurant created = restaurantService.create(restaurant);
+
+        log.info("create new restaurant {}", created);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -58,4 +61,16 @@ public class RestaurantController {
 
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Restaurant> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
+        log.info("delete restaurant{}", id);
+
+        ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
+        if (isUnauthorized != null) return isUnauthorized;
+
+        restaurantService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

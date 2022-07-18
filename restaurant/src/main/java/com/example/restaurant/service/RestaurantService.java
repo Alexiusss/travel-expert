@@ -1,18 +1,28 @@
 package com.example.restaurant.service;
 
+import com.example.clients.auth.AuthCheckResponse;
+import com.example.clients.auth.AuthClient;
 import com.example.restaurant.model.Restaurant;
 import com.example.restaurant.repository.RestaurantRepository;
+import feign.FeignException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
+
 @Service
+@AllArgsConstructor
 public class RestaurantService {
 
-    @Autowired
-    RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final AuthClient authClient;
+
 
     public Restaurant create(Restaurant restaurant) {
         Assert.notNull(restaurant, "restaurant must not be null");
@@ -21,5 +31,26 @@ public class RestaurantService {
 
     public Page<Restaurant> findAllPaginated(Pageable pageable) {
         return restaurantRepository.findAll(pageable);
+    }
+
+    public Optional<Restaurant> get(String id) {
+        return restaurantRepository.findById(id);
+    }
+
+    public void delete(String id) {
+        restaurantRepository.deleteById(id);
+    }
+
+    public ResponseEntity<Restaurant> checkAuth(String authorization) {
+        AuthCheckResponse authCheckResponse;
+        try {
+            authCheckResponse = authClient.isAuth(authorization);
+        } catch (FeignException.Unauthorized e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!authCheckResponse.getAuthorities().contains("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return null;
     }
 }
