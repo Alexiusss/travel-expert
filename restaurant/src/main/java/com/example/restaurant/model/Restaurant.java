@@ -10,6 +10,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 
 @Entity
@@ -39,18 +41,30 @@ public class Restaurant {
     @Version
     protected int version;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     String name;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     String cuisine;
 
     String filename;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     String email;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     String address;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     String phone_number;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     String website;
 
     public String id() {

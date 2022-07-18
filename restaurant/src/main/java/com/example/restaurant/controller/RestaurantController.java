@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<Restaurant> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Restaurant restaurant) {
 
         ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
         if (isUnauthorized != null) return isUnauthorized;
