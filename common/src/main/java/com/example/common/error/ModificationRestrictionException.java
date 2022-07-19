@@ -1,7 +1,8 @@
-package com.example.user.error;
+package com.example.common.error;
 
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.http.HttpStatus;
+
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
 public class ModificationRestrictionException extends AppException{

@@ -1,8 +1,7 @@
-package com.example.user.util.validation;
+package com.example.common.util;
 
-import com.example.user.HasId;
-import com.example.user.error.IllegalRequestDataException;
-import com.example.user.error.ModificationRestrictionException;
+import com.example.common.HasId;
+import com.example.common.error.IllegalRequestDataException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
@@ -36,11 +35,5 @@ public class ValidationUtil {
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);
         return rootCause != null ? rootCause : t;
-    }
-
-    public static void checkModificationAllowed(String id) {
-        if (id.equals("1")) {
-            throw new ModificationRestrictionException();
-        }
     }
 }

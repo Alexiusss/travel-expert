@@ -1,5 +1,6 @@
 package com.example.user.util;
 
+import com.example.common.error.ModificationRestrictionException;
 import com.example.user.model.User;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -16,5 +17,10 @@ public class UserUtil {
         user.setPassword(StringUtils.hasText(password) ? PASSWORD_ENCODER.encode(password) : password);
         user.setEmail(user.getEmail().toLowerCase());
         return user;
+    }
+    public static void checkModificationAllowed(String id) {
+        if (id.equals("1")) {
+            throw new ModificationRestrictionException();
+        }
     }
 }

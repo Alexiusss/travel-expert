@@ -1,4 +1,4 @@
-package com.example.user;
+package com.example.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;

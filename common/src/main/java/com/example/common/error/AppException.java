@@ -1,4 +1,4 @@
-package com.example.user.error;
+package com.example.common.error;
 
 import lombok.Getter;
 import org.springframework.boot.web.error.ErrorAttributeOptions;

@@ -9,6 +9,7 @@
         <module>eureka-server</module>
         <module>restaurant</module>
         <module>clients</module>
+        <module>common</module>
     </modules>
 
     <parent>

@@ -17,8 +17,8 @@ import org.springframework.util.ObjectUtils;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.example.common.util.ValidationUtil.checkNew;
 import static com.example.user.util.UserUtil.prepareToSave;
-import static com.example.user.util.validation.ValidationUtil.checkNew;
 
 @Service
 public class AuthService {

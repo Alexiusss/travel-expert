@@ -1,4 +1,4 @@
-package com.example.user.repository;
+package com.example.common;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.user.util.validation.ValidationUtil.checkModification;
+import static com.example.common.util.ValidationUtil.checkModification;
 
 // https://stackoverflow.com/questions/42781264/multiple-base-repositories-in-spring-data-jpa
 @NoRepositoryBean

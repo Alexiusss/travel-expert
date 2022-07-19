@@ -1,6 +1,6 @@
 package com.example.user.model;
 
-import com.example.user.HasIdAndEmail;
+import com.example.common.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
-package com.example.user.controller;
+package com.example.common;
 
-import com.example.user.error.AppException;
-import com.example.user.util.validation.ValidationUtil;
+import com.example.common.error.AppException;
+import com.example.common.util.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;

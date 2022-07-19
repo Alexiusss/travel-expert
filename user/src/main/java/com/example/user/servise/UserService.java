@@ -18,8 +18,8 @@ import org.springframework.util.ObjectUtils;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.example.common.util.ValidationUtil.checkNew;
 import static com.example.user.util.UserUtil.prepareToSave;
-import static com.example.user.util.validation.ValidationUtil.checkNew;
 
 @Service
 @Slf4j

@@ -1,5 +1,6 @@
 package com.example.user.repository;
 
+import com.example.common.BaseRepository;
 import com.example.user.model.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.example.user.model;
 
-import com.example.user.HasId;
+import com.example.common.HasId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
