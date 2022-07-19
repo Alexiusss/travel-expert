@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -29,7 +28,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable String id) {
-        log.info("get restaurant{}", id);
+        log.info("get restaurant {}", id);
         final Optional<Restaurant> restaurant = restaurantService.get(id);
         if (restaurant.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -43,7 +42,7 @@ public class RestaurantController {
             @RequestParam(defaultValue = "20") int size
     ) {
         log.info("get all restaurants");
-      return restaurantService.findAllPaginated(PageRequest.of(page, size));
+        return restaurantService.findAllPaginated(PageRequest.of(page, size));
     }
 
     @PostMapping
@@ -71,7 +70,19 @@ public class RestaurantController {
         if (isUnauthorized != null) return isUnauthorized;
 
         restaurantService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+                                    @Valid @RequestBody Restaurant restaurant, @PathVariable String id) {
+
+        ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
+        if (isUnauthorized != null) return isUnauthorized;
+
+        restaurantService.update(id, restaurant);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

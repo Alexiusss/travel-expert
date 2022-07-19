@@ -6,12 +6,12 @@ import com.example.restaurant.model.Restaurant;
 import com.example.restaurant.repository.RestaurantRepository;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.Optional;
@@ -52,5 +52,16 @@ public class RestaurantService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return null;
+    }
+
+    @Transactional
+    public void update(String id, Restaurant restaurant) {
+        Restaurant restaurantFromDB = restaurantRepository.findById(id).get();
+        restaurantFromDB.setAddress(restaurant.getAddress());
+        restaurantFromDB.setEmail(restaurant.getEmail());
+        restaurantFromDB.setName(restaurant.getName());
+        restaurantFromDB.setPhone_number(restaurant.getPhone_number());
+        restaurantFromDB.setWebsite(restaurant.getWebsite());
+        restaurantFromDB.setCuisine(restaurant.getCuisine());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.restaurant.model;
 
+import com.example.common.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,6 +11,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.Instant;
@@ -22,7 +24,7 @@ import java.time.Instant;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @Table(name = "restaurants")
-public class Restaurant {
+public class Restaurant implements HasIdAndEmail {
 
     @Id
     @GeneratedValue(generator = "custom-generator",
@@ -52,6 +54,7 @@ public class Restaurant {
     String filename;
 
     @NotBlank
+    @Email
     @Size(min = 5, max = 128)
     String email;
 
