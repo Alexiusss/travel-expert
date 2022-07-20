@@ -18,7 +18,8 @@ public class UserTestData {
     public static final String MODER_ID = "2";
     public static final String USER_ID = "3";
     public static final Instant USER_INSTANT = Timestamp.valueOf("2022-04-27 19:16:53.292882").toInstant();
-    public static final String NOT_FOUND = "1000";
+    public static final String NOT_FOUND_ID = "1000";
+    public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);
     public static final String ADMIN_MAIL = "admin@gmail.com";
     public static final String MODER_MAIL = "moder@gmail.com";
     public static final String USER_MAIL = "user@gmail.com";

@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.user.util.UserUtil.checkModificationAllowed;
@@ -30,11 +29,8 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
         log.info("get {}", id);
-        final Optional<User> user = userService.get(id);
-        if (user.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user.get());
+        final User user = userService.get(id);
+        return ResponseEntity.ok(user);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
@@ -61,11 +57,8 @@ public class UserController {
         log.info("update {} with id={}", user, id);
         checkModificationAllowed(id);
         assureIdConsistent(user, id);
-        Optional<User> updatedUser = userService.updateUser(user, id);
-        if (updatedUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedUser.get());
+       User updatedUser = userService.updateUser(user, id);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")

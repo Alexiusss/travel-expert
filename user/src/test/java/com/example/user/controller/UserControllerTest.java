@@ -45,8 +45,9 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND))
-                .andExpect(status().isNotFound());
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
     }
 
     @Test

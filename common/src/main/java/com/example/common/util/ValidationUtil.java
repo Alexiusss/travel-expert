@@ -2,9 +2,12 @@ package com.example.common.util;
 
 import com.example.common.HasId;
 import com.example.common.error.IllegalRequestDataException;
+import com.example.common.error.NotFoundException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
+
+import java.util.Optional;
 
 @UtilityClass
 public class ValidationUtil {
@@ -35,5 +38,13 @@ public class ValidationUtil {
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);
         return rootCause != null ? rootCause : t;
+    }
+
+    public static <T> T checkNotFoundWithId(String msg, Optional<T> optional) {
+        return optional.orElseThrow(() -> new NotFoundException(msg));
+    }
+
+    public static <T> T checkNotFoundWithId(Optional<T> optional, String id) {
+        return checkNotFoundWithId("Entity with id=" + id +" not found", optional);
     }
 }

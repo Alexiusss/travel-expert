@@ -12,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -29,11 +28,7 @@ public class RestaurantController {
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable String id) {
         log.info("get restaurant {}", id);
-        final Optional<Restaurant> restaurant = restaurantService.get(id);
-        if (restaurant.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(restaurant.get());
+        return ResponseEntity.ok(restaurantService.get(id));
     }
 
     @GetMapping
@@ -84,5 +79,4 @@ public class RestaurantController {
 
         return ResponseEntity.noContent().build();
     }
-
 }

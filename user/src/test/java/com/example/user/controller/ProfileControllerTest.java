@@ -46,7 +46,7 @@ public class ProfileControllerTest extends AbstractControllerTest {
                         .content(jsonWithPassword(updatedUser, updatedUser.getPassword())))
                 .andExpect(status().isOk());
 
-        USER_MATCHER.assertMatch(userService.get(USER_ID).get(), updatedUser);
+        USER_MATCHER.assertMatch(userService.get(USER_ID), updatedUser);
     }
 
     @Test

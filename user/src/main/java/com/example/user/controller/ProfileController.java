@@ -40,10 +40,7 @@ public class ProfileController {
         log.info("update {} with id={}", user, authUser.id());
         assureIdConsistent(user, authUser.id());
         checkModificationAllowed(authUser.id());
-        Optional<User> updatedUser = userService.updateUser(user, authUser.id());
-        if (updatedUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedUser.get());
+        User updatedUser = userService.updateUser(user, authUser.id());
+        return ResponseEntity.ok(updatedUser);
     }
 }

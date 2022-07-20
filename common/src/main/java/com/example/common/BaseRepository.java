@@ -1,5 +1,6 @@
 package com.example.common;
 
+import com.example.common.util.ValidationUtil;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +20,9 @@ public interface BaseRepository<T> extends JpaRepository<T, String> {
 
     default void deleteExisted(String id) {
         checkModification(delete(id), id);
+    }
+
+    default T getExisted(String id) {
+        return ValidationUtil.checkNotFoundWithId(findById(id), id);
     }
 }

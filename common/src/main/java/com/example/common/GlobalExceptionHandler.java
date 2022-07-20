@@ -1,6 +1,7 @@
 package com.example.common;
 
 import com.example.common.error.AppException;
+import com.example.common.error.NotFoundException;
 import com.example.common.util.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -45,8 +46,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({EntityNotFoundException.class, BadCredentialsException.class, DisabledException.class})
-    public ResponseEntity<?> entityNotFoundException(WebRequest request) {
+    public ResponseEntity<?> handleException(WebRequest request) {
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), null, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFound(WebRequest request, NotFoundException e) {
+        return createResponseEntity(request, ErrorAttributeOptions.of(), e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @NonNull
