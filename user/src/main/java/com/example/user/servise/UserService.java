@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Optional;
 import java.util.Set;
 
+import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
 import static com.example.user.util.UserUtil.prepareToSave;
 
@@ -35,24 +35,22 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Optional<User> updateUser(User user, String id) {
-        Optional<User> userFromDB = userRepository.findById(id);
-        if (userFromDB.isPresent()) {
-            userFromDB.get().setEmail(user.getEmail());
-            userFromDB.get().setFirstName(user.getFirstName());
-            userFromDB.get().setLastName(user.getLastName());
-
+    public User updateUser(User user, String id) {
+        assureIdConsistent(user, user.id());
+        User userFromDB = userRepository.getExisted(id);
+            userFromDB.setEmail(user.getEmail());
+            userFromDB.setFirstName(user.getFirstName());
+            userFromDB.setLastName(user.getLastName());
             if (!ObjectUtils.isEmpty(user.getPassword())) {
-                userFromDB.get().setPassword(user.getPassword());
-                prepareToSave(userFromDB.get());
+                userFromDB.setPassword(user.getPassword());
+                prepareToSave(userFromDB);
             }
-        }
         return userFromDB;
     }
 
     @Transactional
     public void enableUser(String id, boolean enable) {
-        User user = userRepository.getById(id);
+        User user = userRepository.getExisted(id);
         user.setEnabled(enable);
     }
 
@@ -60,8 +58,8 @@ public class UserService implements UserDetailsService {
         userRepository.deleteExisted(id);
     }
 
-    public Optional<User> get(String id) {
-        return userRepository.findById(id);
+    public User get(String id) {
+        return userRepository.getExisted(id);
     }
 
     public Page<User> findAllPaginated(Pageable pageable) {

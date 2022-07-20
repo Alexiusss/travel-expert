@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
+import static com.example.common.util.ValidationUtil.assureIdConsistent;
+import static com.example.common.util.ValidationUtil.checkNew;
 
 @Service
 @AllArgsConstructor
@@ -23,22 +24,22 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final AuthClient authClient;
 
-
     public Restaurant create(Restaurant restaurant) {
         Assert.notNull(restaurant, "restaurant must not be null");
-       return restaurantRepository.save(restaurant);
+        checkNew(restaurant);
+        return restaurantRepository.save(restaurant);
     }
 
     public Page<Restaurant> findAllPaginated(Pageable pageable) {
         return restaurantRepository.findAll(pageable);
     }
 
-    public Optional<Restaurant> get(String id) {
-        return restaurantRepository.findById(id);
+    public Restaurant get(String id) {
+        return restaurantRepository.getExisted(id);
     }
 
     public void delete(String id) {
-        restaurantRepository.deleteById(id);
+        restaurantRepository.deleteExisted(id);
     }
 
     public ResponseEntity<Restaurant> checkAuth(String authorization) {
@@ -56,7 +57,8 @@ public class RestaurantService {
 
     @Transactional
     public void update(String id, Restaurant restaurant) {
-        Restaurant restaurantFromDB = restaurantRepository.findById(id).get();
+        assureIdConsistent(restaurant, restaurant.id());
+        Restaurant restaurantFromDB = restaurantRepository.getExisted(id);
         restaurantFromDB.setAddress(restaurant.getAddress());
         restaurantFromDB.setEmail(restaurant.getEmail());
         restaurantFromDB.setName(restaurant.getName());
