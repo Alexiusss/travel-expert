@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @AllArgsConstructor
 public class RestaurantController {
-    static final String REST_URL = "api/v1/restaurants";
+    static final String REST_URL = "/api/v1/restaurants";
 
     private final RestaurantService restaurantService;
 
