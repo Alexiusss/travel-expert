@@ -20,8 +20,8 @@ import java.time.Instant;
 @Access(AccessType.FIELD)
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Table(name = "restaurants")
 public class Restaurant implements HasIdAndEmail {
