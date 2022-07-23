@@ -1,5 +1,11 @@
 package com.example.restaurant.controller;
 
+import com.example.common.util.JsonUtil;
+import com.example.restaurant.model.Restaurant;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,10 +37,17 @@ class RestaurantControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + "/";
 
     @Autowired
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
+    private ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    @BeforeAll
+    static void init() {
+        WireMockServer wireMockServer = new WireMockServer(new WireMockConfiguration().port(7070));
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 7070);
     }
 
     @Test
@@ -47,6 +60,13 @@ class RestaurantControllerTest {
     }
 
     @Test
+    public void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
+    }
+
+    @Test
     public void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("size", "2")
@@ -54,5 +74,35 @@ class RestaurantControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(RESTAURANT3))));
+    }
+
+    @Test
+    public void create() throws Exception {
+        Restaurant newRestaurant = getNew();
+        stubAuth();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newRestaurant)))
+                .andExpect(status().isCreated());
+
+    }
+
+    @Test
+    public void update() throws Exception {
+        Restaurant updatedRestaurant = getUpdated();
+        stubAuth();
+        perform(MockMvcRequestBuilders.put(REST_URL + updatedRestaurant.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedRestaurant)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void delete() throws Exception {
+        stubAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 }
