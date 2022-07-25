@@ -117,6 +117,7 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
     }
+
     @Test
     void deleteForbidden() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + ADMIN_ID))

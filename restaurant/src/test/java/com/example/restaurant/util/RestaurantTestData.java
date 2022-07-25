@@ -23,6 +23,7 @@ public class RestaurantTestData {
     public static final String NOT_FOUND_ID = "1000";
     public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);
     public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
+    public static final AuthCheckResponse UN_AUTH_RESPONSE = new AuthCheckResponse("", List.of());
     public static String NOT_BLANK = "must not be blank";
     public static String DUPLICATE_EMAIL = "Duplicate email";
 
@@ -38,8 +39,13 @@ public class RestaurantTestData {
         return  new Restaurant(RESTAURANT2_ID, null, null, 0, "updated restaurant2", "updated cuisine", null, "restaurant2@gmail.com", "updated restaurant2 address", "+2222222222", "updated_restaurant2.com");
     }
 
-    public static void stubAuth() {
+    public static void stubAdminAuth() {
         stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
                 .willReturn(okForContentType("application/json", JsonUtil.writeValue(AUTH_ADMIN_RESPONSE))));
+    }
+
+    public static void stubUnAuth() {
+        stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
+                .willReturn(okForContentType("application/json",JsonUtil.writeValue(UN_AUTH_RESPONSE))));
     }
 }

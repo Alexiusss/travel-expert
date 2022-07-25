@@ -57,8 +57,7 @@ class RestaurantControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(RESTAURANT_MATCHER.contentJson(RESTAURANT1))
-                .andDo(print());
+                .andExpect(RESTAURANT_MATCHER.contentJson(RESTAURANT1));
     }
 
     @Test
@@ -74,14 +73,13 @@ class RestaurantControllerTest {
                 .param("size", "2")
                 .param("page", "1"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(RESTAURANT3))));
     }
 
     @Test
     public void create() throws Exception {
         Restaurant newRestaurant = getNew();
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRestaurant)))
@@ -93,7 +91,7 @@ class RestaurantControllerTest {
     public void createInvalid() throws Exception {
         Restaurant invalidRestaurant = getNew();
         invalidRestaurant.setName("");
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(writeValue(invalidRestaurant)))
@@ -102,11 +100,21 @@ class RestaurantControllerTest {
     }
 
     @Test
+    public void createForbidden() throws Exception {
+        Restaurant newRestaurant = getNew();
+        stubUnAuth();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(newRestaurant)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void createWithDuplicateMail() throws Exception{
         Restaurant duplicateRestaurant = getNew();
         duplicateRestaurant.setEmail(RESTAURANT1.getEmail());
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(writeValue(duplicateRestaurant)))
@@ -117,11 +125,10 @@ class RestaurantControllerTest {
     @Test
     public void update() throws Exception {
         Restaurant updatedRestaurant = getUpdated();
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.put(REST_URL + updatedRestaurant.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updatedRestaurant)))
-                .andDo(print())
+                .content(writeValue(updatedRestaurant)))
                 .andExpect(status().isNoContent());
     }
 
@@ -129,7 +136,7 @@ class RestaurantControllerTest {
     public void updateInvalid() throws Exception {
         Restaurant invalidRestaurant = getUpdated();
         invalidRestaurant.setName("");
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.put(REST_URL + invalidRestaurant.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(writeValue(invalidRestaurant)))
@@ -139,18 +146,34 @@ class RestaurantControllerTest {
     }
 
     @Test
+    public void updateForbidden() throws Exception {
+        Restaurant updatedRestaurant = getUpdated();
+        stubUnAuth();
+        perform(MockMvcRequestBuilders.put(REST_URL + updatedRestaurant.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(updatedRestaurant)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     public void delete() throws Exception {
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID))
-                .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
     @Test
     public void deleteNotFond() throws Exception {
-        stubAuth();
+        stubAdminAuth();
         perform(MockMvcRequestBuilders.delete(REST_URL  + NOT_FOUND_ID))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
+    }
+
+    @Test
+    public void deleteForbidden() throws Exception {
+        stubUnAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL  + RESTAURANT3))
+                .andExpect(status().isForbidden());
     }
 }
