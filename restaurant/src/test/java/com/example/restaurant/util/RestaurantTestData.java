@@ -23,6 +23,8 @@ public class RestaurantTestData {
     public static final String NOT_FOUND_ID = "1000";
     public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);
     public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
+    public static String NOT_BLANK = "must not be blank";
+    public static String DUPLICATE_EMAIL = "Duplicate email";
 
     public static final Restaurant RESTAURANT1 = new Restaurant(RESTAURANT1_ID, null, null, 0, "restaurant1", "restaurant1 cuisine", null, "restaurant1@gmail.com", "restaurant1 address", "+1111111111", "restaurant1.com");
     public static final Restaurant RESTAURANT2 = new Restaurant(RESTAURANT2_ID, null, null, 0, "restaurant2", "restaurant2 cuisine", null, "restaurant2@gmail.com", "restaurant2 address", "+2222222222", "restaurant2.com");

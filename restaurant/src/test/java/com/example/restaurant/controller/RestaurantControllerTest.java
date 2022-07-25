@@ -17,12 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.example.common.util.JsonUtil.asParsedJson;
+import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.restaurant.util.RestaurantTestData.*;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -88,6 +90,31 @@ class RestaurantControllerTest {
     }
 
     @Test
+    public void createInvalid() throws Exception {
+        Restaurant invalidRestaurant = getNew();
+        invalidRestaurant.setName("");
+        stubAuth();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(invalidRestaurant)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void createWithDuplicateMail() throws Exception{
+        Restaurant duplicateRestaurant = getNew();
+        duplicateRestaurant.setEmail(RESTAURANT1.getEmail());
+        stubAuth();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(duplicateRestaurant)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(DUPLICATE_EMAIL)));
+    }
+
+    @Test
     public void update() throws Exception {
         Restaurant updatedRestaurant = getUpdated();
         stubAuth();
@@ -99,10 +126,31 @@ class RestaurantControllerTest {
     }
 
     @Test
+    public void updateInvalid() throws Exception {
+        Restaurant invalidRestaurant = getUpdated();
+        invalidRestaurant.setName("");
+        stubAuth();
+        perform(MockMvcRequestBuilders.put(REST_URL + invalidRestaurant.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(invalidRestaurant)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
+
+    }
+
+    @Test
     public void delete() throws Exception {
         stubAuth();
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteNotFond() throws Exception {
+        stubAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL  + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
     }
 }
