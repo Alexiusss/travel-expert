@@ -10,6 +10,7 @@
         <module>restaurant</module>
         <module>clients</module>
         <module>common</module>
+        <module>apigw</module>
     </modules>
 
     <parent>
