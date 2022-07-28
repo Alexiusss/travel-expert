@@ -15,17 +15,4 @@ public class AppConfig {
     private void setMapper(ObjectMapper objectMapper) {
         JsonUtil.setMapper(objectMapper);
     }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowCredentials(true)
-                        .allowedMethods("*");
-            }
-        };
-    }
 }
