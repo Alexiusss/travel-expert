@@ -6,6 +6,7 @@ import LoginForm from "../pages/auth/LoginForm";
 import RegisterForm from "../pages/auth/RegisterForm";
 import {useAuth} from "./hooks/UseAuth";
 import ProfilePage from "../pages/ProfilePage";
+import RestaurantList from "../restaurant/RestaurantList";
 
 const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
@@ -28,6 +29,7 @@ const AppRouter = () => {
                 :
                 <h3>403 Access denied</h3>
             }
+            <Route exact path={"/restaurants"} component={RestaurantList} />
         </Switch>
     );
 };

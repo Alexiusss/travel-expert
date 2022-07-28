@@ -36,5 +36,7 @@
   "last name": "Last name",
   "email": "Email",
   "enabled": "Enabled",
-  "roles": "Roles"
+  "roles": "Roles",
+
+  "restaurants": "Restaurants"
 }
