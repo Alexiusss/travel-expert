@@ -1,17 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import restaurantService from '../services/RestaurantService'
+import {Container} from "@material-ui/core";
+import ItemGrid from "../components/ItemGrid";
 
 const RestaurantList = () => {
-    const [restaurants, setRestaurants] = useState();
+    const [restaurants, setRestaurants] = useState([]);
 
     useEffect(() => {
-        restaurantService.getAll().then(({data}) => console.log(data));
+        restaurantService.getAll().then(({data}) => {
+            setRestaurants(data.content)
+        });
     }, [setRestaurants])
 
     return (
-        <div className='container'>
-            Restaurant list
-        </div>
+        <Container>
+            <ItemGrid items={restaurants}/>
+        </Container>
     );
 };
 
