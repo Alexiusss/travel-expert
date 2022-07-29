@@ -1,20 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import restaurantService from '../services/RestaurantService'
-import {Container} from "@material-ui/core";
+import {Box, Container} from "@material-ui/core";
 import ItemGrid from "../components/ItemGrid";
-import { trackPromise, usePromiseTracker } from 'react-promise-tracker';
+import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import {useTranslation} from "react-i18next";
+import SkeletonGrid from "../components/SkeletonGrid";
 
 const RestaurantList = () => {
     const area = 'restaurants';
-    const { promiseInProgress } = usePromiseTracker({ area });
+    const {promiseInProgress} = usePromiseTracker({area});
     const [restaurants, setRestaurants] = useState([]);
 
     const {t} = useTranslation();
 
     useEffect(() => {
         trackPromise(
-        restaurantService.getAll(), area).then(({data}) => {
+            restaurantService.getAll(), area).then(({data}) => {
             setRestaurants(data.content)
         });
     }, [setRestaurants])
@@ -22,7 +23,7 @@ const RestaurantList = () => {
     return (
         <Container>
             {promiseInProgress
-                ? <div>{t("data loading")}</div>
+                ? <SkeletonGrid listsToRender={16} />
                 : <ItemGrid items={restaurants}/>
             }
         </Container>
