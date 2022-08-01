@@ -1,5 +1,5 @@
 import React from 'react';
-import MyInput from "./UI/input/MyInput";
+import MyInput from "../UI/input/MyInput";
 import { useTranslation } from "react-i18next";
 
 const ItemFilter = ({filter, setFilter}) => {

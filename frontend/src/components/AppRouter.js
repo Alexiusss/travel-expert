@@ -7,6 +7,7 @@ import RegisterForm from "../pages/auth/RegisterForm";
 import {useAuth} from "./hooks/UseAuth";
 import ProfilePage from "../pages/ProfilePage";
 import RestaurantList from "../restaurant/RestaurantList";
+import RestaurantPage from "../restaurant/RestaurantPage";
 
 const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
@@ -29,7 +30,8 @@ const AppRouter = () => {
                 :
                 <h3>403 Access denied</h3>
             }
-            <Route exact path={"/restaurants"} component={RestaurantList} />
+            <Route exact path={"/restaurants/"} component={RestaurantList} />
+            <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
         </Switch>
     );
 };

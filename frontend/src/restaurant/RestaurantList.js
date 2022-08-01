@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import restaurantService from '../services/RestaurantService'
-import {Box, Container} from "@material-ui/core";
-import ItemGrid from "../components/ItemGrid";
+import {Container} from "@material-ui/core";
+import ItemGrid from "../components/items/ItemGrid";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import {useTranslation} from "react-i18next";
 import SkeletonGrid from "../components/SkeletonGrid";
+import {RESTAURANTS_ROUTE} from "../utils/consts";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -24,7 +25,7 @@ const RestaurantList = () => {
         <Container>
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16} />
-                : <ItemGrid items={restaurants}/>
+                : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE}/>
             }
         </Container>
     );

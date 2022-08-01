@@ -5,7 +5,7 @@ import MyModal from "../components/UI/modal/MyModal";
 import userService from '../services/user.service'
 import UserTable from "./UserTable";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
-import ItemFilter from "../components/ItemFilter";
+import ItemFilter from "../components/items/ItemFilter";
 import {useItems} from "../components/hooks/UseData";
 import Pagination from "@material-ui/lab/Pagination";
 import {useTranslation} from "react-i18next";

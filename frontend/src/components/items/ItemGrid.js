@@ -8,6 +8,8 @@ import {
     CardMedia
 } from "@material-ui/core";
 
+import {Link} from "react-router-dom";
+
 const ItemGrid = (props) => {
     return (
             <Grid container
@@ -16,6 +18,14 @@ const ItemGrid = (props) => {
             >
                 {props.items.map((item) =>
                     <Grid item xs={12} sm={6} md={3} key={item.id}>
+                        <Link
+                            to={{
+                                pathname: `${props.route} + ${item.name.replaceAll(" ", "_")}`,
+                                // https://stackoverflow.com/a/63876129
+                                state: { id: item.id }
+                            }}
+                            className="nav-link"
+                        >
                         <Card>
                             <CardActionArea>
                                 <CardMedia
@@ -31,6 +41,7 @@ const ItemGrid = (props) => {
                             </CardContent>
                             </CardActionArea>
                         </Card>
+                        </Link>
                     </Grid>
                 )}
             </Grid>

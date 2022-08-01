@@ -10,4 +10,9 @@ export default class RestaurantService {
             },
         })
     }
+
+    static async get(id) {
+        return $api.get(RESTAURANTS_ROUTE + `${id}`)
+    }
+
 }
