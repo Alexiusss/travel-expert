@@ -15,4 +15,8 @@ export default class RestaurantService {
         return $api.get(RESTAURANTS_ROUTE + `${id}`)
     }
 
+    static async create(data) {
+        return $api.post(RESTAURANTS_ROUTE, data);
+    }
+
 }

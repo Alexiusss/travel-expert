@@ -17,6 +17,8 @@ const AppRouter = () => {
             <Route exact path={"/"} component={HomePage} />
             <Route exact path={"/login"} component={LoginForm} />
             <Route exact path={"/register"} component={RegisterForm} />
+            <Route exact path={"/restaurants/"} component={RestaurantList} />
+            <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
             {isAuth
                 ?
                 <Route exact path={"/profile"}
@@ -30,8 +32,7 @@ const AppRouter = () => {
                 :
                 <h3>403 Access denied</h3>
             }
-            <Route exact path={"/restaurants/"} component={RestaurantList} />
-            <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
+
         </Switch>
     );
 };

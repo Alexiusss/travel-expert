@@ -38,5 +38,11 @@
   "enabled": "Enabled",
   "roles": "Roles",
 
-  "restaurants": "Restaurants"
+  "restaurants": "Restaurants",
+  "restaurant editor": "Restaurant editor",
+  "enter name": "Enter name",
+  "enter cuisine": "Enter cuisine",
+  "enter address": "Enter address",
+  "enter phone number": "Enter phone number",
+  "enter website": "Enter website address"
 }

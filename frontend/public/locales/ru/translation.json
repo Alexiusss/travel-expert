@@ -37,5 +37,11 @@
   "enabled": "Активен",
   "roles": "Роли",
 
-  "restaurants": "Рестораны"
+  "restaurants": "Рестораны",
+  "restaurant editor": "Редактор ресторана",
+  "enter name": "Введите название",
+  "enter cuisine": "Введите название кухни",
+  "enter address": "Введите адрес",
+  "enter phone number": "Введите номер телефона",
+  "enter website": "Введите адрес сайта"
 }

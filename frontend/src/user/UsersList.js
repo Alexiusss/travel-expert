@@ -85,7 +85,8 @@ const UsersList = () => {
 
     return (
         <div className='container'>
-            {isAdmin ?
+            {isAdmin
+                ?
                 <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
                           onClick={() => setModal(true)}>
                     {t("add")}
