@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import restaurantService from '../services/RestaurantService'
 import {useTranslation} from "react-i18next";
+import {getLocalizedErrorMessages} from "../utils/consts";
 
 const RestaurantEditor = (props) => {
     const [name, setName] = useState('');
@@ -26,8 +27,15 @@ const RestaurantEditor = (props) => {
         e.preventDefault()
         const restaurant = {name, cuisine, email, address, phone_number, website, id}
         restaurantService.create(restaurant)
-            .then(console.log)
-            .catch(console.error)
+            .then(response => {
+                    props.create(response.data);
+                    cleanForm();
+                    openAlert([t('record saved')], "success");
+                }
+            )
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
     }
 
     const openAlert = (msg, severity) => {
