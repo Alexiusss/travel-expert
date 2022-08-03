@@ -10,6 +10,7 @@ import MyButton from "../components/UI/button/MyButton";
 import {useAuth} from "../components/hooks/UseAuth";
 import MyModal from "../components/UI/modal/MyModal";
 import RestaurantEditor from "./RestaurantEditor";
+import MyNotification from "../components/UI/notification/MyNotification";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -17,6 +18,7 @@ const RestaurantList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const {isAdmin} = useAuth();
     const [modal, setModal] = useState(false);
+    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
 
     useEffect(() => {
@@ -26,7 +28,13 @@ const RestaurantList = () => {
         });
     }, [setRestaurants])
 
+    const createRestaurant = (newRestaurant) => {
+        setRestaurants([...restaurants, newRestaurant])
+        setModal(false)
+    }
+
     return (
+
         <Container>
             {isAdmin
                 ?
@@ -35,9 +43,6 @@ const RestaurantList = () => {
                           onClick={() => setModal(true)}>
                     {t("add")}
                 </MyButton>
-                <MyModal visible={modal} setVisible={setModal}>
-                    <RestaurantEditor />
-                </MyModal>
                 </>
                 :
                 ""}
@@ -45,6 +50,10 @@ const RestaurantList = () => {
                 ? <SkeletonGrid listsToRender={16}/>
                 : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE}/>
             }
+            <MyModal visible={modal} setVisible={setModal}>
+                <RestaurantEditor create={createRestaurant} setAlert={setAlert}/>
+            </MyModal>
+            <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </Container>
     );
 };

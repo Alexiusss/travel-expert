@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import restaurantService from '../services/RestaurantService'
 import {useTranslation} from "react-i18next";
 
-const RestaurantEditor = () => {
+const RestaurantEditor = (props) => {
     const [name, setName] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [email, setEmail] = useState('');
@@ -12,12 +12,26 @@ const RestaurantEditor = () => {
     const [id, setId] = useState(null)
     const {t} = useTranslation();
 
+    const cleanForm = () => {
+        setEmail('');
+        setName('');
+        setCuisine('');
+        setAddress('');
+        setPhone_number('');
+        setWebsite('');
+        setId(null);
+    };
+
     const saveRestaurant = (e) => {
         e.preventDefault()
         const restaurant = {name, cuisine, email, address, phone_number, website, id}
         restaurantService.create(restaurant)
             .then(console.log)
             .catch(console.error)
+    }
+
+    const openAlert = (msg, severity) => {
+        props.setAlert({severity: severity, message: msg, open: true})
     }
 
     return (

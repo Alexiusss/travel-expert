@@ -94,10 +94,6 @@ const UsersList = () => {
                 :
                 ""
             }
-            <MyModal visible={modal} setVisible={setModal}>
-                <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
-                            modal={modal} setAlert={setAlert}/>
-            </MyModal>
             <hr style={{margin: '15px 0'}}/>
             <ItemFilter
                 filter={filter}
@@ -121,7 +117,10 @@ const UsersList = () => {
                        modalVisible={setModal} setAlert={setAlert}/>
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
-
+            <MyModal visible={modal} setVisible={setModal}>
+                <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
+                            modal={modal} setAlert={setAlert}/>
+            </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </div>
     );
