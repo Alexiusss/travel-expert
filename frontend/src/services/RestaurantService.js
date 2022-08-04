@@ -23,4 +23,7 @@ export default class RestaurantService {
         return $api.delete(RESTAURANTS_ROUTE + `${id}`)
     }
 
+    static async update(data, id) {
+        return $api.put(RESTAURANTS_ROUTE+ `${id}`, data);
+    }
 }

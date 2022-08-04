@@ -16,6 +16,7 @@ const RestaurantList = () => {
     const area = 'restaurants';
     const {promiseInProgress} = usePromiseTracker({area});
     const [restaurants, setRestaurants] = useState([]);
+    const [restaurantFromDB, setRestaurantFromDB] = useState([])
     const {isAdmin} = useAuth();
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
@@ -35,6 +36,42 @@ const RestaurantList = () => {
     const createRestaurant = (newRestaurant) => {
         setRestaurants([...restaurants, newRestaurant])
         setModal(false)
+    }
+
+    const update = (restaurant) => {
+        restaurantService.get(restaurant.id)
+            .then(response => {
+                setRestaurantFromDB(response.data)
+                setModal(true)
+            })
+            .catch(
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
+    }
+
+    const updateRestaurant = (updatedRestaurant) => {
+        setModal(false);
+        setRestaurants(restaurants => {
+            return restaurants.map(restaurant => {
+                    return restaurant.id === updatedRestaurant.id
+                        ?
+                        {
+                            ...restaurant,
+                            email: updatedRestaurant.email,
+                            name: updatedRestaurant.name,
+                            cuisine: updatedRestaurant.cuisine,
+                            address: updatedRestaurant.address,
+                            phone_number: updatedRestaurant.phone_number,
+                            website: updatedRestaurant.website,
+
+                        }
+                        :
+                        restaurant
+                }
+            )
+        })
+        openAlert([t('record saved')], "success")
     }
 
     const removeRestaurant = (restaurant) => {
@@ -65,10 +102,13 @@ const RestaurantList = () => {
                 ""}
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
-                : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} remove={removeRestaurant}/>
+                : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} update={update}
+                            remove={removeRestaurant}/>
             }
             <MyModal visible={modal} setVisible={setModal}>
-                <RestaurantEditor create={createRestaurant} setAlert={setAlert}/>
+                <RestaurantEditor create={createRestaurant} update={updateRestaurant}
+                                  restaurantFromDB={restaurantFromDB} setAlert={setAlert}
+                                  modal={modal}/>
             </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </Container>

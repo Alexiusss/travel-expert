@@ -11,7 +11,6 @@ import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import MyButton from "../UI/button/MyButton";
 import {useAuth} from "../hooks/UseAuth";
-import {CardFooter} from "reactstrap";
 
 const ItemGrid = (props) => {
 
@@ -21,6 +20,11 @@ const ItemGrid = (props) => {
     const removeItem = (e, item) => {
         e.preventDefault();
         props.remove(item)
+    }
+
+    const updateItem = (e, item) => {
+        e.preventDefault()
+        props.update(item)
     }
 
     return (
@@ -54,11 +58,17 @@ const ItemGrid = (props) => {
                                 </CardContent>
                             </CardActionArea>
                             {isAdmin ?
-                                <CardFooter>
-                                    <MyButton className="btn btn-outline-danger btn-sm"
-                                              onClick={e => removeItem(e, item)}>
-                                        {t("delete")}</MyButton>
-                                </CardFooter>
+                                    <div style={{float: 'right'}}>
+                                        <MyButton className="btn btn-outline-info btn-sm" onClick={(e) =>
+                                            updateItem(e, item)
+                                        }>
+                                            {t("edit")}
+                                        </MyButton>
+                                        {' '}
+                                        <MyButton className="btn btn-outline-danger btn-sm"
+                                                  onClick={e => removeItem(e, item)}>
+                                            {t("delete")}</MyButton>
+                                    </div>
                                 :
                                 ""
                             }
