@@ -5,7 +5,7 @@ import ItemGrid from "../components/items/ItemGrid";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import {useTranslation} from "react-i18next";
 import SkeletonGrid from "../components/SkeletonGrid";
-import {RESTAURANTS_ROUTE} from "../utils/consts";
+import {getLocalizedErrorMessages, RESTAURANTS_ROUTE} from "../utils/consts";
 import MyButton from "../components/UI/button/MyButton";
 import {useAuth} from "../components/hooks/UseAuth";
 import MyModal from "../components/UI/modal/MyModal";
@@ -28,9 +28,26 @@ const RestaurantList = () => {
         });
     }, [setRestaurants])
 
+    const openAlert = (msg, severity) => {
+        setAlert({severity: severity, message: msg, open: true})
+    }
+
     const createRestaurant = (newRestaurant) => {
         setRestaurants([...restaurants, newRestaurant])
         setModal(false)
+    }
+
+    const removeRestaurant = (restaurant) => {
+        restaurantService.delete(restaurant.id)
+            .then(() => {
+                    setRestaurants(restaurants.filter(r => r.id !== restaurant.id))
+                    openAlert([t('record deleted')], "success")
+                }
+            )
+            .catch(
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
     }
 
     return (
@@ -39,16 +56,16 @@ const RestaurantList = () => {
             {isAdmin
                 ?
                 <>
-                <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                          onClick={() => setModal(true)}>
-                    {t("add")}
-                </MyButton>
+                    <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                              onClick={() => setModal(true)}>
+                        {t("add")}
+                    </MyButton>
                 </>
                 :
                 ""}
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
-                : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE}/>
+                : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} remove={removeRestaurant}/>
             }
             <MyModal visible={modal} setVisible={setModal}>
                 <RestaurantEditor create={createRestaurant} setAlert={setAlert}/>

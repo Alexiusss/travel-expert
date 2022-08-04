@@ -19,4 +19,8 @@ export default class RestaurantService {
         return $api.post(RESTAURANTS_ROUTE, data);
     }
 
+    static async delete(id) {
+        return $api.delete(RESTAURANTS_ROUTE + `${id}`)
+    }
+
 }
