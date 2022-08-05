@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import restaurantService from '../services/RestaurantService'
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css'
 
 const RestaurantEditor = (props) => {
         const [name, setName] = useState('');
@@ -114,20 +116,15 @@ const RestaurantEditor = (props) => {
                             className="form-control col-4"
                             id="address"
                             value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            onChange={e => setAddress(e.target.value)}
                             placeholder={t("enter address")}
                         />
                     </div>
-                    <div className="form-group" style={{marginTop: 5}}>
-                        <input
-                            type="text"
-                            className="form-control col-4"
-                            id="phone_number"
-                            value={phone_number}
-                            onChange={(e) => setPhone_number(e.target.value)}
-                            placeholder={t("enter phone number")}
-                        />
-                    </div>
+                    <PhoneInput
+                        value={phone_number}
+                        onChange={phone => setPhone_number( phone )}
+                        style={{marginTop: 5}}
+                    />
                     <div className="form-group" style={{marginTop: 5}}>
                         <input
                             type="text"

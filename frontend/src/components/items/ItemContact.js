@@ -10,7 +10,7 @@ const ItemContact = (props) => {
                 </Typography>
                 <div>Address: {props.item.address}</div>
                 <div>Email: {props.item.email}</div>
-                <div>Phone number: {props.number}</div>
+                <div>Phone number: {props.item.phone_number}</div>
                 <div>Website: {props.item.website}</div>
             </CardContent>
 
