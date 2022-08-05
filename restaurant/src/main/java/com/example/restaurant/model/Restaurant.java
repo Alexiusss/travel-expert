@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
@@ -64,6 +65,8 @@ public class Restaurant implements HasIdAndEmail {
 
     @NotBlank
     @Size(min = 5, max = 128)
+    @Pattern(regexp = "([+]*[0-9]{1,4}\\s?[(]*\\d[0-9]{2,4}[)]*\\s?\\d{3}[-]*\\d{2}[-]*\\d{2})"
+            , message = "Please fill the phone number in format +1 (234) 567-89-10")
     String phone_number;
 
     @NotBlank
