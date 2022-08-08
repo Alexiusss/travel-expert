@@ -11,6 +11,7 @@ import {useAuth} from "../components/hooks/UseAuth";
 import MyModal from "../components/UI/modal/MyModal";
 import RestaurantEditor from "./RestaurantEditor";
 import MyNotification from "../components/UI/notification/MyNotification";
+import Pagination from "@material-ui/lab/Pagination";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -18,6 +19,12 @@ const RestaurantList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [restaurantFromDB, setRestaurantFromDB] = useState([])
     const {isAdmin} = useAuth();
+
+    const [totalPages, setTotalPages] = useState(0);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(12);
+    const pageSizes = [12, 36, 96];
+
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
@@ -26,8 +33,9 @@ const RestaurantList = () => {
         trackPromise(
             restaurantService.getAll(), area).then(({data}) => {
             setRestaurants(data.content)
+            setTotalPages(data.totalPages)
         });
-    }, [setRestaurants])
+    }, [setRestaurants, page, size])
 
     const openAlert = (msg, severity) => {
         setAlert({severity: severity, message: msg, open: true})
@@ -87,8 +95,16 @@ const RestaurantList = () => {
                 });
     }
 
-    return (
+    const changePage = (event, value) => {
+        setPage(value);
+    }
 
+    const changeSize = (event) => {
+        setSize(event.target.value);
+        setPage(1);
+    }
+
+    return (
         <Container>
             {isAdmin
                 ?
@@ -97,13 +113,25 @@ const RestaurantList = () => {
                               onClick={() => setModal(true)}>
                         {t("add")}
                     </MyButton>
+                    <hr style={{margin: '15px 0'}}/>
                 </>
                 :
                 ""}
+            {t("items per page")}
+            <select onChange={changeSize} value={size}>
+                {pageSizes.map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                        {pageSize}
+                    </option>
+                ))}
+            </select>
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
-                : <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} update={update}
-                            remove={removeRestaurant}/>
+                : <>
+                    <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} update={update}
+                              remove={removeRestaurant}/>
+                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                </>
             }
             <MyModal visible={modal} setVisible={setModal}>
                 <RestaurantEditor create={createRestaurant} update={updateRestaurant}
