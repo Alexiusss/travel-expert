@@ -34,10 +34,11 @@ public class RestaurantController {
     @GetMapping
     public Page<Restaurant> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "") String filter
     ) {
         log.info("get all restaurants");
-        return restaurantService.findAllPaginated(PageRequest.of(page, size));
+        return restaurantService.findAllPaginated(PageRequest.of(page, size), filter);
     }
 
     @PostMapping

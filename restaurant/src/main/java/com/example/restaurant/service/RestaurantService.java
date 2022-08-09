@@ -30,8 +30,11 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
-    public Page<Restaurant> findAllPaginated(Pageable pageable) {
-        return restaurantRepository.findAll(pageable);
+    public Page<Restaurant> findAllPaginated(Pageable pageable, String filter) {
+        if (filter.isEmpty()) {
+            return restaurantRepository.findAll(pageable);
+        }
+        return restaurantRepository.findAllByName(pageable, filter);
     }
 
     public Restaurant get(String id) {

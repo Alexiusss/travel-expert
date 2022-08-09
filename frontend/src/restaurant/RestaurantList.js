@@ -13,6 +13,7 @@ import RestaurantEditor from "./RestaurantEditor";
 import MyNotification from "../components/UI/notification/MyNotification";
 import Pagination from "@material-ui/lab/Pagination";
 import MySelect from "../components/UI/select/MySelect";
+import ItemFilter from "../components/items/ItemFilter";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -24,17 +25,18 @@ const RestaurantList = () => {
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(12);
     const pageSizes = [12, 36, 96];
+    const [filter, setFilter] = useState({config: null, query: ''})
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
 
     useEffect(() => {
         trackPromise(
-            restaurantService.getAll(size, page), area).then(({data}) => {
+            restaurantService.getAll(size, page, filter.query), area).then(({data}) => {
             setRestaurants(data.content);
             setTotalPages(data.totalPages);
         });
-    }, [setRestaurants, page, size])
+    }, [setRestaurants, page, size, filter])
 
     const openAlert = (msg, severity) => {
         setAlert({severity: severity, message: msg, open: true})
@@ -116,6 +118,12 @@ const RestaurantList = () => {
                 </>
                 :
                 ""}
+
+            <ItemFilter
+                filter={filter}
+                setFilter={setFilter}
+            />
+
             <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
