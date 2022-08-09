@@ -11,6 +11,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import {useTranslation} from "react-i18next";
 import MyNotification from "../components/UI/notification/MyNotification";
 import {useAuth} from "../components/hooks/UseAuth";
+import MySelect from "../components/UI/select/MySelect";
 
 const UsersList = () => {
 
@@ -102,16 +103,7 @@ const UsersList = () => {
             <h2 style={{textAlign: "center"}}>
                 {t("user list")}
             </h2>
-
-            {t("items per page")}
-            <select onChange={changeSize} value={size}>
-                {pageSizes.map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                        {pageSize}
-                    </option>
-                ))}
-            </select>
-
+            <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
             <UserTable promiseInProgress={promiseInProgress} users={sortedAndSearchedUsers}
                        userFromDB={setUserFromDB} remove={removeUser} enable={updateUser}
                        modalVisible={setModal} setAlert={setAlert}/>

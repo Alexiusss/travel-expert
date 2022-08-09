@@ -12,6 +12,7 @@ import MyModal from "../components/UI/modal/MyModal";
 import RestaurantEditor from "./RestaurantEditor";
 import MyNotification from "../components/UI/notification/MyNotification";
 import Pagination from "@material-ui/lab/Pagination";
+import MySelect from "../components/UI/select/MySelect";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -19,21 +20,19 @@ const RestaurantList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [restaurantFromDB, setRestaurantFromDB] = useState([])
     const {isAdmin} = useAuth();
-
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(12);
     const pageSizes = [12, 36, 96];
-
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
 
     useEffect(() => {
         trackPromise(
-            restaurantService.getAll(), area).then(({data}) => {
-            setRestaurants(data.content)
-            setTotalPages(data.totalPages)
+            restaurantService.getAll(size, page), area).then(({data}) => {
+            setRestaurants(data.content);
+            setTotalPages(data.totalPages);
         });
     }, [setRestaurants, page, size])
 
@@ -117,14 +116,7 @@ const RestaurantList = () => {
                 </>
                 :
                 ""}
-            {t("items per page")}
-            <select onChange={changeSize} value={size}>
-                {pageSizes.map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                        {pageSize}
-                    </option>
-                ))}
-            </select>
+            <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
                 : <>
