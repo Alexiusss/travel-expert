@@ -3,8 +3,31 @@ server:
 spring:
   application:
     name: notification
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://localhost/notification
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
   zipkin:
     base-url: http://localhost:9411
+
+logging:
+  level:
+    root: WARN
+    com.example.notification: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
 eureka:
   client:
     service-url:
