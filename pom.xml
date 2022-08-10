@@ -11,6 +11,7 @@
         <module>clients</module>
         <module>common</module>
         <module>apigw</module>
+        <module>notification</module>
     </modules>
 
     <parent>
