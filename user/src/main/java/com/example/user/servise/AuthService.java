@@ -1,5 +1,7 @@
 package com.example.user.servise;
 
+import com.example.clients.notification.NotificationClient;
+import com.example.clients.notification.NotificationRequest;
 import com.example.user.AuthUser;
 import com.example.user.model.Role;
 import com.example.user.model.User;
@@ -22,15 +24,15 @@ import static com.example.user.util.UserUtil.prepareToSave;
 
 @Service
 public class AuthService {
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
-
+    private UserRepository userRepository;
 
     @Autowired
-    MailSender mailSender;
+    private NotificationClient notificationClient;
 
     @Value("${myhostname}")
     private String myHostName;
@@ -69,7 +71,9 @@ public class AuthService {
                     user.getActivationCode()
             );
 
-            mailSender.send(user.getEmail(), "Activation code", message);
+            NotificationRequest notificationRequest = new NotificationRequest(user.id(), user.getEmail(), message, "Activation code", "Restaurant advisor");
+
+            notificationClient.sendNotification(notificationRequest);
         }
     }
 
