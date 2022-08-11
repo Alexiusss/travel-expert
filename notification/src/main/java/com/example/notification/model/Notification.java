@@ -29,7 +29,7 @@ public class Notification implements HasId {
     @Column(updatable = false, nullable = false)
     private Instant sentAt;
     private String toRecipientId;
-    private String roRecipientEmail;
+    private String toRecipientEmail;
     private String sender;
     private String message;
 }

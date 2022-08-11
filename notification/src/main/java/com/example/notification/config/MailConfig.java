@@ -1,4 +1,4 @@
-package com.example.user.config;
+package com.example.notification.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

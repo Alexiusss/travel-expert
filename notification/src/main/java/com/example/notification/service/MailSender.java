@@ -1,4 +1,4 @@
-package com.example.user.servise;
+package com.example.notification.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +13,12 @@ public class MailSender {
     private JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
-    private String username;
+    private String userName;
 
     public void send(String emailTo, String subject, String message) {
         final SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        mailMessage.setFrom(username);
+        mailMessage.setFrom(userName);
         mailMessage.setTo(emailTo);
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
