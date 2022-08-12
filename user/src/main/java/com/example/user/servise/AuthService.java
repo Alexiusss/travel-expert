@@ -1,6 +1,6 @@
 package com.example.user.servise;
 
-import com.example.clients.notification.NotificationClient;
+import com.example.amqp.RabbitMQMessageProducer;
 import com.example.clients.notification.NotificationRequest;
 import com.example.user.AuthUser;
 import com.example.user.model.Role;
@@ -32,7 +32,7 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private NotificationClient notificationClient;
+    private RabbitMQMessageProducer rabbitMQMessageProducer;
 
     @Value("${myhostname}")
     private String myHostName;
@@ -73,7 +73,11 @@ public class AuthService {
 
             NotificationRequest notificationRequest = new NotificationRequest(user.id(), user.getEmail(), message, "Activation code", "Restaurant advisor");
 
-            notificationClient.sendNotification(notificationRequest);
+            rabbitMQMessageProducer.publish(
+                    notificationRequest,
+                    "internal.exchange",
+                    "internal.notification.routing-key"
+            );
         }
     }
 
