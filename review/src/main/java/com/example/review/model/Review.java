@@ -45,7 +45,7 @@ public class Review implements HasId {
 
     private Integer rating;
 
-    private String fileName;
+    private String filename;
 
     private String userId;
 
