@@ -33,11 +33,11 @@ public class Review implements HasId {
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
 
-    @Version
-    protected int version;
-
     @UpdateTimestamp
     private Instant modifiedAt;
+
+    @Version
+    protected int version;
 
     private String title;
 
