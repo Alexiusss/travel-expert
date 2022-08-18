@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import static com.example.common.util.ValidationUtil.assureIdConsistent;
+import static com.example.common.util.ValidationUtil.checkNew;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +26,8 @@ public class ReviewService {
     }
 
     public Review create(Review review) {
+        Assert.notNull(review, "review must not be null");
+        checkNew(review);
         return reviewRepository.save(review);
     }
 
@@ -31,6 +37,7 @@ public class ReviewService {
 
 
     public void update(String id, Review review) {
+        assureIdConsistent(review, review.id());
         Review reviewFromDB = reviewRepository.getExisted(id);
         reviewFromDB.setTitle(review.getTitle());
         reviewFromDB.setDescription(review.getDescription());

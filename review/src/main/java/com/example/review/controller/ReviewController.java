@@ -40,7 +40,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<Review> create(@RequestBody Review review) {
+    public ResponseEntity<Review> create(@Valid @RequestBody Review review) {
 
         Review created = reviewService.create(review);
 
@@ -54,7 +54,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Review> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
+    public ResponseEntity<Review> delete(@PathVariable String id) {
         log.info("delete review {}", id);
 
         reviewService.delete(id);
@@ -62,7 +62,7 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody Review review, @PathVariable String id) {
+    public ResponseEntity<?> update(@Valid @RequestBody Review review, @PathVariable String id) {
 
         reviewService.update(id, review);
 

@@ -6,10 +6,14 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 
 @Entity
@@ -39,16 +43,24 @@ public class Review implements HasId {
     @Version
     protected int version;
 
+    @NotBlank
+    @Size(min = 5, max = 128)
     private String title;
 
+    @Column(name = "description", length = 2048)
+    @NotBlank(message = "Please fill the description")
+    @Length(max = 2048, message = "Description too long(more than to 2k)")
     private String description;
 
+    @Range(min = 1, max = 5)
     private Integer rating;
 
     private String filename;
 
+    @NotBlank
     private String userId;
 
+    @NotBlank
     private String itemId;
 
     public String id() {
