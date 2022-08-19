@@ -2,6 +2,7 @@ create table reviews (
                        id varchar(255) not null,
                        created_at timestamp not null,
                        modified_at timestamp,
+                       active bool default false not null,
                        version int4 not null,
                        title varchar(255) not null,
                        description varchar(255),

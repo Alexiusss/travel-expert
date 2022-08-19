@@ -40,6 +40,9 @@ public class Review implements HasId {
     @UpdateTimestamp
     private Instant modifiedAt;
 
+    @Column(name = "active", nullable = false, columnDefinition = "bool default false")
+    private boolean active;
+
     @Version
     protected int version;
 
