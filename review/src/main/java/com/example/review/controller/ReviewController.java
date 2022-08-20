@@ -40,7 +40,10 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<Review> create(@Valid @RequestBody Review review) {
+    public ResponseEntity<Review> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Review review) {
+
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization ,review);
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
 
         Review created = reviewService.create(review);
 
@@ -54,15 +57,21 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Review> delete(@PathVariable String id) {
+    public ResponseEntity<Review> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
         log.info("delete review {}", id);
+
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.get(id));
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
 
         reviewService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody Review review, @PathVariable String id) {
+    public ResponseEntity<?> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Review review, @PathVariable String id) {
+
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization ,review);
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
 
         reviewService.update(id, review);
 
