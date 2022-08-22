@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
@@ -58,10 +59,17 @@ public class ReviewService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         if (!authCheckResponse.getAuthorities().contains("ADMIN") ||
-                !authCheckResponse.getAuthorities().contains("MODER") ||
-                !authCheckResponse.getUserId().equals(review.getUserId())) {
+                !authCheckResponse.getAuthorities().contains("MODERATOR") ||
+                review != null && !authCheckResponse.getUserId().equals(review.getUserId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    public void activate(String id) {
+        Review reviewFromDb = get(id);
+        boolean active = reviewFromDb.isActive();
+        reviewFromDb.setActive(!active);
     }
 }

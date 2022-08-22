@@ -4,7 +4,6 @@ import com.example.review.ReviewService;
 import com.example.review.model.Review;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +78,16 @@ public class ReviewController {
 
         reviewService.update(id, review);
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> activate(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization,null);
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+
+        log.info("activate review {}", id);
+        reviewService.activate(id);
         return ResponseEntity.noContent().build();
     }
 
