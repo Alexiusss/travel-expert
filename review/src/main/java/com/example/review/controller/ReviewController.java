@@ -31,12 +31,16 @@ public class ReviewController {
     }
 
     @GetMapping
-    public Page<Review> getAll(
+    public ResponseEntity<?> getAll(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+
         log.info("get all reviews");
-        return reviewService.getAllPaginated(PageRequest.of(page, size));
+        return ResponseEntity.ok(reviewService.getAllPaginated(PageRequest.of(page, size)));
     }
 
     @PostMapping
