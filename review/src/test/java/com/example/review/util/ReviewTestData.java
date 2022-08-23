@@ -1,0 +1,28 @@
+package com.example.review.util;
+
+import com.example.clients.auth.AuthCheckResponse;
+import com.example.common.util.JsonUtil;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import lombok.experimental.UtilityClass;
+
+import java.util.List;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
+@UtilityClass
+public class ReviewTestData {
+
+    public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
+    public static final AuthCheckResponse UN_AUTH_RESPONSE = new AuthCheckResponse("", List.of());
+
+
+    public static void stubAdminAuth() {
+        stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
+                .willReturn(okForContentType("application/json", JsonUtil.writeValue(AUTH_ADMIN_RESPONSE))));
+    }
+
+    public static void stubUnAuth() {
+        stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
+                .willReturn(okForContentType("application/json",JsonUtil.writeValue(UN_AUTH_RESPONSE))));
+    }
+}
