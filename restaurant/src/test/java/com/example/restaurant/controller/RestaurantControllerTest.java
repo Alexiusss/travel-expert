@@ -24,8 +24,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.restaurant.util.RestaurantTestData.*;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest

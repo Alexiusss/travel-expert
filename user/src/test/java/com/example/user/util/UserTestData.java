@@ -1,6 +1,7 @@
 package com.example.user.util;
 
-import com.example.user.controller.MatcherFactory;
+import com.example.common.util.MatcherFactory;
+import com.example.common.util.JsonUtil;
 import com.example.user.model.Role;
 import com.example.user.model.User;
 import lombok.experimental.UtilityClass;

@@ -2,7 +2,7 @@ package com.example.restaurant.util;
 
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.common.util.JsonUtil;
-import com.example.restaurant.controller.MatcherFactory;
+import com.example.common.util.MatcherFactory;
 import com.example.restaurant.model.Restaurant;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.experimental.UtilityClass;

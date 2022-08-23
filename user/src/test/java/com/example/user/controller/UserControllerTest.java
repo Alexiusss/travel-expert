@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.common.error.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
-import static com.example.user.util.JsonUtil.asParsedJson;
+import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.user.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;

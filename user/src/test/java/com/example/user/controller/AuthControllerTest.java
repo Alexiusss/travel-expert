@@ -3,7 +3,7 @@ package com.example.user.controller;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthRequest;
 import com.example.user.repository.UserRepository;
-import com.example.user.util.JsonUtil;
+import com.example.common.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

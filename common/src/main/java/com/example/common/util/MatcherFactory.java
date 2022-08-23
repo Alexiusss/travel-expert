@@ -1,6 +1,5 @@
-package com.example.user.controller;
+package com.example.common.util;
 
-import com.example.user.util.JsonUtil;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
