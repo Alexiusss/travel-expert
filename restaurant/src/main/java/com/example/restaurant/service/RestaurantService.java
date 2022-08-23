@@ -46,12 +46,7 @@ public class RestaurantService {
     }
 
     public ResponseEntity<Restaurant> checkAuth(String authorization) {
-        AuthCheckResponse authCheckResponse;
-        try {
-            authCheckResponse = authClient.isAuth(authorization);
-        } catch (FeignException.Unauthorized e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        AuthCheckResponse authCheckResponse = authClient.isAuth(authorization);
         if (!authCheckResponse.getAuthorities().contains("ADMIN")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

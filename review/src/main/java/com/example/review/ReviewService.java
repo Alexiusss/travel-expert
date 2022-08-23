@@ -52,12 +52,8 @@ public class ReviewService {
     }
 
     public ResponseEntity<Review> checkAuth(String authorization, Review review) {
-        AuthCheckResponse authCheckResponse;
-        try {
-            authCheckResponse = authClient.isAuth(authorization);
-        } catch (FeignException.Unauthorized e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        AuthCheckResponse authCheckResponse = authClient.isAuth(authorization);
+
         if (!authCheckResponse.getAuthorities().contains("ADMIN") ||
                 !authCheckResponse.getAuthorities().contains("MODERATOR") ||
                 review != null && !authCheckResponse.getUserId().equals(review.getUserId())) {

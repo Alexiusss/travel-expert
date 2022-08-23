@@ -3,6 +3,7 @@ package com.example.common;
 import com.example.common.error.AppException;
 import com.example.common.error.NotFoundException;
 import com.example.common.util.ValidationUtil;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -53,6 +54,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFound(WebRequest request, NotFoundException e) {
         return createResponseEntity(request, ErrorAttributeOptions.of(), e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<?> handleFeignStatusException(WebRequest request, FeignException ex) {
+        return createResponseEntity(request, ErrorAttributeOptions.of(), null, HttpStatus.valueOf(ex.status()));
     }
 
     @NonNull
