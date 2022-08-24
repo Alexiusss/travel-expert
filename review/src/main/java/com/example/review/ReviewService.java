@@ -4,7 +4,6 @@ import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
 import com.example.review.model.Review;
 import com.example.review.repository.ReviewRepository;
-import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,9 +53,9 @@ public class ReviewService {
     public ResponseEntity<Review> checkAuth(String authorization, Review review) {
         AuthCheckResponse authCheckResponse = authClient.isAuth(authorization);
 
-        if (!authCheckResponse.getAuthorities().contains("ADMIN") ||
-                !authCheckResponse.getAuthorities().contains("MODERATOR") ||
-                review != null && !authCheckResponse.getUserId().equals(review.getUserId())) {
+        if ((!authCheckResponse.getAuthorities().contains("ADMIN") ||
+                !authCheckResponse.getAuthorities().contains("MODERATOR")) &&
+                (review != null && !authCheckResponse.getUserId().equals(review.getUserId()))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok().build();
