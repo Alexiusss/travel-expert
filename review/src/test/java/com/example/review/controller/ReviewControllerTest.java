@@ -23,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.review.util.ReviewTestData.*;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -65,6 +66,14 @@ public class ReviewControllerTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        stubAdminAuth();
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
+    }
+
+    @Test
     void getAllPaginated() throws Exception {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.get(REST_URL)
@@ -75,11 +84,10 @@ public class ReviewControllerTest {
     }
 
     @Test
-    void getAllForbidden() throws Exception {
+    void getAllUnAuth() throws Exception {
         stubUnAuth();
         perform(MockMvcRequestBuilders.get(REST_URL))
-                .andExpect(status().isForbidden())
-                .andDo(print());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -99,6 +107,19 @@ public class ReviewControllerTest {
     }
 
     @Test
+    void createInvalid() throws Exception {
+        stubAdminAuth();
+        Review invalidReview = getNew();
+        invalidReview.setTitle("");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalidReview)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
+
+    }
+
+    @Test
     void update() throws Exception {
         Review updated = getUpdated();
         updated.setTitle("Updated title");
@@ -114,10 +135,30 @@ public class ReviewControllerTest {
     }
 
     @Test
+    void updateInvalid() throws Exception {
+        stubAdminAuth();
+        Review invalidReview = getUpdated();
+        invalidReview.setTitle("");
+        perform(MockMvcRequestBuilders.put(REST_URL + REVIEW2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalidReview)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
+    }
+
+    @Test
     void delete() throws Exception {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.delete(REST_URL + REVIEW2_ID))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        stubAdminAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
     }
 
     @Test
