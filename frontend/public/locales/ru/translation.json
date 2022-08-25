@@ -43,5 +43,8 @@
   "enter cuisine": "Введите название кухни",
   "enter address": "Введите адрес",
   "enter phone number": "Введите номер телефона",
-  "enter website": "Введите адрес сайта"
+  "enter website": "Введите адрес сайта",
+
+  "reviews": "Отзывы",
+  "published": "Опубликовано"
 }

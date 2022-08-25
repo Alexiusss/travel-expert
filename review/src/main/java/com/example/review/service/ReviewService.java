@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.service;
 
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;

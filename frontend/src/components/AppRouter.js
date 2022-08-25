@@ -8,27 +8,31 @@ import {useAuth} from "./hooks/UseAuth";
 import ProfilePage from "../pages/ProfilePage";
 import RestaurantList from "../restaurant/RestaurantList";
 import RestaurantPage from "../restaurant/RestaurantPage";
+import ReviewList from "../pages/review/ReviewList";
 
 const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
 
     return (
         <Switch>
-            <Route exact path={"/"} component={HomePage} />
-            <Route exact path={"/login"} component={LoginForm} />
-            <Route exact path={"/register"} component={RegisterForm} />
-            <Route exact path={"/restaurants/"} component={RestaurantList} />
+            <Route exact path={"/"} component={HomePage}/>
+            <Route exact path={"/login"} component={LoginForm}/>
+            <Route exact path={"/register"} component={RegisterForm}/>
+            <Route exact path={"/restaurants/"} component={RestaurantList}/>
             <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
             {isAuth
                 ?
                 <Route exact path={"/profile"}
-                component={ProfilePage}/>
+                       component={ProfilePage}/>
                 :
                 <h3>403 Access denied</h3>
             }
-            { isAdmin || isModerator ?
-                <Route exact path={"/users"}
-                       component={UsersList}/>
+            {isAdmin || isModerator
+                ?
+                <>
+                    <Route exact path={"/users"} component={UsersList}/>
+                    <Route exact path={"/reviews"} component={ReviewList}/>
+                </>
                 :
                 <h3>403 Access denied</h3>
             }

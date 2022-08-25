@@ -9,11 +9,11 @@ export default class RestaurantService {
                 page: page - 1,
                 filter: filter
             },
-        })
+        });
     }
 
     static async get(id) {
-        return $api.get(RESTAURANTS_ROUTE + `${id}`)
+        return $api.get(RESTAURANTS_ROUTE + `${id}`);
     }
 
     static async create(data) {
@@ -21,7 +21,7 @@ export default class RestaurantService {
     }
 
     static async delete(id) {
-        return $api.delete(RESTAURANTS_ROUTE + `${id}`)
+        return $api.delete(RESTAURANTS_ROUTE + `${id}`);
     }
 
     static async update(data, id) {

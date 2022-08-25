@@ -44,5 +44,8 @@
   "enter cuisine": "Enter cuisine",
   "enter address": "Enter address",
   "enter phone number": "Enter phone number",
-  "enter website": "Enter website address"
+  "enter website": "Enter website address",
+
+  "reviews": "Reviews",
+  "published": "Published"
 }
