@@ -8,7 +8,7 @@ import {useAuth} from "./hooks/UseAuth";
 import ProfilePage from "../pages/ProfilePage";
 import RestaurantList from "../restaurant/RestaurantList";
 import RestaurantPage from "../restaurant/RestaurantPage";
-import ReviewList from "../pages/review/ReviewList";
+import ReviewsSection from "../pages/review/ReviewsSection";
 
 const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
@@ -31,7 +31,7 @@ const AppRouter = () => {
                 ?
                 <>
                     <Route exact path={"/users"} component={UsersList}/>
-                    <Route exact path={"/reviews"} component={ReviewList}/>
+                    <Route exact path={"/reviews"} component={ReviewsSection}/>
                 </>
                 :
                 <h3>403 Access denied</h3>
