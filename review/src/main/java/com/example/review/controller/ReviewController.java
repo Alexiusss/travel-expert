@@ -29,6 +29,16 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.get(id));
     }
 
+    @GetMapping("/{id}/item")
+    public ResponseEntity<?> getAllByItemId(
+            @PathVariable String id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+            ) {
+        log.info("get all reviews for item {}", id);
+        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id));
+    }
+
     @GetMapping
     public ResponseEntity<?> getAll(
             @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
