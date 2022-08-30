@@ -5,4 +5,13 @@ export default class ReviewService {
     static async getAll() {
         return $api(REVIEWS_ROUTE);
     }
+
+    static async getAllByItemId(id,size = 20, page = 1) {
+        return $api(REVIEWS_ROUTE + `${id}` + '/item', {
+            params: {
+                size: size,
+                page: page - 1
+            }
+        })
+    }
 }

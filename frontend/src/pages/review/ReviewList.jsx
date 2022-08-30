@@ -5,7 +5,7 @@ import ReviewItem from "./ReviewItem";
 const ReviewList = (props) => {
 
     return (
-        <Container maxWidth="md">
+        <Container>
             {props.reviews.map((review) =>
                 <ReviewItem item={review} key={review.id}/>
             )

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation} from "react-router-dom";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
-import {Container, Grid} from "@material-ui/core";
+import {Container} from "@material-ui/core";
 import restaurantService from "../services/RestaurantService";
 import ItemPageHeader from "../components/items/ItemPageHeader";
 import ItemContact from "../components/items/ItemContact";
+import ReviewsSection from "../pages/review/ReviewsSection";
 
 const RestaurantPage = () => {
     const location = useLocation()
@@ -29,6 +30,8 @@ const RestaurantPage = () => {
                     <ItemPageHeader name={restaurant.name} description={restaurant.cuisine}/>
                     <br/>
                     <ItemContact item={restaurant}/>
+                    <br/>
+                    <ReviewsSection itemId={location.state.id}/>
                 </>
             }
         </Container>
