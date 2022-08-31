@@ -47,5 +47,9 @@
   "enter website": "Enter website address",
 
   "reviews": "Reviews",
+  "review editor": "Review editor",
+  "enter title": "Enter title",
+  "enter description": "Enter description",
+  "enter rating": "Enter rating between 1 and 5",
   "published": "Published"
 }

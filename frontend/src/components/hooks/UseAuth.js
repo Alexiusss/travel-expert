@@ -9,6 +9,6 @@ export function useAuth() {
         isModerator: authorities.includes("MODERATOR"),
         email,
         token,
-        id,
+        authUserId: id,
     };
 }

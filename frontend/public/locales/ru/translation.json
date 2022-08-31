@@ -46,5 +46,9 @@
   "enter website": "Введите адрес сайта",
 
   "reviews": "Отзывы",
+  "review editor": "Редактор отзывов",
+  "enter title": "Введите заголовок",
+  "enter description": "Введите описание",
+  "enter rating": "Введите оценку от 1 до 5",
   "published": "Опубликовано"
 }
