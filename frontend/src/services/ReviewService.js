@@ -18,4 +18,8 @@ export default class ReviewService {
     static async create(data) {
         return $api.post(REVIEWS_ROUTE, data);
     }
+
+    static async delete(id) {
+        return $api.delete(REVIEWS_ROUTE+ `${id}`);
+    }
 }

@@ -9,6 +9,7 @@ import MyModal from "../../components/UI/modal/MyModal";
 import ReviewEditor from "./ReviewEditor";
 import {useTranslation} from "react-i18next";
 import MyNotification from "../../components/UI/notification/MyNotification";
+import {getLocalizedErrorMessages} from "../../utils/consts";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
@@ -34,6 +35,22 @@ const ReviewsSection = (props) => {
         }
     }, [setReviews])
 
+    const removeReview = (review) => {
+        reviewService.delete(review.id)
+            .then(() => {
+                setReviews(reviews.filter(r => r.id !== review.id));
+                openAlert([t('record deleted')], "success");
+            })
+            .catch(
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
+    }
+
+    const openAlert = (msg, severity) => {
+        setAlert({severity: severity, message: msg, open: true})
+    }
+
     return (
         <>
             <Container maxWidth="md">
@@ -47,7 +64,7 @@ const ReviewsSection = (props) => {
                 <hr style={{margin: '15px 0'}}/>
                 {promiseInProgress
                     ? <SkeletonCard listsToRender={10}/>
-                    : <ReviewList reviews={reviews}/>
+                    : <ReviewList reviews={reviews} remove={removeReview}/>
                 }
             </Container>
             <MyModal visible={modal} setVisible={setModal}>
