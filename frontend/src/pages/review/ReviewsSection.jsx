@@ -7,12 +7,14 @@ import SkeletonCard from "./SceletonCard";
 import MyButton from "../../components/UI/button/MyButton";
 import MyModal from "../../components/UI/modal/MyModal";
 import ReviewEditor from "./ReviewEditor";
+import {useTranslation} from "react-i18next";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
     const {promiseInProgress} = usePromiseTracker({area});
     const [reviews, setReviews] = useState([]);
     const [modal, setModal] = useState(false);
+    const {t} = useTranslation();
 
     useEffect(() => {
         if (props.itemId == null) {
@@ -36,7 +38,7 @@ const ReviewsSection = (props) => {
                 {props.itemId &&
                     <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
                               onClick={() => setModal(true)}>
-                        Write review
+                        {t('write review')}
                     </MyButton>
 
                 }

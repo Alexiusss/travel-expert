@@ -1,28 +1,41 @@
 import React, {useState} from 'react';
 import reviewService from '../../services/ReviewService'
 import {useTranslation} from "react-i18next";
-import {Container} from "@material-ui/core";
+import {Box, Container} from "@material-ui/core";
 import {useAuth} from "../../components/hooks/UseAuth";
+import {Rating} from "@material-ui/lab";
 
 const ReviewEditor = (props) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [rating, setRating] = useState('');
+    const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(-1);
     const [id, setId] = useState(null);
     const [userId, setUserId] = useState('');
     const itemId = props.itemId;
     const {t} = useTranslation();
     const {authUserId} = useAuth();
+    const labels = {
+        0: 'set rating',
+        1: 'useless',
+        2: 'poor',
+        3: 'ok',
+        4: 'good',
+        5: 'excellent',
+    };
 
     const saveReview = (e) => {
         e.preventDefault();
-        console.log(itemId)
         const userId = authUserId;
         const review = {title, description, rating, id, itemId, userId}
 
         reviewService.create(review)
             .then()
             .catch(console.error)
+    }
+
+    const getLabelText = (rating) => {
+        return `${rating} Star${rating !== 1 ? 's' : ''}, ${labels[rating]}`;
     }
 
     return (
@@ -41,8 +54,7 @@ const ReviewEditor = (props) => {
                     />
                 </div>
                 <div className="form-group" style={{marginTop: 5}}>
-                    <input
-                        type="text"
+                    <textarea
                         className="form-control col-4"
                         id="description"
                         value={description}
@@ -50,22 +62,25 @@ const ReviewEditor = (props) => {
                         placeholder={t("enter description")}
                     />
                 </div>
-                <div className="form-group" style={{marginTop: 5}}>
-                    <input
-                        type="text"
-                        className="form-control col-4"
-                        id="rating"
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        marginTop: 10,
+                    }}
+                >
+                    <Rating
+                        name="hover-feedback"
                         value={rating}
-                        onChange={e => setRating(e.target.value)}
-                        placeholder={t("enter rating")}
-                        // https://stackoverflow.com/a/65138192
-                        onKeyPress={(event) => {
-                            if (!/[1-5]/.test(event.key)) {
-                                event.preventDefault();
-                            }
-                        }}
+                        getLabelText={getLabelText}
+                        onChange={(e, newRating) => setRating(newRating)}
+                        onChangeActive={(e, newHover) => setHover(newHover)}
                     />
-                </div>
+                    {rating !== null && (
+                        <Box sx={{ ml: 2 }}>{t(labels[hover !== -1 ? hover : rating])}</Box>
+                    )}
+                </Box>
+
                 <div>
                     <button onClick={(e => saveReview(e))} className="btn btn-outline-primary ml-2 btn-sm"
                             style={{marginTop: 10}}>{t("save")}

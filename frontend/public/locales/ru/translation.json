@@ -46,9 +46,15 @@
   "enter website": "Введите адрес сайта",
 
   "reviews": "Отзывы",
+  "write review": "Написать отзыв",
   "review editor": "Редактор отзывов",
   "enter title": "Введите заголовок",
   "enter description": "Введите описание",
-  "enter rating": "Введите оценку от 1 до 5",
+  "set rating": "Поставьте оценку",
+  "useless": "Ужасно",
+  "poor": "Плохо",
+  "ok": "Нормально",
+  "good": "Хорошо",
+  "excellent": "Отлично",
   "published": "Опубликовано"
 }

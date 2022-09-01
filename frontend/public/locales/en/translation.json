@@ -47,9 +47,15 @@
   "enter website": "Enter website address",
 
   "reviews": "Reviews",
+  "write review": "Write review",
   "review editor": "Review editor",
   "enter title": "Enter title",
   "enter description": "Enter description",
-  "enter rating": "Enter rating between 1 and 5",
+  "set rating": "Set rating",
+  "useless": "Useless",
+  "poor": "Poor",
+  "ok": "Ok",
+  "good": "good",
+  "excellent": "Excellent",
   "published": "Published"
 }
