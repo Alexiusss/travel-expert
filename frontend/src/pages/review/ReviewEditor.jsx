@@ -4,6 +4,7 @@ import {useTranslation} from "react-i18next";
 import {Box, Container} from "@material-ui/core";
 import {useAuth} from "../../components/hooks/UseAuth";
 import {Rating} from "@material-ui/lab";
+import {getLocalizedErrorMessages} from "../../utils/consts";
 
 const ReviewEditor = (props) => {
     const [title, setTitle] = useState('');
@@ -13,7 +14,6 @@ const ReviewEditor = (props) => {
     const [id, setId] = useState(null);
     const [userId, setUserId] = useState('');
     const itemId = props.itemId;
-    const {t} = useTranslation();
     const {authUserId} = useAuth();
     const labels = {
         0: 'set rating',
@@ -23,6 +23,7 @@ const ReviewEditor = (props) => {
         4: 'good',
         5: 'excellent',
     };
+    const {t} = useTranslation();
 
     const saveReview = (e) => {
         e.preventDefault();
@@ -30,8 +31,26 @@ const ReviewEditor = (props) => {
         const review = {title, description, rating, id, itemId, userId}
 
         reviewService.create(review)
-            .then()
-            .catch(console.error)
+            .then(() => {
+                cleanForm();
+                props.setModal(false)
+                openAlert([t('record saved')], "success");
+            })
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
+    }
+
+    const cleanForm = () => {
+        setTitle('');
+        setDescription('');
+        setRating(0);
+        setHover(-1)
+        setId(null);
+    }
+
+    const openAlert = (msg, severity) => {
+        props.setAlert({severity: severity, message: msg, open: true})
     }
 
     const getLabelText = (rating) => {
@@ -62,7 +81,6 @@ const ReviewEditor = (props) => {
                         placeholder={t("enter description")}
                     />
                 </div>
-
                 <Box
                     sx={{
                         display: 'flex',
@@ -80,7 +98,6 @@ const ReviewEditor = (props) => {
                         <Box sx={{ ml: 2 }}>{t(labels[hover !== -1 ? hover : rating])}</Box>
                     )}
                 </Box>
-
                 <div>
                     <button onClick={(e => saveReview(e))} className="btn btn-outline-primary ml-2 btn-sm"
                             style={{marginTop: 10}}>{t("save")}

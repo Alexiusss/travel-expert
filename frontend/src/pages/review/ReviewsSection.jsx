@@ -8,12 +8,14 @@ import MyButton from "../../components/UI/button/MyButton";
 import MyModal from "../../components/UI/modal/MyModal";
 import ReviewEditor from "./ReviewEditor";
 import {useTranslation} from "react-i18next";
+import MyNotification from "../../components/UI/notification/MyNotification";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
     const {promiseInProgress} = usePromiseTracker({area});
     const [reviews, setReviews] = useState([]);
     const [modal, setModal] = useState(false);
+    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
 
     useEffect(() => {
@@ -49,8 +51,10 @@ const ReviewsSection = (props) => {
                 }
             </Container>
             <MyModal visible={modal} setVisible={setModal}>
-                <ReviewEditor itemId={props.itemId}/>
+                <ReviewEditor itemId={props.itemId} setAlert={setAlert}
+                              modal={modal} setModal={setModal}/>
             </MyModal>
+            <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </>
     );
 };
