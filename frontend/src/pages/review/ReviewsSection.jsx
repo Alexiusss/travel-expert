@@ -15,6 +15,7 @@ const ReviewsSection = (props) => {
     const area = 'reviews';
     const {promiseInProgress} = usePromiseTracker({area});
     const [reviews, setReviews] = useState([]);
+    const [reviewFromDB, setReviewFromDB] = useState(null);
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
@@ -34,6 +35,37 @@ const ReviewsSection = (props) => {
                 });
         }
     }, [setReviews])
+
+    const update = (id) => {
+        reviewService.get(id)
+            .then(response => {
+                setReviewFromDB(response.data);
+                setModal(true);
+            })
+            .catch(
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
+    }
+
+    const updateReview = (updatedReview) => {
+        setModal(false);
+        setReviews(reviews => {
+            return reviews.map(review => {
+                return review.id === updatedReview.id
+                    ?
+                    {
+                        ...review,
+                        title: updatedReview.title,
+                        description: updatedReview.description,
+                        active: updatedReview.active,
+                    }
+                    :
+                    review
+            })
+        })
+        openAlert([t('record saved')], "success")
+    }
 
     const removeReview = (review) => {
         reviewService.delete(review.id)
@@ -64,12 +96,15 @@ const ReviewsSection = (props) => {
                 <hr style={{margin: '15px 0'}}/>
                 {promiseInProgress
                     ? <SkeletonCard listsToRender={10}/>
-                    : <ReviewList reviews={reviews} remove={removeReview}/>
+                    : <ReviewList reviews={reviews} update={update} remove={removeReview}/>
                 }
             </Container>
             <MyModal visible={modal} setVisible={setModal}>
                 <ReviewEditor itemId={props.itemId} setAlert={setAlert}
-                              modal={modal} setModal={setModal}/>
+                              modal={modal} setModal={setModal}
+                              reviewFomDB={reviewFromDB}
+                              updateReview={updateReview}
+                />
             </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </>

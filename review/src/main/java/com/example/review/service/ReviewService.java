@@ -50,9 +50,11 @@ public class ReviewService {
         reviewRepository.deleteExisted(id);
     }
 
+    @Transactional
     public void update(String id, Review review) {
         assureIdConsistent(review, review.id());
         Review reviewFromDB = reviewRepository.getExisted(id);
+        reviewFromDB.setActive(review.isActive());
         reviewFromDB.setTitle(review.getTitle());
         reviewFromDB.setDescription(review.getDescription());
         reviewFromDB.setRating(review.getRating());

@@ -2,6 +2,11 @@ import $api from "../http/http-common";
 import {REVIEWS_ROUTE} from "../utils/consts";
 
 export default class ReviewService {
+
+    static async get(id) {
+        return $api.get(REVIEWS_ROUTE+ `${id}`);
+    }
+
     static async getAll() {
         return $api.get(REVIEWS_ROUTE);
     }
@@ -17,6 +22,10 @@ export default class ReviewService {
 
     static async create(data) {
         return $api.post(REVIEWS_ROUTE, data);
+    }
+
+    static async update(id, data) {
+        return $api.put(REVIEWS_ROUTE+ `${id}`, data)
     }
 
     static async delete(id) {

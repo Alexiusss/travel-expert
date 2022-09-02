@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import reviewService from '../../services/ReviewService'
 import {useTranslation} from "react-i18next";
 import {Box, Container} from "@material-ui/core";
@@ -11,10 +11,11 @@ const ReviewEditor = (props) => {
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(-1);
+    const [active, setActive] = useState(false);
     const [id, setId] = useState(null);
     const [userId, setUserId] = useState('');
-    const itemId = props.itemId;
-    const {authUserId} = useAuth();
+    const [itemId, setItemId] = useState(props.itemId)
+    const {authUserId, isAdmin, isModerator} = useAuth();
     const labels = {
         0: 'set rating',
         1: 'useless',
@@ -27,18 +28,29 @@ const ReviewEditor = (props) => {
 
     const saveReview = (e) => {
         e.preventDefault();
-        const userId = authUserId;
-        const review = {title, description, rating, id, itemId, userId}
+        let review = {title, description, rating, active, id, itemId, userId}
 
-        reviewService.create(review)
-            .then(() => {
-                cleanForm();
-                props.setModal(false)
-                openAlert([t('record saved')], "success");
-            })
-            .catch(error => {
-                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
-            })
+        if (id) {
+            reviewService.update(id, review)
+                .then(() => {
+                    props.updateReview(review)
+                    cleanForm();
+                })
+                .catch(error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                })
+        } else {
+            review.userId = authUserId;
+            reviewService.create(review)
+                .then(response => {
+                    cleanForm();
+                    props.setModal(false)
+                    openAlert([t('record saved')], "success");
+                })
+                .catch(error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                })
+        }
     }
 
     const cleanForm = () => {
@@ -47,6 +59,8 @@ const ReviewEditor = (props) => {
         setRating(0);
         setHover(-1)
         setId(null);
+        setUserId(null);
+        setActive(false)
     }
 
     const openAlert = (msg, severity) => {
@@ -56,6 +70,26 @@ const ReviewEditor = (props) => {
     const getLabelText = (rating) => {
         return `${rating} Star${rating !== 1 ? 's' : ''}, ${labels[rating]}`;
     }
+
+    useEffect(() => {
+        if (!props.modal) {
+            cleanForm()
+        }
+    })
+
+    useEffect(() => {
+        const review = props.reviewFomDB;
+        if (review) {
+            setTitle(review.title)
+            setDescription(review.description)
+            setRating(review.rating)
+            setActive(review.active)
+            setItemId(review.itemId)
+            setId(review.id)
+            setUserId(review.userId)
+        }
+    }, [props.reviewFomDB])
+
 
     return (
         <Container>
@@ -94,10 +128,21 @@ const ReviewEditor = (props) => {
                         onChange={(e, newRating) => setRating(newRating)}
                         onChangeActive={(e, newHover) => setHover(newHover)}
                     />
-                    {rating !== null && (
-                        <Box sx={{ ml: 2 }}>{t(labels[hover !== -1 ? hover : rating])}</Box>
-                    )}
+                    <Box sx={{ml: 2}}>{t(labels[hover !== -1 ? hover : rating])}</Box>
                 </Box>
+                {(isAdmin || isModerator) && (
+                    <div className="form-group" style={{marginTop: 10}}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                id="active"
+                                checked={active}
+                                onChange={e => setActive(e.target.checked)}
+                            />
+                            {'  '}{t('publish')}?
+                        </label>
+                    </div>
+                )}
                 <div>
                     <button onClick={(e => saveReview(e))} className="btn btn-outline-primary ml-2 btn-sm"
                             style={{marginTop: 10}}>{t("save")}

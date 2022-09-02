@@ -8,7 +8,7 @@ import MyButton from "../../components/UI/button/MyButton";
 const ReviewItem = (props) => {
 
     const {t, i18n} = useTranslation();
-    const {authUserId, isAdmin} = useAuth();
+    const {authUserId, isAdmin, isModerator} = useAuth();
     const isAuthor = authUserId === props.item.userId;
 
     // https://stackoverflow.com/a/50607453
@@ -17,9 +17,14 @@ const ReviewItem = (props) => {
         return new Date(date).toLocaleDateString(i18n.language, DATE_OPTIONS);
     }
 
-    const removeReview = (e, review) => {
+    const updateReview = (e, review) => {
         e.preventDefault();
-        props.remove(review)
+        props.update(review);
+    }
+
+    const removeReview = (e, reviewId) => {
+        e.preventDefault();
+        props.remove(reviewId)
     }
 
     return (
@@ -34,15 +39,21 @@ const ReviewItem = (props) => {
                     <Rating name="half-rating-read" defaultValue={0} value={props.item.rating} size="small" readOnly/>
                     <Box sx={{ml: 1}}><small>{t("published")} {getFormattedDate(props.item.createdAt)}</small></Box>
                 </Box>
-                {(isAdmin || isAuthor) &&
-                    (
-                        <div style={{float: 'right'}}>
-                            <MyButton className="btn btn-outline-danger btn-sm"
-                                      onClick={e => removeReview(e, props.item)}>
-                                {t("delete")}</MyButton>
-                        </div>
-                    )
-                }
+                <div style={{float: 'right'}}>
+                    {isModerator &&
+                        <MyButton className="btn btn-outline-info btn-sm"
+                                  onClick={e => updateReview(e, props.item.id)}
+                        >
+                            {t("edit")}
+                        </MyButton>
+                    }
+                    {'  '}
+                    {(isAdmin || isAuthor) &&
+                        <MyButton className="btn btn-outline-danger btn-sm"
+                                  onClick={e => removeReview(e, props.item)}>
+                            {t("delete")}</MyButton>
+                    }
+                </div>
                 <h5> {props.item.title} </h5>
                 <p>{props.item.description}</p>
             </Paper>
