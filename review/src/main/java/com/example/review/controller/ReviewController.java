@@ -33,23 +33,25 @@ public class ReviewController {
     public ResponseEntity<?> getAllByItemId(
             @PathVariable String id,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "") String filter
             ) {
         log.info("get all reviews for item {}", id);
-        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id));
+        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter));
     }
 
     @GetMapping
     public ResponseEntity<?> getAll(
             @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "") String filter
     ) {
         ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
         if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
 
         log.info("get all reviews");
-        return ResponseEntity.ok(reviewService.getAllPaginated(PageRequest.of(page, size)));
+        return ResponseEntity.ok(reviewService.getAllPaginated(PageRequest.of(page, size), filter));
     }
 
     @PostMapping

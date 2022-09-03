@@ -7,15 +7,22 @@ export default class ReviewService {
         return $api.get(REVIEWS_ROUTE+ `${id}`);
     }
 
-    static async getAll() {
-        return $api.get(REVIEWS_ROUTE);
+    static async getAll(size = 20, page = 1, filter = "") {
+        return $api.get(REVIEWS_ROUTE, {
+            params: {
+                size: size,
+                page: page - 1,
+                filter: filter.query
+            }
+        });
     }
 
-    static async getAllByItemId(id,size = 20, page = 1) {
+    static async getAllByItemId(id,size = 20, page = 1, filter = "") {
         return $api.get(REVIEWS_ROUTE + `${id}` + '/item', {
             params: {
                 size: size,
-                page: page - 1
+                page: page - 1,
+                filter: filter.query
             }
         });
     }

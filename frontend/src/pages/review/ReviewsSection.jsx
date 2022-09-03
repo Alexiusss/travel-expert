@@ -10,6 +10,7 @@ import ReviewEditor from "./ReviewEditor";
 import {useTranslation} from "react-i18next";
 import MyNotification from "../../components/UI/notification/MyNotification";
 import {getLocalizedErrorMessages} from "../../utils/consts";
+import ItemFilter from "../../components/items/ItemFilter";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
@@ -18,23 +19,24 @@ const ReviewsSection = (props) => {
     const [reviewFromDB, setReviewFromDB] = useState(null);
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
+    const [filter, setFilter] = useState({config: null, query: ''})
     const {t} = useTranslation();
 
     useEffect(() => {
         if (props.itemId == null) {
             trackPromise(
-                reviewService.getAll(), area)
+                reviewService.getAll(20, 1, filter), area)
                 .then(({data}) => {
                     setReviews(data.content);
                 });
         } else {
             trackPromise(
-                reviewService.getAllByItemId(props.itemId, 20, 1), area)
+                reviewService.getAllByItemId(props.itemId, 20, 1, filter), area)
                 .then(({data}) => {
                     setReviews(data.content);
                 });
         }
-    }, [setReviews])
+    }, [setReviews, filter])
 
     const update = (id) => {
         reviewService.get(id)
@@ -86,14 +88,17 @@ const ReviewsSection = (props) => {
     return (
         <>
             <Container maxWidth="md">
-                {props.itemId &&
+                {props.itemId && (
+                    <>
                     <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
                               onClick={() => setModal(true)}>
                         {t('write review')}
                     </MyButton>
-
+                    <hr style={{margin: '15px 0'}}/>
+                    </>
+                )
                 }
-                <hr style={{margin: '15px 0'}}/>
+                <ItemFilter filter={filter} setFilter={setFilter}/>
                 {promiseInProgress
                     ? <SkeletonCard listsToRender={10}/>
                     : <ReviewList reviews={reviews} update={update} remove={removeReview}/>

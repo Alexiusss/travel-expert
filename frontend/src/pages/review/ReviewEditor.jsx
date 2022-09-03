@@ -122,6 +122,7 @@ const ReviewEditor = (props) => {
                     }}
                 >
                     <Rating
+                        disabled={id !== null}
                         name="hover-feedback"
                         value={rating}
                         getLabelText={getLabelText}

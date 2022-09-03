@@ -6,16 +6,12 @@ import com.example.review.model.Review;
 import com.example.review.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -27,13 +23,18 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final AuthClient authClient;
 
-    public Page<Review> getAllPaginated(Pageable pageable) {
-        return reviewRepository.findAll(pageable);
+    public Page<Review> getAllPaginated(Pageable pageable, String filter) {
+        if (filter.isEmpty()) {
+            return reviewRepository.findAll(pageable);
+        }
+        return reviewRepository.findAllByWithFilter(pageable, filter);
     }
 
-    public Page<Review> getAllPaginatedByItemId(Pageable pageable, String id) {
-        List<Review> reviews = reviewRepository.findAllByItemId(id);
-        return new PageImpl<>(reviews, pageable, reviews.size());
+    public Page<Review> getAllPaginatedByItemId(Pageable pageable, String id, String filter) {
+        if (filter.isEmpty()) {
+            return reviewRepository.findAllByItemId(pageable, id);
+        }
+        return reviewRepository.findAllByItemIdFiltered(pageable, id, filter);
     }
 
     public Review get(String id) {
