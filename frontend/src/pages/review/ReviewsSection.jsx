@@ -11,6 +11,8 @@ import {useTranslation} from "react-i18next";
 import MyNotification from "../../components/UI/notification/MyNotification";
 import {getLocalizedErrorMessages} from "../../utils/consts";
 import ItemFilter from "../../components/items/ItemFilter";
+import MySelect from "../../components/UI/select/MySelect";
+import Pagination from "@material-ui/lab/Pagination";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
@@ -19,24 +21,30 @@ const ReviewsSection = (props) => {
     const [reviewFromDB, setReviewFromDB] = useState(null);
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
+    const [totalPages, setTotalPages] = useState(0);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(12);
+    const pageSizes = [20, 50, 100];
     const [filter, setFilter] = useState({config: null, query: ''})
     const {t} = useTranslation();
 
     useEffect(() => {
         if (props.itemId == null) {
             trackPromise(
-                reviewService.getAll(20, 1, filter), area)
+                reviewService.getAll(size, page, filter), area)
                 .then(({data}) => {
                     setReviews(data.content);
+                    setTotalPages(data.totalPages);
                 });
         } else {
             trackPromise(
-                reviewService.getAllByItemId(props.itemId, 20, 1, filter), area)
+                reviewService.getAllByItemId(props.itemId, size, page, filter), area)
                 .then(({data}) => {
                     setReviews(data.content);
+                    setTotalPages(data.totalPages);
                 });
         }
-    }, [setReviews, filter])
+    }, [setReviews, page, size, filter])
 
     const update = (id) => {
         reviewService.get(id)
@@ -85,6 +93,15 @@ const ReviewsSection = (props) => {
         setAlert({severity: severity, message: msg, open: true})
     }
 
+    const changePage = (event, value) => {
+        setPage(value);
+    }
+
+    const changeSize = (event) => {
+        setSize(event.target.value);
+        setPage(1);
+    }
+
     return (
         <>
             <Container maxWidth="md">
@@ -99,9 +116,13 @@ const ReviewsSection = (props) => {
                 )
                 }
                 <ItemFilter filter={filter} setFilter={setFilter}/>
+                <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
                 {promiseInProgress
                     ? <SkeletonCard listsToRender={10}/>
-                    : <ReviewList reviews={reviews} update={update} remove={removeReview}/>
+                    : <>
+                    <ReviewList reviews={reviews} update={update} remove={removeReview}/>
+                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                    </>
                 }
             </Container>
             <MyModal visible={modal} setVisible={setModal}>
