@@ -18,10 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.example.common.util.JsonUtil.asParsedJson;
+import static com.example.review.controller.ReviewExceptionHandler.EXCEPTION_DUPLICATE_REVIEW;
 import static com.example.review.util.ReviewTestData.*;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.equalTo;
@@ -105,6 +107,22 @@ public class ReviewControllerTest {
         REVIEW_MATCHER.assertMatch(created, newReview);
         REVIEW_MATCHER.assertMatch(reviewRepository.getExisted(newId), created);
     }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void createDuplicate() throws Exception {
+        Review duplicateReview = getNew();
+        duplicateReview.setUserId(REVIEW1.getUserId());
+        duplicateReview.setItemId(REVIEW1.getItemId());
+
+        stubAdminAuth();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(duplicateReview)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(EXCEPTION_DUPLICATE_REVIEW)));
+    }
+
 
     @Test
     void createInvalid() throws Exception {
