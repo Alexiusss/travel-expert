@@ -33,17 +33,9 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final ErrorAttributes errorAttributes;
 
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "Duplicate email";
-
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
         return createResponseEntity(request, ex.getOptions(), null, ex.getStatus());
-    }
-
-    // https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<?> conflict(WebRequest request) {
-        return createResponseEntity(request, ErrorAttributeOptions.of(), EXCEPTION_DUPLICATE_EMAIL, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({EntityNotFoundException.class, BadCredentialsException.class, DisabledException.class})
@@ -91,7 +83,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, String msg, HttpStatus status) {
+    protected <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, String msg, HttpStatus status) {
         Map<String, Object> body = errorAttributes.getErrorAttributes(request, options);
         if (msg != null) {
             body.put("message", msg);

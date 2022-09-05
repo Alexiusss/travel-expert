@@ -17,6 +17,7 @@
   "size must be between 5 and 128": "Size must be between 5 and 128",
   "Bad credentials": "Email or password is incorrect",
   "Duplicate email": "User with the same e-mail already exists",
+  "Duplicate review": "This is your repetitive review of this object. You can delete the old review and write a new one.",
   "User is disabled": "Confirm your account. The link contained in the e-mail is sent to the address specified during registration.",
 
   "modification is forbidden": "Admin modification is forbidden",

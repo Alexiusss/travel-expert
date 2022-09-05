@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.common.GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
+import static com.example.user.controller.UserExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
 import static com.example.user.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNull;
