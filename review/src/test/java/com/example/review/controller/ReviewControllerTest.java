@@ -76,6 +76,15 @@ public class ReviewControllerTest {
     }
 
     @Test
+    void getAllFiltered() throws Exception {
+        stubAdminAuth();
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .param("filter", REVIEW3.getTitle()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW3))));
+    }
+
+    @Test
     void getAllPaginated() throws Exception {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.get(REST_URL)
@@ -90,6 +99,19 @@ public class ReviewControllerTest {
         stubUnAuth();
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getAllPaginatedByItemId() throws Exception {
+        String itemId = REVIEW3.getItemId();
+        perform(MockMvcRequestBuilders.get(REST_URL + itemId + "/item")
+                .param("size", "20")
+                .param("page", "0"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW3))));
+
     }
 
     @Test
