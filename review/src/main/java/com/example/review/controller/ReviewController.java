@@ -1,7 +1,9 @@
 package com.example.review.controller;
 
-import com.example.review.service.ReviewService;
 import com.example.review.model.Review;
+import com.example.review.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -23,12 +25,14 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @Operation(summary = "Get a review by its id")
     @GetMapping("/{id}")
     public ResponseEntity<Review> get(@PathVariable String id) {
         log.info("get review {}", id);
         return ResponseEntity.ok(reviewService.get(id));
     }
 
+    @Operation(summary = "Return a list of reviews by item id and filtered according to the query parameters")
     @GetMapping("/{id}/item")
     public ResponseEntity<?> getAllByItemId(
             @PathVariable String id,
@@ -40,6 +44,8 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter));
     }
 
+    @Operation(summary = "Return a list of reviews and filtered according the query parameters", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     public ResponseEntity<?> getAll(
             @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
@@ -54,6 +60,8 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getAllPaginated(PageRequest.of(page, size), filter));
     }
 
+    @Operation(summary = "Create a new review", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<Review> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Review review) {
 
@@ -71,6 +79,8 @@ public class ReviewController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @Operation(summary = "Delete a review by its id", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
     public ResponseEntity<Review> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
         log.info("delete review {}", id);
@@ -82,6 +92,8 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Update a review by its id", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Review review, @PathVariable String id) {
 
@@ -93,6 +105,8 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Activate a review by its id", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{id}")
     public ResponseEntity<?> activate(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
         ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization,null);
