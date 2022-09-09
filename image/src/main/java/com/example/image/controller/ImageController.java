@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -27,5 +27,12 @@ public class ImageController {
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws Exception {
         Image image = imageService.findImageByFileName(fileName);
         return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
+    }
+
+    @PostMapping
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        Image image = new Image(null, null, null, 0, file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
+        Image savedImage = imageService.save(image);
+        return ResponseEntity.ok(savedImage.getFileName());
     }
 }
