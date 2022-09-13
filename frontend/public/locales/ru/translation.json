@@ -58,5 +58,8 @@
   "good": "Хорошо",
   "excellent": "Отлично",
   "publish": "Опубликовать",
-  "published": "Опубликовано"
+  "published": "Опубликовано",
+
+  "upload image": "загрузить фото",
+  "not uploaded": "не загружено"
 }

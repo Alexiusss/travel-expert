@@ -11,12 +11,15 @@ import {Link} from "react-router-dom";
 import MyButton from "../UI/button/MyButton";
 import {useAuth} from "../hooks/UseAuth";
 import {useTranslation} from "react-i18next";
+import {IMAGE_ROUTE} from "../../utils/consts";
+import {API_URL} from "../../http/http-common";
 
 
 const ItemCard = (props) => {
     const {item, route} = props;
     const {isAdmin} = useAuth();
     const {t} = useTranslation();
+    const image = API_URL + IMAGE_ROUTE + `${item.filename}`;
 
     return (
         <Grid item xs={12} sm={6} md={3} key={item.id}>
@@ -33,7 +36,7 @@ const ItemCard = (props) => {
                         <CardMedia
                             component="img"
                             height="140"
-                            image="http://localhost:8083/api/v1/images/rest2.jpg"
+                            image={image}
                             alt={item.name}
                         />
 

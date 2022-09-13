@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import restaurantService from '../services/RestaurantService'
+import imageService from '../services/ImageService'
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css'
+import {Button} from "@material-ui/core";
 
 const RestaurantEditor = (props) => {
         const [name, setName] = useState('');
@@ -12,45 +14,20 @@ const RestaurantEditor = (props) => {
         const [address, setAddress] = useState('');
         const [phone_number, setPhone_number] = useState('');
         const [website, setWebsite] = useState('');
-        const [id, setId] = useState(null)
+        const [id, setId] = useState(null);
+        const [image, setImage] = useState(null);
         const {t} = useTranslation();
+        const [filename, setFilename] = useState(t('not uploaded'));
 
-        const cleanForm = () => {
-            setEmail('');
-            setName('');
-            setCuisine('');
-            setAddress('');
-            setPhone_number('');
-            setWebsite('');
-            setId(null);
-        };
-
-        useEffect(() => {
-            if (!props.modal) {
-                cleanForm()
-            }
-        })
-
-        useEffect(() => {
-            if (props.restaurantFromDB) {
-                setName('' + props.restaurantFromDB.name);
-                setCuisine('' + props.restaurantFromDB.cuisine);
-                setEmail('' + props.restaurantFromDB.email);
-                setAddress('' + props.restaurantFromDB.address);
-                setPhone_number('' + props.restaurantFromDB.phone_number);
-                setWebsite('' + props.restaurantFromDB.website);
-                setId('' + props.restaurantFromDB.id);
-            }
-        }, [props.restaurantFromDB])
 
         const saveRestaurant = (e) => {
             e.preventDefault()
 
-            const restaurant = {name, cuisine, email, address, phone_number, website, id}
+            const restaurant = {name, cuisine, email, address, phone_number, website, filename, id}
 
             if (id) {
                 restaurantService.update(restaurant, id)
-                    .then(response => {
+                    .then(() => {
                         props.update(restaurant)
                         cleanForm();
                     })
@@ -71,9 +48,57 @@ const RestaurantEditor = (props) => {
             }
         }
 
+        const uploadImage = (image) => {
+            imageService.post(image)
+                .then(response => {
+                    console.log(response.data)
+                    setFilename(response.data)
+                })
+                .catch(error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                })
+        }
+
         const openAlert = (msg, severity) => {
             props.setAlert({severity: severity, message: msg, open: true})
         }
+
+        const cleanForm = () => {
+            setEmail('');
+            setName('');
+            setCuisine('');
+            setAddress('');
+            setPhone_number('');
+            setWebsite('');
+            setImage(null)
+            setFilename(t('not uploaded'));
+            setId(null);
+        };
+
+        useEffect(() => {
+            if (!props.modal) {
+                cleanForm()
+            }
+        }, [props.modal]);
+
+        useEffect(() => {
+            if (props.restaurantFromDB) {
+                setName('' + props.restaurantFromDB.name);
+                setCuisine('' + props.restaurantFromDB.cuisine);
+                setEmail('' + props.restaurantFromDB.email);
+                setAddress('' + props.restaurantFromDB.address);
+                setPhone_number('' + props.restaurantFromDB.phone_number);
+                setWebsite('' + props.restaurantFromDB.website);
+                setFilename('' + props.restaurantFromDB.filename)
+                setId('' + props.restaurantFromDB.id);
+            }
+        }, [props.restaurantFromDB]);
+
+        useEffect(() => {
+            if (image) {
+                uploadImage(image);
+            }
+        }, [image])
 
         return (
             <div className='container'>
@@ -122,7 +147,7 @@ const RestaurantEditor = (props) => {
                     </div>
                     <PhoneInput
                         value={phone_number}
-                        onChange={phone => setPhone_number( phone )}
+                        onChange={phone => setPhone_number(phone)}
                         style={{marginTop: 5}}
                     />
                     <div className="form-group" style={{marginTop: 5}}>
@@ -134,6 +159,14 @@ const RestaurantEditor = (props) => {
                             onChange={(e) => setWebsite(e.target.value)}
                             placeholder={t("enter website")}
                         />
+                    </div>
+                    <div className="form-group" style={{marginTop: 5}}>
+                        <Button variant="contained" component="label">
+                            {t('upload image')}
+                            <input hidden accept="image/*" multiple type="file"
+                                   onChange={e => setImage(e.target.files[0])}/>
+                        </Button>
+                        <small>{filename}</small>
                     </div>
                     <div>
                         <button onClick={(e => saveRestaurant(e))} className="btn btn-outline-primary ml-2 btn-sm"

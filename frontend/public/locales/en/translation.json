@@ -59,5 +59,8 @@
   "good": "good",
   "excellent": "Excellent",
   "publish": "Publish",
-  "published": "Published"
+  "published": "Published",
+
+  "upload image": "upload image",
+  "not uploaded": "not uploaded"
 }
