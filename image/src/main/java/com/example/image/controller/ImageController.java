@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -31,15 +31,14 @@ public class ImageController {
     }
 
     @PostMapping
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws IOException {
-        Image image = new Image(null, null, null, 0, file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
-        Image savedImage = imageService.save(image);
-        return ResponseEntity.ok(savedImage.getFileName());
+    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files) throws Exception{
+        List<String> images = imageService.uploadImages(files);
+        return ResponseEntity.ok(images);
     }
 
     @DeleteMapping("/{fileName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String fileName) throws Exception {
-        imageService.deletebyFileName(fileName);
+        imageService.deleteByFileName(fileName);
     }
 }
