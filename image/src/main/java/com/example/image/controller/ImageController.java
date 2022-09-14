@@ -4,6 +4,7 @@ import com.example.image.model.Image;
 import com.example.image.service.ImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,11 @@ public class ImageController {
         Image image = new Image(null, null, null, 0, file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
         Image savedImage = imageService.save(image);
         return ResponseEntity.ok(savedImage.getFileName());
+    }
+
+    @DeleteMapping("/{fileName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String fileName) throws Exception {
+        imageService.deletebyFileName(fileName);
     }
 }

@@ -26,4 +26,8 @@ public class ImageService {
     public Image save(Image image) {
         return imageRepository.save(image);
     }
+
+    public void deletebyFileName(String fileName) {
+        imageRepository.deleteByFileName(fileName);
+    }
 }
