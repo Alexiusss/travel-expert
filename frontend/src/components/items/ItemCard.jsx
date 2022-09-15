@@ -19,7 +19,7 @@ const ItemCard = (props) => {
     const {item, route} = props;
     const {isAdmin} = useAuth();
     const {t} = useTranslation();
-    const image = API_URL + IMAGE_ROUTE + `${item.filename}`;
+    const image = API_URL + IMAGE_ROUTE + `${item.fileNames[0]}`;
 
     return (
         <Grid item xs={12} sm={6} md={3} key={item.id}>
@@ -39,7 +39,6 @@ const ItemCard = (props) => {
                             image={image}
                             alt={item.name}
                         />
-
                         <CardContent>
                             <Typography gutterBottom variant="h6" component="div">
                                 {item.name}

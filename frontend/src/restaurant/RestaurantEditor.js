@@ -12,18 +12,17 @@ const RestaurantEditor = (props) => {
         const [cuisine, setCuisine] = useState('');
         const [email, setEmail] = useState('');
         const [address, setAddress] = useState('');
-        const [phone_number, setPhone_number] = useState('');
+        const [phoneNumber, setPhoneNumber] = useState('');
         const [website, setWebsite] = useState('');
         const [id, setId] = useState(null);
-        const [image, setImage] = useState(null);
+        const [images, setImages] = useState([]);
         const {t} = useTranslation();
-        const [filename, setFilename] = useState(t('not uploaded'));
-
+        const [fileNames, setFileNames] = useState([]);
 
         const saveRestaurant = (e) => {
             e.preventDefault()
 
-            const restaurant = {name, cuisine, email, address, phone_number, website, filename, id}
+            const restaurant = {name, cuisine, email, address, phoneNumber, website, fileNames, id}
 
             if (id) {
                 restaurantService.update(restaurant, id)
@@ -48,11 +47,10 @@ const RestaurantEditor = (props) => {
             }
         }
 
-        const uploadImage = (image) => {
-            imageService.post(image)
+        const uploadImages = (images) => {
+            imageService.post(images)
                 .then(response => {
-                    console.log(response.data)
-                    setFilename(response.data)
+                    setFileNames(prevFileNames => prevFileNames.concat(response.data))
                 })
                 .catch(error => {
                     openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
@@ -68,10 +66,10 @@ const RestaurantEditor = (props) => {
             setName('');
             setCuisine('');
             setAddress('');
-            setPhone_number('');
+            setPhoneNumber('');
             setWebsite('');
-            setImage(null)
-            setFilename(t('not uploaded'));
+            setImages([])
+            setFileNames([]);
             setId(null);
         };
 
@@ -87,18 +85,18 @@ const RestaurantEditor = (props) => {
                 setCuisine('' + props.restaurantFromDB.cuisine);
                 setEmail('' + props.restaurantFromDB.email);
                 setAddress('' + props.restaurantFromDB.address);
-                setPhone_number('' + props.restaurantFromDB.phone_number);
+                setPhoneNumber('' + props.restaurantFromDB.phoneNumber);
                 setWebsite('' + props.restaurantFromDB.website);
-                setFilename('' + props.restaurantFromDB.filename)
+                setFileNames(props.restaurantFromDB.fileNames || [])
                 setId('' + props.restaurantFromDB.id);
             }
         }, [props.restaurantFromDB]);
 
         useEffect(() => {
-            if (image) {
-                uploadImage(image);
+            if (props.modal && images.length > 0) {
+                uploadImages(images);
             }
-        }, [image])
+        }, [images])
 
         return (
             <div className='container'>
@@ -146,8 +144,8 @@ const RestaurantEditor = (props) => {
                         />
                     </div>
                     <PhoneInput
-                        value={phone_number}
-                        onChange={phone => setPhone_number(phone)}
+                        value={phoneNumber}
+                        onChange={phone => setPhoneNumber(phone)}
                         style={{marginTop: 5}}
                     />
                     <div className="form-group" style={{marginTop: 5}}>
@@ -162,11 +160,11 @@ const RestaurantEditor = (props) => {
                     </div>
                     <div className="form-group" style={{marginTop: 5}}>
                         <Button variant="contained" component="label">
-                            {t('upload image')}
+                            {t('upload images')}
                             <input hidden accept="image/*" multiple type="file"
-                                   onChange={e => setImage(e.target.files[0])}/>
+                                   onChange={e => setImages(Array.from(e.target.files))}/>
                         </Button>
-                        <small>{filename}</small>
+                        <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                     </div>
                     <div>
                         <button onClick={(e => saveRestaurant(e))} className="btn btn-outline-primary ml-2 btn-sm"

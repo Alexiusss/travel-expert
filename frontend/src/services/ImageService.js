@@ -5,9 +5,12 @@ const get = (id) => {
     return $api.get(IMAGE_ROUTE + `${id}`);
 }
 
-const post = async (file) => {
+const post = async (files) => {
     let formData = new FormData();
-    formData.append("file", file);
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+    }
 
     return $api.post(IMAGE_ROUTE, formData, {
         headers: {
