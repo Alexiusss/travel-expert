@@ -4,7 +4,6 @@ import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
 import com.example.restaurant.model.Restaurant;
 import com.example.restaurant.repository.RestaurantRepository;
-import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,7 +59,7 @@ public class RestaurantService {
         restaurantFromDB.setAddress(restaurant.getAddress());
         restaurantFromDB.setEmail(restaurant.getEmail());
         restaurantFromDB.setName(restaurant.getName());
-        restaurantFromDB.setPhone_number(restaurant.getPhone_number());
+        restaurantFromDB.setPhoneNumber(restaurant.getPhoneNumber());
         restaurantFromDB.setWebsite(restaurant.getWebsite());
         restaurantFromDB.setCuisine(restaurant.getCuisine());
     }

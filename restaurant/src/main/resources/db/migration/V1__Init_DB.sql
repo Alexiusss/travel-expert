@@ -5,7 +5,7 @@ create table restaurants (
                        version int4 not null,
                        name varchar(255),
                        cuisine varchar(255) not null,
-                       filename varchar(255),
+                       file_names TEXT[],
                        email varchar(255) not null,
                        address varchar(255) not null,
                        phone_number varchar(255) not null,

@@ -2,14 +2,16 @@ package com.example.restaurant.model;
 
 import com.example.common.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +19,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
+@TypeDefs({
+        @TypeDef(
+                name = "string-array",
+                typeClass = StringArrayType.class
+        )
+})
 @Entity
 @Access(AccessType.FIELD)
 @Getter
@@ -52,7 +60,13 @@ public class Restaurant implements HasIdAndEmail {
     @Size(min = 5, max = 128)
     String cuisine;
 
-    String filename;
+    //  https://www.baeldung.com/java-hibernate-map-postgresql-array
+    @Type(type = "string-array")
+    @Column(
+            name = "file_names",
+            columnDefinition = "text[]"
+    )
+    String[] fileNames;
 
     @NotBlank
     @Email
@@ -67,7 +81,7 @@ public class Restaurant implements HasIdAndEmail {
     @Size(min = 5, max = 128)
     @Pattern(regexp = "([+]*[0-9]{1,4}\\s?[(]*\\d[0-9]{2,4}[)]*\\s?\\d{3}[-]*\\d{2}[-]*\\d{2})"
             , message = "Please fill the phone number in format +1 (234) 567-89-10")
-    String phone_number;
+    String phoneNumber;
 
     @NotBlank
     @Size(min = 5, max = 128)
