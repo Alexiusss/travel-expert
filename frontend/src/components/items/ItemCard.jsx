@@ -62,7 +62,6 @@ const ItemCard = (props) => {
                     }
                 </Card>
             </Link>
-
         </Grid>
     );
 };

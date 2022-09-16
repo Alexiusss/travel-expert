@@ -13,7 +13,6 @@ const ItemContact = (props) => {
                 <div>Phone number: {props.item.phone_number}</div>
                 <div>Website: {props.item.website}</div>
             </CardContent>
-
         </Card>
     );
 };
