@@ -7,7 +7,7 @@ create table reviews (
                        title varchar(255) not null,
                        description varchar(255),
                        rating int4 not null,
-                       filename varchar(255),
+                       file_names TEXT[],
                        user_id varchar(255) not null,
                        item_id varchar(255) not null,
                        primary key (id)

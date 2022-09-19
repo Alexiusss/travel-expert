@@ -59,7 +59,7 @@ public class ReviewService {
         reviewFromDB.setTitle(review.getTitle());
         reviewFromDB.setDescription(review.getDescription());
         reviewFromDB.setRating(review.getRating());
-        reviewFromDB.setFilename(reviewFromDB.getFilename());
+        reviewFromDB.setFileNames(review.getFileNames());
     }
 
     public ResponseEntity<Review> checkAuth(String authorization, Review review) {

@@ -62,5 +62,6 @@ public class RestaurantService {
         restaurantFromDB.setPhoneNumber(restaurant.getPhoneNumber());
         restaurantFromDB.setWebsite(restaurant.getWebsite());
         restaurantFromDB.setCuisine(restaurant.getCuisine());
+        restaurantFromDB.setFileNames(restaurant.getFileNames());
     }
 }

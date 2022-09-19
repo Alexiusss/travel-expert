@@ -2,20 +2,28 @@ package com.example.review.model;
 
 import com.example.common.HasId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
+@TypeDefs(
+        @TypeDef(
+                name = "string-array",
+                typeClass = StringArrayType.class
+        )
+)
 @Entity
 @Access(AccessType.FIELD)
 @Getter
@@ -58,7 +66,12 @@ public class Review implements HasId {
     @Range(min = 1, max = 5)
     private Integer rating;
 
-    private String filename;
+    @Type(type = "string-array")
+    @Column(
+            name = "file_names",
+            columnDefinition = "text[]"
+    )
+    private String[] fileNames;
 
     @NotBlank
     private String userId;
