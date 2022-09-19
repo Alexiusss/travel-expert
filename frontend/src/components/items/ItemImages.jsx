@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, ImageList, ImageListItem} from "@material-ui/core";
 import {API_URL} from "../../http/http-common";
 import {IMAGE_ROUTE} from "../../utils/consts";
 
 const ItemImages = (props) => {
+    useEffect(() => console.log(props.images), [])
 
     return (
         <Box sx={{height: 190, overflowY: 'scroll' }}>

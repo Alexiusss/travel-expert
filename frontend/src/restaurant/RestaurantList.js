@@ -73,7 +73,7 @@ const RestaurantList = () => {
                             address: updatedRestaurant.address,
                             phone_number: updatedRestaurant.phone_number,
                             website: updatedRestaurant.website,
-                            filename: updatedRestaurant.filename,
+                            fileName: updatedRestaurant.fileName,
                         }
                         :
                         restaurant

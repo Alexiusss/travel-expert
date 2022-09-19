@@ -68,7 +68,7 @@ const RestaurantEditor = (props) => {
             setAddress('');
             setPhoneNumber('');
             setWebsite('');
-            setImages([])
+            setImages([]);
             setFileNames([]);
             setId(null);
         };
@@ -160,7 +160,7 @@ const RestaurantEditor = (props) => {
                     </div>
                     <div className="form-group" style={{marginTop: 5}}>
                         <Button variant="contained" component="label">
-                            {t('upload images')}
+                            {t('upload image')}
                             <input hidden accept="image/*" multiple type="file"
                                    onChange={e => setImages(Array.from(e.target.files))}/>
                         </Button>

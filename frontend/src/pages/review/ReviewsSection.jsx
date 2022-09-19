@@ -69,6 +69,7 @@ const ReviewsSection = (props) => {
                         title: updatedReview.title,
                         description: updatedReview.description,
                         active: updatedReview.active,
+                        filenames: updatedReview.fileNames,
                     }
                     :
                     review

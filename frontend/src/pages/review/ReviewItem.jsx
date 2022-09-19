@@ -4,6 +4,7 @@ import {Rating} from "@material-ui/lab";
 import {useTranslation} from "react-i18next";
 import {useAuth} from "../../components/hooks/UseAuth";
 import MyButton from "../../components/UI/button/MyButton";
+import ItemImages from "../../components/items/ItemImages";
 
 const ReviewItem = (props) => {
 
@@ -18,6 +19,7 @@ const ReviewItem = (props) => {
     }
 
     const updateReview = (e, review) => {
+        console.log(review)
         e.preventDefault();
         props.update(review);
     }
@@ -56,6 +58,7 @@ const ReviewItem = (props) => {
                 </div>
                 <h5> {props.item.title} </h5>
                 <p>{props.item.description}</p>
+                <ItemImages images={props.item.fileNames} promiseInProgress={props.promiseInProgress}/>
             </Paper>
         </div>
     );

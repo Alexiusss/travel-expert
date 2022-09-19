@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import reviewService from '../../services/ReviewService'
 import {useTranslation} from "react-i18next";
-import {Box, Container} from "@material-ui/core";
+import {Box, Button, Container} from "@material-ui/core";
 import {useAuth} from "../../components/hooks/UseAuth";
 import {Rating} from "@material-ui/lab";
 import {getLocalizedErrorMessages} from "../../utils/consts";
+import imageService from "../../services/ImageService";
 
 const ReviewEditor = (props) => {
     const [title, setTitle] = useState('');
@@ -24,11 +25,14 @@ const ReviewEditor = (props) => {
         4: 'good',
         5: 'excellent',
     };
+    const [images, setImages] = useState([]);
     const {t} = useTranslation();
+    const [fileNames, setFileNames] = useState([]);
 
     const saveReview = (e) => {
         e.preventDefault();
-        let review = {title, description, rating, active, id, itemId, userId}
+        let review = {title, description, rating, active, id, itemId, fileNames, userId}
+        console.log(review)
 
         if (id) {
             reviewService.update(id, review)
@@ -53,6 +57,16 @@ const ReviewEditor = (props) => {
         }
     }
 
+    const uploadImages = (images) => {
+        imageService.post(images)
+            .then(response => {
+                setFileNames(prevFileNames => prevFileNames.concat(response.data))
+            })
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
+    }
+
     const cleanForm = () => {
         setTitle('');
         setDescription('');
@@ -61,6 +75,8 @@ const ReviewEditor = (props) => {
         setId(null);
         setUserId(null);
         setActive(false)
+        setImages([]);
+        setFileNames([]);
     }
 
     const openAlert = (msg, severity) => {
@@ -75,7 +91,7 @@ const ReviewEditor = (props) => {
         if (!props.modal) {
             cleanForm()
         }
-    })
+    }, [props.modal])
 
     useEffect(() => {
         const review = props.reviewFomDB;
@@ -85,11 +101,17 @@ const ReviewEditor = (props) => {
             setRating(review.rating)
             setActive(review.active)
             setItemId(review.itemId)
+            setFileNames(review.fileNames || [])
             setId(review.id)
             setUserId(review.userId)
         }
     }, [props.reviewFomDB])
 
+    useEffect(() => {
+        if (props.modal && images.length > 0) {
+            uploadImages(images);
+        }
+    }, [images])
 
     return (
         <Container>
@@ -115,6 +137,14 @@ const ReviewEditor = (props) => {
                         placeholder={t("enter description")}
                     />
                 </div>
+
+                <Button variant="contained" component="label">
+                    {t('upload image')}
+                    <input hidden accept="image/*" multiple type="file"
+                           onChange={e => setImages(Array.from(e.target.files))}/>
+                </Button>
+                <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
+
                 <Box
                     sx={{
                         display: 'flex',
