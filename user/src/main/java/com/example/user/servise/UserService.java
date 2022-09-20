@@ -41,6 +41,7 @@ public class UserService implements UserDetailsService {
             userFromDB.setEmail(user.getEmail());
             userFromDB.setFirstName(user.getFirstName());
             userFromDB.setLastName(user.getLastName());
+            userFromDB.setFileName(user.getFileName());
             if (!ObjectUtils.isEmpty(user.getPassword())) {
                 userFromDB.setPassword(user.getPassword());
                 prepareToSave(userFromDB);

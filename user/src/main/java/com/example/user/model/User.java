@@ -55,6 +55,8 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @Column(name = "activation_code")
     private String activationCode;
 
+    private String fileName;
+
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique")})
     @Column(name = "role")
