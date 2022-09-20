@@ -4,8 +4,6 @@ import {API_URL} from "../../http/http-common";
 import {IMAGE_ROUTE} from "../../utils/consts";
 
 const ItemImages = (props) => {
-    useEffect(() => console.log(props.images), [])
-
     return (
         <Box sx={{height: 190, overflowY: 'scroll' }}>
         <ImageList

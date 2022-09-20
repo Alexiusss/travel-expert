@@ -8,6 +8,8 @@ const get = (id) => {
 const post = async (files) => {
     let formData = new FormData();
 
+    console.log(files)
+
     for (let i = 0; i < files.length; i++) {
         formData.append("files", files[i]);
     }

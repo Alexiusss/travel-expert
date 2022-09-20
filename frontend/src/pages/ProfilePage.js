@@ -5,6 +5,9 @@ import {useTranslation} from "react-i18next";
 import MyModal from "../components/UI/modal/MyModal";
 import UserEditor from "../user/UserEditor";
 import MyNotification from "../components/UI/notification/MyNotification";
+import defaultAvatar from "../components/UI/images/DefaultAvatar.jpg"
+import {IMAGE_ROUTE} from "../utils/consts";
+import {API_URL} from "../http/http-common";
 
 const ProfilePage = () => {
     const [id, setId] = useState(null);
@@ -16,6 +19,7 @@ const ProfilePage = () => {
     const [modal, setModal] = useState(false);
     const [profile, setProfile] = useState({});
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
+    const [fileName, setFileName] = useState(null);
 
     useEffect(() => {
         authService.profile()
@@ -25,11 +29,12 @@ const ProfilePage = () => {
                 setFirstName(response.data.firstName);
                 setLastName(response.data.lastName);
                 setEnabled(response.data.enabled);
+                setFileName(response.data.fileName)
             })
-    }, [email, firstName, lastName]);
+    }, [email, firstName, lastName, fileName]);
 
     const editProfile = () => {
-        setProfile({id, email, firstName, lastName});
+        setProfile({id, email, firstName, lastName, fileName});
         setModal(true);
     }
 
@@ -38,6 +43,7 @@ const ProfilePage = () => {
         setEmail(updateProfile.email)
         setFirstName(updateProfile.firstName)
         setLastName(updateProfile.lastName)
+        setFileName(updateProfile.fileName)
     }
 
     return (
@@ -45,7 +51,7 @@ const ProfilePage = () => {
             <div className="card py-4" style={{border: "none"}}>
                 <div className="d-flex justify-content-center align-items-center">
                     <div className="round-image">
-                        <img src="https://i.imgur.com/Mn9kglf.jpg" className="rounded-circle" width="97"/>
+                        <img src={fileName ? API_URL + IMAGE_ROUTE + `${fileName}` : defaultAvatar} alt="Avatar" className="rounded-circle" width="97"/>
                     </div>
                 </div>
                 <div className="text-center">

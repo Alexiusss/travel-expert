@@ -4,6 +4,8 @@ import authService from '../services/AuthService'
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
 import {useAuth} from "../components/hooks/UseAuth";
+import {Button} from "@material-ui/core";
+import imageService from '../services/ImageService'
 
 const UserEditor = (props) => {
     const [email, setEmail] = useState('');
@@ -12,7 +14,10 @@ const UserEditor = (props) => {
     const [password, setPassword] = useState('');
     const [id, setId] = useState(null)
     const {t} = useTranslation();
-    const currentUserId = useAuth().id;
+    const currentUserId = useAuth().authUserId;
+    const [fileNames, setFileNames] = useState([]);
+    const [images, setImages] = useState([]);
+
 
     const cleanForm = () => {
         setEmail('');
@@ -20,11 +25,13 @@ const UserEditor = (props) => {
         setLastName('');
         setPassword('');
         setId(null);
+        setImages([]);
+        setFileNames([]);
     };
 
     const saveUser = (e) => {
         e.preventDefault()
-        const user = {email, firstName, lastName, password, id}
+        const user = {email, firstName, lastName, password, fileName: fileNames[0], id}
         if (id) {
             if (currentUserId === id) {
                 authService.updateProfile(user)
@@ -62,6 +69,16 @@ const UserEditor = (props) => {
         }
     }
 
+    const uploadImages = (images) => {
+        imageService.post(images)
+            .then(response => {
+                setFileNames(response.data)
+            })
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
+    }
+
     const openAlert = (msg, severity) => {
         props.setAlert({severity: severity, message: msg, open: true})
     }
@@ -70,7 +87,7 @@ const UserEditor = (props) => {
         if (!props.modal) {
             cleanForm()
         }
-    })
+    }, [props.modal])
 
     useEffect(() => {
         if (props.userFromDB) {
@@ -78,8 +95,15 @@ const UserEditor = (props) => {
             setFirstName('' + props.userFromDB.firstName)
             setLastName('' + props.userFromDB.lastName)
             setId('' + props.userFromDB.id)
+            setFileNames(props.userFromDB.fileName || [])
         }
     }, [props.userFromDB])
+
+    useEffect(() => {
+        if (props.modal && images.length > 0) {
+            uploadImages(images);
+        }
+    }, [images])
 
 
     return (
@@ -130,6 +154,17 @@ const UserEditor = (props) => {
                         placeholder={t("enter password")}
                     />
                 </div>
+
+                <div className="form-group" style={{marginTop: 5}}>
+                    <Button variant="contained" component="label">
+                        {t('upload images')}
+                        <input hidden accept="image/*" multiple type="file"
+                               onChange={e => setImages(Array.from(e.target.files))}
+                        />
+                    </Button>
+                    <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
+                </div>
+
                 <div>
                     <button onClick={(e => saveUser(e))} className="btn btn-outline-primary ml-2 btn-sm"
                             style={{marginTop: 10}}>{t("save")}
