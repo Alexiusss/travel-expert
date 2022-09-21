@@ -21,4 +21,7 @@ const post = async (files) => {
     })
 }
 
-export default {get, post}
+const remove = (fileName) => {
+    return $api.delete(IMAGE_ROUTE + `${fileName}`)
+}
+export default {get, post, remove}

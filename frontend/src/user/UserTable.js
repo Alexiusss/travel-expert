@@ -5,11 +5,16 @@ import "./UserTable.css"
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
 import {useAuth} from "../components/hooks/UseAuth";
+import imageService from "../services/ImageService";
 
 const UserTable = (props) => {
     const {isAdmin} = useAuth();
 
     const deleteUser = (user) => {
+        imageService.remove(user.fileName)
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
         userService.remove(user.id)
             .then(response => {
                     props.remove(user);
@@ -17,7 +22,6 @@ const UserTable = (props) => {
                 }
             )
             .catch(error => {
-                console.log('Something went wrong', error);
                 openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
             })
     }
