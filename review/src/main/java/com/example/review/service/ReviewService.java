@@ -3,6 +3,7 @@ package com.example.review.service;
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
 import com.example.review.model.Review;
+import com.example.review.model.dto.Rating;
 import com.example.review.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -23,11 +28,28 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final AuthClient authClient;
 
+    public Rating getRating(String itemId) {
+        Map<Integer, Integer> ratings = new HashMap<>();
+        List<Review> reviewList = reviewRepository.findAllByItemId(itemId);
+
+        reviewList.forEach(s -> ratings.merge(s.getRating(), 1, Math::addExact));
+
+        for (int i = 0; i <= 5; i++) {
+            ratings.putIfAbsent(i, 0);
+        }
+
+        double averageRating = reviewList.stream()
+                .mapToDouble(Review::getRating)
+                .average().orElse(0.0);
+
+        return new Rating(averageRating, ratings);
+    }
+
     public Page<Review> getAllPaginated(Pageable pageable, String filter) {
         if (filter.isEmpty()) {
             return reviewRepository.findAll(pageable);
         }
-        return reviewRepository.findAllByWithFilter(pageable, filter);
+        return reviewRepository.findAllWithFilter(pageable, filter);
     }
 
     public Page<Review> getAllPaginatedByItemId(Pageable pageable, String id, String filter) {
