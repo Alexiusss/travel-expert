@@ -44,6 +44,11 @@ const ReviewsSection = (props) => {
                     setTotalPages(data.totalPages);
                 });
         }
+
+        return () => {
+            setReviews([]);
+            setTotalPages(0);
+        }
     }, [setReviews, page, size, filter])
 
     const update = (id) => {
