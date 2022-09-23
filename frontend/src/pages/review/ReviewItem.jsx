@@ -58,7 +58,9 @@ const ReviewItem = (props) => {
                 </div>
                 <h5> {props.item.title} </h5>
                 <p>{props.item.description}</p>
-                <ItemImages images={props.item.fileNames} promiseInProgress={props.promiseInProgress}/>
+                {props.item.fileNames.length > 0 &&
+                    <ItemImages images={props.item.fileNames} promiseInProgress={props.promiseInProgress}/>
+                }
             </Paper>
         </div>
     );

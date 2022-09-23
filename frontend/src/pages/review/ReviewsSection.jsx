@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import reviewService from "../../services/ReviewService";
 import ReviewList from "./ReviewList";
 import {trackPromise, usePromiseTracker} from "react-promise-tracker";
-import {Container} from "@material-ui/core";
+import {Box, Container} from "@material-ui/core";
 import SkeletonCard from "./SceletonCard";
 import MyButton from "../../components/UI/button/MyButton";
 import MyModal from "../../components/UI/modal/MyModal";
@@ -13,6 +13,7 @@ import {getLocalizedErrorMessages} from "../../utils/consts";
 import ItemFilter from "../../components/items/ItemFilter";
 import MySelect from "../../components/UI/select/MySelect";
 import Pagination from "@material-ui/lab/Pagination";
+import ItemRating from "../../components/items/ItemRating";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
@@ -113,11 +114,17 @@ const ReviewsSection = (props) => {
             <Container maxWidth="md">
                 {props.itemId && (
                     <>
-                    <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                              onClick={() => setModal(true)}>
-                        {t('write review')}
-                    </MyButton>
-                    <hr style={{margin: '15px 0'}}/>
+                    <div style={{ display: "flex", justifyContent: 'space-between'}}>
+                        <h4>Reviews <span>({reviews.length})</span></h4>
+                        <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                                  onClick={() => setModal(true)}>
+                            {t('write review')}
+                        </MyButton>
+                    </div>
+                        <hr style={{margin: '15px 0'}}/>
+                        {props.rating &&
+                            <ItemRating rating={props.rating}/>
+                        }
                     </>
                 )
                 }
@@ -126,8 +133,8 @@ const ReviewsSection = (props) => {
                 {promiseInProgress
                     ? <SkeletonCard listsToRender={10}/>
                     : <>
-                    <ReviewList reviews={reviews} update={update} remove={removeReview}/>
-                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                        <ReviewList reviews={reviews} update={update} remove={removeReview} promiseInProgress={promiseInProgress}/>
+                        <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
                     </>
                 }
             </Container>

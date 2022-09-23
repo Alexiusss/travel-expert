@@ -6,7 +6,7 @@ const ItemPageHeader = (props) => {
     return (
         <div>
             <h2>{props.name}</h2>
-            <Rating name="half-rating-read" defaultValue={3.44}  precision={0.1} readOnly />
+            <Rating name="half-rating-read" value={props.rating.averageRating || 0}  precision={0.1} readOnly />
             <br/>
             <span>{props.description}</span>
         </div>
