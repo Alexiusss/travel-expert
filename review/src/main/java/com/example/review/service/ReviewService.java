@@ -34,15 +34,19 @@ public class ReviewService {
 
         reviewList.forEach(s -> ratings.merge(s.getRating(), 1, Math::addExact));
 
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 1; i <= 5; i++) {
             ratings.putIfAbsent(i, 0);
         }
 
-        double averageRating = reviewList.stream()
+        Double averageRating = getAverageRating(reviewList);
+
+        return new Rating(itemId, averageRating, ratings);
+    }
+
+    private Double getAverageRating(List<Review> reviewList) {
+        return reviewList.stream()
                 .mapToDouble(Review::getRating)
                 .average().orElse(0.0);
-
-        return new Rating(averageRating, ratings);
     }
 
     public Page<Review> getAllPaginated(Pageable pageable, String filter) {

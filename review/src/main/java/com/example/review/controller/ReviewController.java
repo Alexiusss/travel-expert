@@ -1,6 +1,7 @@
 package com.example.review.controller;
 
 import com.example.review.model.Review;
+import com.example.review.model.dto.Rating;
 import com.example.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -30,6 +32,12 @@ public class ReviewController {
     public ResponseEntity<Review> get(@PathVariable String id) {
         log.info("get review {}", id);
         return ResponseEntity.ok(reviewService.get(id));
+    }
+
+    @Operation(summary = "Get a rating by item id")
+    @GetMapping("/{id}/item/rating")
+    public ResponseEntity<Rating> getRating(@PathVariable String id) {
+        return ResponseEntity.ok(reviewService.getRating(id));
     }
 
     @Operation(summary = "Return a list of reviews by item id and filtered according to the query parameters")
