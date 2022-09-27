@@ -7,6 +7,7 @@ import com.example.review.model.dto.Rating;
 import com.example.review.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -56,11 +58,23 @@ public class ReviewService {
         return reviewRepository.findAllWithFilter(pageable, filter);
     }
 
-    public Page<Review> getAllPaginatedByItemId(Pageable pageable, String id, String filter) {
+    public Page<Review> getAllPaginatedByItemId(Pageable pageable, String id, String filter, String[] ratings) {
+        Page<Review> reviews;
         if (filter.isEmpty()) {
-            return reviewRepository.findAllByItemId(pageable, id);
+            reviews = reviewRepository.findAllByItemId(pageable, id);
+        } else {
+            reviews = reviewRepository.findAllByItemIdFiltered(pageable, id, filter);
         }
-        return reviewRepository.findAllByItemIdFiltered(pageable, id, filter);
+        if (ratings.length > 0) {
+
+            reviews = getAllFilteredByRatings(reviews, pageable, ratings);
+        }
+        return reviews;
+    }
+
+    public Page<Review> getAllFilteredByRatings(Page<Review> reviews, Pageable pageable, String[] ratings) {
+        List<Review> filteredReviews = reviews.get().filter(review -> List.of(ratings).contains(review.getRating().toString())).collect(Collectors.toList());
+        return new PageImpl<>(filteredReviews, pageable, filteredReviews.size());
     }
 
     public Review get(String id) {

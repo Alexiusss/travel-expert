@@ -46,10 +46,11 @@ public class ReviewController {
             @PathVariable String id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "") String filter
+            @RequestParam(defaultValue = "", required = false) String filter,
+            @RequestParam(defaultValue = "", required = false) String[] ratings
             ) {
         log.info("get all reviews for item {}", id);
-        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter));
+        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter, ratings));
     }
 
     @Operation(summary = "Return a list of reviews and filtered according the query parameters", description = "A JWT token is required to access this API.")
