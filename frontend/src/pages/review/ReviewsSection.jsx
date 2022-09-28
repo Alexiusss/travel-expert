@@ -26,7 +26,7 @@ const ReviewsSection = (props) => {
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(12);
     const pageSizes = [20, 50, 100];
-    const [filter, setFilter] = useState({config: null, query: ''})
+    const [filter, setFilter] = useState({ratingFilters: [], query: ''})
     const {t} = useTranslation();
 
     useEffect(() => {
@@ -45,7 +45,6 @@ const ReviewsSection = (props) => {
                     setTotalPages(data.totalPages);
                 });
         }
-
         return () => {
             setReviews([]);
             setTotalPages(0);
@@ -123,7 +122,7 @@ const ReviewsSection = (props) => {
                     </div>
                         <hr style={{margin: '15px 0'}}/>
                         {props.rating &&
-                            <ItemRating rating={props.rating}/>
+                            <ItemRating rating={props.rating} reviewsCount={reviews.length} filter={filter} setFilter={setFilter}/>
                         }
                     </>
                 )

@@ -26,7 +26,8 @@ export default class ReviewService {
             params: {
                 size: size,
                 page: page - 1,
-                filter: filter.query
+                filter: filter.query,
+                ratings: filter.ratingFilters.toString()
             }
         });
     }
