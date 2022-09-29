@@ -108,6 +108,17 @@ const ReviewsSection = (props) => {
         setPage(1);
     }
 
+    const setRatingFilter = (e) => {
+        let value = +e.target.value;
+        let ratingFilters = filter.ratingFilters;
+
+        if (ratingFilters.includes(value)) {
+            setFilter({...ratingFilters, ratingFilters: ratingFilters.filter(r => r !== value), query: ''})
+        } else {
+            setFilter({...ratingFilters, ratingFilters: [...ratingFilters, value], query: ''})
+        }
+    }
+
     return (
         <>
             <Container maxWidth="md">
@@ -122,7 +133,7 @@ const ReviewsSection = (props) => {
                     </div>
                         <hr style={{margin: '15px 0'}}/>
                         {props.rating &&
-                            <ItemRating rating={props.rating} reviewsCount={reviews.length} filter={filter} setFilter={setFilter}/>
+                            <ItemRating rating={props.rating} reviewsCount={reviews.length} setRatingFilter={setRatingFilter}/>
                         }
                     </>
                 )

@@ -19,7 +19,6 @@ const ReviewItem = (props) => {
     }
 
     const updateReview = (e, review) => {
-        console.log(review)
         e.preventDefault();
         props.update(review);
     }

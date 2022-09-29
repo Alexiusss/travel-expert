@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 
 const ItemRating = (props) => {
     const {t} = useTranslation();
-    const [ratingFilters, setRatingFilters] = useState(props.filter.ratingFilters || []);
+    const {rating, reviewsCount, setRatingFilter} = props;
     const labels = {
         1: 'useless',
         2: 'poor',
@@ -13,34 +13,22 @@ const ItemRating = (props) => {
         5: 'excellent',
     };
 
-    const handleCheckbox = (e) => {
-        let value = +e.target.value;
-        if (ratingFilters.includes(value)) {
-            setRatingFilters(ratingFilters.filter(r => r !== value))
-        } else {
-            setRatingFilters([...ratingFilters, value]);
-        }
-    }
-
-    useEffect(() => {
-        props.setFilter({...ratingFilters, ratingFilters: ratingFilters})
-    }, [ratingFilters])
 
     return (
         <Box>
             <Grid container>
-                {Object.entries(props.rating.ratingsMap).map(([key, value]) =>
+                {Object.entries(rating.ratingsMap).map(([key, value]) =>
                     <Grid key={key} container alignItems="center" direction="row">
                         <Grid item xs={4}>
                             <FormControlLabel
                                 control={
-                                    <Checkbox onChange={handleCheckbox} size="small" color="default" value={key || ''}/>
+                                    <Checkbox onChange={setRatingFilter} size="small" color="default" value={key || ''}/>
                                 }
                                 label={t(labels[key])}
                             />
                         </Grid>
                         <Grid item xs={4}>
-                            <LinearProgress variant="determinate" value={(+value / props.reviewsCount) * 100}/>
+                            <LinearProgress variant="determinate" value={(+value / reviewsCount) * 100}/>
                         </Grid>
                     </Grid>
                 )
