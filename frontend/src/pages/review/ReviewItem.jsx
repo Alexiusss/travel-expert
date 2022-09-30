@@ -30,7 +30,9 @@ const ReviewItem = (props) => {
 
     return (
         <div>
-            <Paper elevation={3}>
+            <Paper className="paperItem" elevation={3}
+                   style={!props.item.active ? {backgroundColor: "darkgray"} : {}}
+            >
                 <Box
                     sx={{
                         display: 'flex',
