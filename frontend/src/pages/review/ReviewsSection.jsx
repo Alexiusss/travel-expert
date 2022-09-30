@@ -19,6 +19,7 @@ const ReviewsSection = (props) => {
     const area = 'reviews';
     const {promiseInProgress} = usePromiseTracker({area});
     const [reviews, setReviews] = useState([]);
+    const [reviewsCount, setReviewsCount] = useState(0);
     const [reviewFromDB, setReviewFromDB] = useState(null);
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
@@ -43,6 +44,9 @@ const ReviewsSection = (props) => {
                 .then(({data}) => {
                     setReviews(data.content);
                     setTotalPages(data.totalPages);
+                    if (filter.ratingFilters.length === 0) {
+                        setReviewsCount(data.content.length);
+                    }
                 });
         }
         return () => {
@@ -124,27 +128,36 @@ const ReviewsSection = (props) => {
             <Container maxWidth="md">
                 {props.itemId && (
                     <>
-                    <div style={{ display: "flex", justifyContent: 'space-between'}}>
-                        <h4>Reviews <span>({reviews.length})</span></h4>
-                        <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                                  onClick={() => setModal(true)}>
-                            {t('write review')}
-                        </MyButton>
-                    </div>
+                        <div style={{display: "flex", justifyContent: 'space-between'}}>
+                            <h4>Reviews <span>({reviews.length})</span></h4>
+                            <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                                      onClick={() => setModal(true)}>
+                                {t('write review')}
+                            </MyButton>
+                        </div>
                         <hr style={{margin: '15px 0'}}/>
-                        {props.rating &&
-                            <ItemRating rating={props.rating} reviewsCount={reviews.length} setRatingFilter={setRatingFilter}/>
+                        {(props.rating && reviewsCount > 0) &&
+                            <ItemRating rating={props.rating} reviewsCount={reviewsCount}
+                                        setRatingFilter={setRatingFilter}/>
                         }
                     </>
                 )
                 }
-                <ItemFilter filter={filter} setFilter={setFilter}/>
-                <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
+                {reviewsCount > 0 &&
+                    <>
+                        <ItemFilter filter={filter} setFilter={setFilter}/>
+                        <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
+                    </>
+                }
                 {promiseInProgress
                     ? <SkeletonCard listsToRender={10}/>
-                    : <>
-                        <ReviewList reviews={reviews} update={update} remove={removeReview} promiseInProgress={promiseInProgress}/>
-                        <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                    :
+                    <>
+                        <ReviewList reviews={reviews} update={update} remove={removeReview}
+                                    promiseInProgress={promiseInProgress}/>
+                        {reviewsCount > 0 &&
+                            <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                        }
                     </>
                 }
             </Container>
