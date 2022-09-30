@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Box, Checkbox, FormControlLabel, Grid, LinearProgress, Typography} from "@material-ui/core";
+import React from 'react';
+import {Box, Checkbox, FormControlLabel, Grid, LinearProgress} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 
 const ItemRating = (props) => {
     const {t} = useTranslation();
-    const {rating, reviewsCount, setRatingFilter} = props;
+    const {rating,  reviewsCount, setRatingFilter} = props;
     const labels = {
         1: 'useless',
         2: 'poor',
@@ -13,11 +13,10 @@ const ItemRating = (props) => {
         5: 'excellent',
     };
 
-
     return (
         <Box>
             <Grid container>
-                {Object.entries(rating.ratingsMap).map(([key, value]) =>
+                {rating.ratingsMap  && Object.entries(rating.ratingsMap).map(([key, value]) =>
                     <Grid key={key} container alignItems="center" direction="row">
                         <Grid item xs={4}>
                             <FormControlLabel
@@ -28,7 +27,7 @@ const ItemRating = (props) => {
                             />
                         </Grid>
                         <Grid item xs={4}>
-                            <LinearProgress variant="determinate" value={(+value / reviewsCount) * 100}/>
+                            <LinearProgress variant="determinate" value={value ? (+value / reviewsCount) * 100 : 0}/>
                         </Grid>
                     </Grid>
                 )

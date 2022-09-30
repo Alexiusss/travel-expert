@@ -32,7 +32,6 @@ const ReviewEditor = (props) => {
     const saveReview = (e) => {
         e.preventDefault();
         let review = {title, description, rating, active, id, itemId, fileNames, userId}
-        console.log(review)
 
         if (id) {
             reviewService.update(id, review)
