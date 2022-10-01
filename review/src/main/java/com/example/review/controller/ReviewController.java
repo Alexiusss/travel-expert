@@ -14,7 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -32,6 +31,13 @@ public class ReviewController {
     public ResponseEntity<Review> get(@PathVariable String id) {
         log.info("get review {}", id);
         return ResponseEntity.ok(reviewService.get(id));
+    }
+
+    @Operation(summary = "Get a rating by item id")
+    @GetMapping("/{itemId}/rating")
+    public ResponseEntity<Integer> getByItemId(@PathVariable String itemId) {
+        log.info("get review {}", itemId);
+        return ResponseEntity.ok(reviewService.getRatingByItemId(itemId));
     }
 
     @Operation(summary = "Get a rating by item id")

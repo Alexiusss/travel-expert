@@ -12,6 +12,10 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends BaseRepository<Review> {
 
+    @Query("SELECT AVG(r.rating) FROM Review r " +
+            "WHERE r.itemId=?1")
+    Integer getRatingByItemId(String itemId);
+
     @Override
     @Query("SELECT r FROM Review r " +
             "ORDER BY r.createdAt DESC")
