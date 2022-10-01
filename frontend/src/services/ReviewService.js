@@ -11,6 +11,10 @@ export default class ReviewService {
         return $api.get(REVIEWS_ROUTE + `${id}` + '/item/rating');
     }
 
+    static async getRatingValueByItemId(itemId) {
+        return $api.get(REVIEWS_ROUTE + `${itemId}` + '/rating');
+    }
+
     static async getAll(size = 20, page = 1, filter = "") {
         return $api.get(REVIEWS_ROUTE, {
             params: {

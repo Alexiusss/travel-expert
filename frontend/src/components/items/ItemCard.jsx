@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     Grid,
     Card,
@@ -13,13 +13,25 @@ import {useAuth} from "../hooks/UseAuth";
 import {useTranslation} from "react-i18next";
 import {IMAGE_ROUTE} from "../../utils/consts";
 import {API_URL} from "../../http/http-common";
+import {Rating} from "@material-ui/lab";
+import reviewService from '../../services/ReviewService';
 
 
 const ItemCard = (props) => {
     const {item, route} = props;
     const {isAdmin} = useAuth();
     const {t} = useTranslation();
+    const [ratingValue, setRatingValue] = React.useState(0);
     const image = API_URL + IMAGE_ROUTE + `${item.fileNames[0]}`;
+
+    useEffect(() => {
+        reviewService.getRatingValueByItemId(props.itemId)
+            .then(({data}) => {
+                setRatingValue(+data)
+                console.log(data)
+            });
+        return setRatingValue(0);
+    }, [])
 
     return (
         <Grid item xs={12} sm={6} md={3} key={item.id}>
@@ -43,6 +55,7 @@ const ItemCard = (props) => {
                             <Typography gutterBottom variant="h6" component="div">
                                 {item.name}
                             </Typography>
+                            <Rating name="half-rating-read" value={ratingValue} size="medium" readOnly />
                         </CardContent>
                     </CardActionArea>
                     {isAdmin ?

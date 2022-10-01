@@ -21,7 +21,7 @@ const ItemGrid = (props) => {
               direction="row"
         >
             {props.items.map((item) =>
-                <ItemCard item={item} route={props.route} remove={removeItem} update={updateItem} key={item.id}/>
+                <ItemCard item={item} itemId={item.id} route={props.route} remove={removeItem} update={updateItem} key={item.id}/>
             )}
         </Grid>
     );
