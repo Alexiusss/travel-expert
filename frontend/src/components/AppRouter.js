@@ -14,28 +14,30 @@ const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
 
     return (
-        <Switch>
-            <Route exact path={"/"} component={HomePage}/>
-            <Route exact path={"/login"} component={LoginForm}/>
-            <Route exact path={"/register"} component={RegisterForm}/>
-            <Route exact path={"/restaurants/"} component={RestaurantList}/>
-            <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
-            {isAuth
-                ?
-                <Route exact path={"/profile"}
-                       component={ProfilePage}/>
-                :
-                <h3>403 Access denied</h3>
-            }
-            {/*https://stackoverflow.com/questions/66463284/react-router-warning-route-elements-should-not-change-from-controlled-to-unco*/}
-            {(isAdmin || isModerator) &&
-                [
-                    <Route exact path={"/users"} key={"/users"} component={UsersList}/>,
-                    <Route exact path={"/reviews"} key={"/reviews"} component={ReviewsSection}/>
-                ]
-            }
+        <main className="content">
+            <Switch>
+                <Route exact path={"/"} component={HomePage}/>
+                <Route exact path={"/login"} component={LoginForm}/>
+                <Route exact path={"/register"} component={RegisterForm}/>
+                <Route exact path={"/restaurants/"} component={RestaurantList}/>
+                <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
+                {isAuth
+                    ?
+                    <Route exact path={"/profile"}
+                           component={ProfilePage}/>
+                    :
+                    <h3>403 Access denied</h3>
+                }
+                {/*https://stackoverflow.com/questions/66463284/react-router-warning-route-elements-should-not-change-from-controlled-to-unco*/}
+                {(isAdmin || isModerator) &&
+                    [
+                        <Route exact path={"/users"} key={"/users"} component={UsersList}/>,
+                        <Route exact path={"/reviews"} key={"/reviews"} component={ReviewsSection}/>
+                    ]
+                }
 
-        </Switch>
+            </Switch>
+        </main>
     );
 };
 

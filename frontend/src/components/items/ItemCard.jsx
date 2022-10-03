@@ -28,7 +28,6 @@ const ItemCard = (props) => {
         reviewService.getRatingValueByItemId(props.itemId)
             .then(({data}) => {
                 setRatingValue(+data)
-                console.log(data)
             });
         return setRatingValue(0);
     }, [])
