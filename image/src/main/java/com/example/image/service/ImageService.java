@@ -3,6 +3,7 @@ package com.example.image.service;
 import com.example.image.model.Image;
 import com.example.image.repository.ImageRepository;
 import lombok.AllArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,15 +28,6 @@ public class ImageService {
        return image;
     }
 
-    public Image save(MultipartFile file) throws IOException  {
-        Image image = new Image(null, null, null, 0, file.getOriginalFilename(), file.getContentType(), file.getSize(), file.getBytes());
-        return imageRepository.save(image);
-    }
-
-    public void deleteByFileName(String fileName) {
-        imageRepository.deleteByFileName(fileName);
-    }
-
     public List<String> uploadImages(MultipartFile[] files) {
         return Arrays.stream(files).map((MultipartFile file) -> {
             try {
@@ -45,5 +37,28 @@ public class ImageService {
             }
             return null;
         }).collect(Collectors.toList());
+    }
+
+    public Image save(MultipartFile file) throws IOException  {
+        String newFileName = generateFileName(file.getOriginalFilename());
+        Image image = new Image(null, null, null, 0, newFileName, file.getContentType(), file.getSize(), file.getBytes());
+        return imageRepository.save(image);
+    }
+
+    public String generateFileName(String fileName) {
+        String randomNumber = generateNumber();
+        String currentDateToAsString = DateTime.now().toString("HHmmss_ddMMyyyy");
+        return currentDateToAsString + "_" + randomNumber + "_" + fileName;
+    }
+
+    public String generateNumber() {
+        int min = 1000;
+        int max = 999999;
+        int random_int = (int) (Math.random() * (max - min + 1) + min);
+        return "" + random_int;
+    }
+
+    public void deleteByFileName(String fileName) {
+        imageRepository.deleteByFileName(fileName);
     }
 }
