@@ -59,6 +59,11 @@ public class UserService implements UserDetailsService {
         userRepository.deleteExisted(id);
     }
 
+    public String getAuthorName(String id) {
+        User user = get(id);
+        return user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
+    }
+
     public User get(String id) {
         return userRepository.getExisted(id);
     }
