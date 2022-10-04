@@ -1,16 +1,29 @@
-import React from 'react';
-import {Box, Paper} from "@material-ui/core";
+import React, {useEffect, useState} from 'react';
+import {
+    Avatar,
+    Box,
+    Button, CardActions,
+    CardHeader,
+    CardMedia,
+    Typography
+} from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import {useTranslation} from "react-i18next";
 import {useAuth} from "../../components/hooks/UseAuth";
-import MyButton from "../../components/UI/button/MyButton";
 import ItemImages from "../../components/items/ItemImages";
+import {API_URL} from "../../http/http-common";
+import {IMAGE_ROUTE} from "../../utils/consts";
+import {Card} from "reactstrap";
+import userService from "../../services/user.service";
+import reviewService from "../../services/ReviewService";
 
 const ReviewItem = (props) => {
 
     const {t, i18n} = useTranslation();
     const {authUserId, isAdmin, isModerator} = useAuth();
     const isAuthor = authUserId === props.item.userId;
+    const [author, setAuthor] = useState("");
+    const [reviewsCount, setReviewsCount] = useState(0);
 
     // https://stackoverflow.com/a/50607453
     const getFormattedDate = (date) => {
@@ -28,41 +41,85 @@ const ReviewItem = (props) => {
         props.remove(reviewId)
     }
 
+    useEffect(() => {
+        userService.getAuthor(props.item.userId)
+            .then(({data}) => {
+                setAuthor(data)
+            })
+    }, [])
+
+    useEffect(() => {
+        reviewService.getCountByUserId(props.item.userId)
+            .then(({data}) => {
+                setReviewsCount(data)
+            })
+    }, [])
+
     return (
         <div>
-            <Paper className="paperItem" elevation={3}
-                   style={!props.item.active ? {backgroundColor: "darkgray"} : {}}
+            <Card className="paperItem" elevation={3}
+                  style={!props.item.active ? {backgroundColor: "darkgray"} : {}}
             >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Rating name="half-rating-read" defaultValue={0} value={props.item.rating} size="small" readOnly/>
-                    <Box sx={{ml: 1}}><small>{t("published")} {getFormattedDate(props.item.createdAt)}</small></Box>
-                </Box>
-                <div style={{float: 'right'}}>
-                    {isModerator &&
-                        <MyButton className="btn btn-outline-info btn-sm"
-                                  onClick={e => updateReview(e, props.item.id)}
+                <CardHeader
+                    avatar={
+                        <div>
+                            <div>
+                                <Avatar src={API_URL + IMAGE_ROUTE + `rest3 (5th copy).jpg`}/>
+                            </div>
+                            <div>
+                                <Typography
+                                    variant="caption">{author && author}</Typography>
+                            </div>
+                            <div>
+                                <Typography variant="caption">{t('reviews')+ ": " +reviewsCount}</Typography>
+                            </div>
+                        </div>
+                    }
+                    title={
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}
                         >
-                            {t("edit")}
-                        </MyButton>
+                            <Rating name="half-rating-read" defaultValue={0} value={props.item.rating}
+                                    size="small"
+                                    readOnly/>
+                            <Box
+                                sx={{ml: 1}}><small>{t("published")} {getFormattedDate(props.item.createdAt)}</small></Box>
+                        </Box>
                     }
-                    {'  '}
-                    {(isAdmin || isAuthor) &&
-                        <MyButton className="btn btn-outline-danger btn-sm"
-                                  onClick={e => removeReview(e, props.item)}>
-                            {t("delete")}</MyButton>
+                    subheader={
+                        <>
+                            <h6> {props.item.title} </h6>
+                            <p>{props.item.description}</p>
+
+                        </>
                     }
-                </div>
-                <h5> {props.item.title} </h5>
-                <p>{props.item.description}</p>
+                />
                 {props.item.fileNames.length > 0 &&
-                    <ItemImages images={props.item.fileNames} promiseInProgress={props.promiseInProgress}/>
+                    <CardMedia>
+                        <ItemImages images={props.item.fileNames} promiseInProgress={props.promiseInProgress}/>
+                    </CardMedia>
                 }
-            </Paper>
+                {(isAdmin || isAuthor || isAuthor) &&
+                    <CardActions>
+                        {isModerator &&
+                            <Button size="small" color="primary"
+                                    onClick={e => updateReview(e, props.item.id)}
+                            >
+                                {t("edit")}
+                            </Button>
+                        }
+                        {'  '}
+                        {(isAdmin || isAuthor) &&
+                            <Button size="small" color="secondary"
+                                    onClick={e => removeReview(e, props.item)}>
+                                {t("delete")}</Button>
+                        }
+                    </CardActions>
+                }
+            </Card>
         </div>
     );
 };
