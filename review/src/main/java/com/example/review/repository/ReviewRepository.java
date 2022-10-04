@@ -16,6 +16,10 @@ public interface ReviewRepository extends BaseRepository<Review> {
             "WHERE r.itemId=?1")
     Integer getRatingByItemId(String itemId);
 
+    @Query("SELECT COUNT(r.id) FROM Review r " +
+            "WHERE r.userId=?1")
+    Integer getCountByUserId(String userId);
+
     @Override
     @Query("SELECT r FROM Review r " +
             "ORDER BY r.createdAt DESC")

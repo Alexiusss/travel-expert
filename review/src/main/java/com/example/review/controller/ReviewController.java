@@ -46,6 +46,12 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getRating(id));
     }
 
+    @Operation(summary = "Get the number of reviews per user id")
+    @GetMapping("/{userId}/user/count")
+    public ResponseEntity<Integer> getCountByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(reviewService.getCountByUserId(userId));
+    }
+
     @Operation(summary = "Return a list of reviews by item id and filtered according to the query parameters")
     @GetMapping("/{id}/item")
     public ResponseEntity<?> getAllByItemId(

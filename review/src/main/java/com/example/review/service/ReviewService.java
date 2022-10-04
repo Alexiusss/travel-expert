@@ -85,6 +85,10 @@ public class ReviewService {
         return reviewRepository.getRatingByItemId(itemId);
     }
 
+    public Integer getCountByUserId(String userId) {
+        return reviewRepository.getCountByUserId(userId);
+    }
+
     public Review create(Review review) {
         Assert.notNull(review, "review must not be null");
         checkNew(review);
