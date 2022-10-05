@@ -76,6 +76,14 @@ public class ReviewControllerTest {
     }
 
     @Test
+    void getCountByUserId() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/user/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("1"));
+    }
+
+    @Test
     void getAllFiltered() throws Exception {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.get(REST_URL)

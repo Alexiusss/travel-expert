@@ -25,19 +25,21 @@ public class ReviewTestData {
     public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);
     public static String NOT_BLANK = "must not be blank";
     public static final Instant REVIEW_INSTANT = Timestamp.valueOf("2022-08-23 19:06:03.621013").toInstant();
+    public static final String ADMIN_ID = "1";
+    public static final String USER_ID = "2";
     public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
-    public static final AuthCheckResponse AUTH_USER_RESPONSE = new AuthCheckResponse("2", List.of("USER"));
+    public static final AuthCheckResponse AUTH_USER_RESPONSE = new AuthCheckResponse(USER_ID, List.of("USER"));
 
-    public static final Review REVIEW1 = new Review(REVIEW1_ID, null, null, true, 0, "review #1", "review #1 description", 5, null, "1", "2");
-    public static final Review REVIEW2 = new Review(REVIEW2_ID, null, null, false, 0, "review #2", "review #2 description", 4, null, "2", "1");
+    public static final Review REVIEW1 = new Review(REVIEW1_ID, null, null, true, 0, "review #1", "review #1 description", 5, null, ADMIN_ID, "2");
+    public static final Review REVIEW2 = new Review(REVIEW2_ID, null, null, false, 0, "review #2", "review #2 description", 4, null, USER_ID, "1");
     public static final Review REVIEW3 = new Review(REVIEW3_ID, REVIEW_INSTANT, null, true, 0, "review #3", "review #3 description", 3, null, "3", "1");
 
     public static Review getNew() {
-        return new Review(null, null, null, true, 0, "New review", "New review description", 2, null, "2", "2");
+        return new Review(null, null, null, true, 0, "New review", "New review description", 2, null, USER_ID, "2");
     }
 
     public static Review getUpdated() {
-        return new Review(REVIEW2_ID, null, null, true, 0, "Updated title", "Updated description", 2, null, "2", "1");
+        return new Review(REVIEW2_ID, null, null, true, 0, "Updated title", "Updated description", 2, null, USER_ID, "1");
     }
 
     public static void stubAdminAuth() {
