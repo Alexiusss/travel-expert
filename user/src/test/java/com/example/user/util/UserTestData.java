@@ -28,6 +28,7 @@ public class UserTestData {
     public static final User ADMIN = new User(ADMIN_ID, null, null, 0, ADMIN_MAIL, "Admin", "AdminLast", "adminPassword", true, null, List.of(Role.ADMIN, Role.MODERATOR, Role.USER));
     public static final User MODER = new User(MODER_ID, null, null, 0, MODER_MAIL, "Moder", "ModerLast", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
     public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", "userPassword", true, null, Collections.singleton(Role.USER));
+    public static final String USER_AUTHORS_NAME = USER.getFirstName() + " " + USER.getLastName().charAt(0) + ".";
 
     public static User getNew() {
        return new User("new_user@gmail.com", "New user", "NewUserLast", "NewPassword", false, null, Collections.singleton(Role.USER));

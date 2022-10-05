@@ -44,6 +44,14 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getAuthorName() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/author"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(content().string(USER_AUTHORS_NAME));
+    }
+
+    @Test
     void getNotFound() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
                 .andExpect(status().isUnprocessableEntity())
