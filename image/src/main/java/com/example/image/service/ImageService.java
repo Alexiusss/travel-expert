@@ -61,4 +61,8 @@ public class ImageService {
     public void deleteByFileName(String fileName) {
         imageRepository.deleteByFileName(fileName);
     }
+
+    public void deleteAllByFileName(String[] fileNames) {
+        imageRepository.deleteAllByFileName(fileNames);
+    }
 }

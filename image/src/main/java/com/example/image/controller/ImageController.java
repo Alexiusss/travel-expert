@@ -31,7 +31,7 @@ public class ImageController {
     }
 
     @PostMapping
-    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files) throws Exception{
+    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files) throws Exception {
         List<String> images = imageService.uploadImages(files);
         return ResponseEntity.ok(images);
     }
@@ -40,5 +40,11 @@ public class ImageController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String fileName) throws Exception {
         imageService.deleteByFileName(fileName);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAllByFileNames(@RequestParam("fileNames") String[] fileNames) throws Exception {
+        imageService.deleteAllByFileName(fileNames);
     }
 }

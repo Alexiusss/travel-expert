@@ -11,6 +11,11 @@ public interface ImageRepository extends JpaRepository<Image, String> {
 
     @Transactional
     @Modifying
+    @Query("DELETE FROM Image i WHERE i.fileName IN ?1")
+    void deleteAllByFileName(String[] fileNames);
+
+    @Transactional
+    @Modifying
     @Query("DELETE FROM Image i WHERE i.fileName=:fileName")
     void deleteByFileName(String fileName);
 }
