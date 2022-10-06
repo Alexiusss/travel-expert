@@ -14,6 +14,7 @@ import MyNotification from "../components/UI/notification/MyNotification";
 import Pagination from "@material-ui/lab/Pagination";
 import MySelect from "../components/UI/select/MySelect";
 import ItemFilter from "../components/items/ItemFilter";
+import imageService from "../services/ImageService";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -84,7 +85,7 @@ const RestaurantList = () => {
     }
 
     const removeRestaurant = (restaurant) => {
-        restaurantService.delete(restaurant.id)
+        Promise.all([imageService.removeAllByFileNames(restaurant.fileNames), restaurantService.delete(restaurant.id)])
             .then(() => {
                     setRestaurants(restaurants.filter(r => r.id !== restaurant.id))
                     openAlert([t('record deleted')], "success")

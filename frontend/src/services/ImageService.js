@@ -8,8 +8,6 @@ const get = (id) => {
 const post = async (files) => {
     let formData = new FormData();
 
-    console.log(files)
-
     for (let i = 0; i < files.length; i++) {
         formData.append("files", files[i]);
     }
@@ -24,4 +22,13 @@ const post = async (files) => {
 const remove = (fileName) => {
     return $api.delete(IMAGE_ROUTE + `${fileName}`)
 }
-export default {get, post, remove}
+
+const removeAllByFileNames = (fileNames) => {
+    return $api.post(IMAGE_ROUTE + "fileNames", fileNames, {
+        params : {
+            "action": "delete",
+        }
+    });
+}
+
+export default {get, post, remove, removeAllByFileNames}

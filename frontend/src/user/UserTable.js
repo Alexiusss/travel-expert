@@ -11,19 +11,12 @@ const UserTable = (props) => {
     const {isAdmin} = useAuth();
 
     const deleteUser = (user) => {
-        imageService.remove(user.fileName)
-            .catch(error => {
-                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
-            })
-        userService.remove(user.id)
+        Promise.all([imageService.remove(user.fileName), userService.remove(user.id)])
             .then(response => {
                     props.remove(user);
                     openAlert([t('record deleted')], "success")
                 }
             )
-            .catch(error => {
-                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
-            })
     }
 
     const updateUser = (user) => {

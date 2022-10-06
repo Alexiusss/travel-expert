@@ -14,6 +14,7 @@ import ItemFilter from "../../components/items/ItemFilter";
 import MySelect from "../../components/UI/select/MySelect";
 import Pagination from "@material-ui/lab/Pagination";
 import ItemRating from "../../components/items/ItemRating";
+import imageService from "../../services/ImageService";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
@@ -88,7 +89,7 @@ const ReviewsSection = (props) => {
     }
 
     const removeReview = (review) => {
-        reviewService.delete(review.id)
+        Promise.all([imageService.removeAllByFileNames(review.filenames), reviewService.delete(review.id)])
             .then(() => {
                 setReviews(reviews.filter(r => r.id !== review.id));
                 openAlert([t('record deleted')], "success");

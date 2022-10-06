@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.example.image.util.ImageUtil.getDefaultImage;
@@ -62,7 +63,9 @@ public class ImageService {
         imageRepository.deleteByFileName(fileName);
     }
 
-    public void deleteAllByFileName(String[] fileNames) {
-        imageRepository.deleteAllByFileName(fileNames);
+    public void deleteAllByFileName(String[] fileNames, String action) {
+        if (Objects.equals(action, "delete")) {
+            imageRepository.deleteAllByFileName(fileNames);
+        }
     }
 }

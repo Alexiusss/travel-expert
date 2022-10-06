@@ -42,9 +42,10 @@ public class ImageController {
         imageService.deleteByFileName(fileName);
     }
 
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllByFileNames(@RequestParam("fileNames") String[] fileNames) throws Exception {
-        imageService.deleteAllByFileName(fileNames);
+    // https://docs.oracle.com/en/cloud/saas/marketing/responsys-develop/API/REST/api-v1.3-lists-listName-members-post-actionDelete.htm
+    @PostMapping("/fileNames")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAllByFileNames(@RequestBody String[] fileNames, @RequestParam("action") String action) throws Exception {
+        imageService.deleteAllByFileName(fileNames, action);
     }
 }
