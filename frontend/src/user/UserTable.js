@@ -6,10 +6,9 @@ import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
 import {useAuth} from "../components/hooks/UseAuth";
 import imageService from "../services/ImageService";
+import UserItem from "./UserItem";
 
 const UserTable = (props) => {
-    const {isAdmin} = useAuth();
-
     const deleteUser = (user) => {
         Promise.all([imageService.remove(user.fileName), userService.remove(user.id)])
             .then(response => {
@@ -118,36 +117,13 @@ const UserTable = (props) => {
                     ? <tr>
                         <td>{t("data loading")}</td>
                     </tr>
-                    : users.map((user, index) =>
-                        <tr key={index}>
-                            <td>{user.firstName}</td>
-                            <td>{user.lastName}</td>
-                            <td>{user.email}</td>
-                            <td><input type="checkbox" checked={user.enabled}
-                                       onChange={() => enableUser(user, !user.enabled)}/></td>
-                            <td>{user.roles.join(', ')}</td>
-                            <td>
-                                {isAdmin ?
-                                    <MyButton className="btn btn-outline-info btn-sm" onClick={() =>
-                                        updateUser(user)
-                                    }>
-                                        {t("edit")}
-                                    </MyButton>
-                                    :
-                                    ""
-                                }
-                            </td>
-                            <td>
-                                {isAdmin ?
-                                    <MyButton className="btn btn-outline-danger btn-sm" onClick={() => {
-                                        deleteUser(user)
-                                    }}>
-                                        {t("delete")}</MyButton>
-                                    :
-                                    ""
-                                }
-                            </td>
-                        </tr>
+                    : users.map((user, index) => (
+                        <UserItem key={index}
+                                  user = {user}
+                                  updateUser={updateUser}
+                                  deleteUser={deleteUser}
+                                  enableUser={enableUser}/>
+                        )
                     )
                 }
                 </tbody>
