@@ -113,6 +113,32 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Delete a review by user id", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @DeleteMapping("/{userId}/user")
+    public ResponseEntity<Review> deleteAllByUserId(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String userId) {
+        log.info("delete all reviews from user {}", userId);
+
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.getAnyByUserId(userId));
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+
+        reviewService.deleteAllByUserId(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Delete a review by item id", description = "A JWT token is required to access this API.")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @DeleteMapping("/{itemId}/item")
+    public ResponseEntity<Review> deleteAllByItemId(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String itemId) {
+        log.info("delete all reviews from item {}", itemId);
+
+        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.getAnyByItemId(itemId));
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+
+        reviewService.deleteAllByItemId(itemId);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Update a review by its id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")

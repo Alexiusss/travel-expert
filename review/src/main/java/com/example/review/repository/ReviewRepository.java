@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,16 @@ public interface ReviewRepository extends BaseRepository<Review> {
     @Query("SELECT r FROM Review r " +
             "ORDER BY r.createdAt DESC")
     Page<Review> findAll(Pageable pageable);
+
+    Review getFirstByUserId(String userId);
+
+    Review getFirstByItemId(String itemId);
+
+    @Transactional
+    void deleteAllByUserId(String userId);
+
+    @Transactional
+    void deleteAllByItemId(String itemId);
 
     @Query("SELECT r FROM Review r " +
             "WHERE lower(r.title) LIKE lower(concat('%', :filter,'%')) " +

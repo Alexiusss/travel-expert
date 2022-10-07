@@ -1,10 +1,8 @@
 import React from 'react';
-import MyButton from "../components/UI/button/MyButton";
 import userService from "../services/user.service";
 import "./UserTable.css"
 import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
-import {useAuth} from "../components/hooks/UseAuth";
 import imageService from "../services/ImageService";
 import UserItem from "./UserItem";
 

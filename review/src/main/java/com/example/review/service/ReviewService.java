@@ -81,6 +81,14 @@ public class ReviewService {
         return reviewRepository.getExisted(id);
     }
 
+    public Review getAnyByUserId(String userId) {
+        return reviewRepository.getFirstByUserId(userId);
+    }
+
+    public Review getAnyByItemId(String userId) {
+        return reviewRepository.getFirstByItemId(userId);
+    }
+
     public Integer getRatingByItemId(String itemId) {
         return reviewRepository.getRatingByItemId(itemId);
     }
@@ -126,5 +134,13 @@ public class ReviewService {
         Review reviewFromDb = get(id);
         boolean active = reviewFromDb.isActive();
         reviewFromDb.setActive(!active);
+    }
+
+    public void deleteAllByUserId(String userId) {
+        reviewRepository.deleteAllByUserId(userId);
+    }
+
+    public void deleteAllByItemId(String itemId) {
+        reviewRepository.deleteAllByItemId(itemId);
     }
 }
