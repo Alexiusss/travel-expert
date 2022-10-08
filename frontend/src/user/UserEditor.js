@@ -95,7 +95,7 @@ const UserEditor = (props) => {
             setFirstName('' + props.userFromDB.firstName)
             setLastName('' + props.userFromDB.lastName)
             setId('' + props.userFromDB.id)
-            setFileNames(props.userFromDB.fileName || [])
+            setFileNames([props.userFromDB.fileName] || [])
         }
     }, [props.userFromDB])
 

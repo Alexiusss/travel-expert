@@ -1,0 +1,20 @@
+.profile-avatar {
+    height: 120px;
+    width: 120px;
+}
+
+.user-name {
+    display: block;
+    padding: 5px;
+    margin-left: 15px
+}
+
+.profile-flex{
+    display: inline-flex;
+    padding: 15px
+}
+
+.profile-block {
+    display: block;
+    padding: 5px;
+}

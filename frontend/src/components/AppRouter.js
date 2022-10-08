@@ -5,7 +5,7 @@ import HomePage from "../pages/HomePage";
 import LoginForm from "../pages/auth/LoginForm";
 import RegisterForm from "../pages/auth/RegisterForm";
 import {useAuth} from "./hooks/UseAuth";
-import ProfilePage from "../pages/ProfilePage";
+import ProfilePage from "../user/ProfileHeader.jsx ProfilePage.css ProfilePage.js/ProfilePage";
 import RestaurantList from "../restaurant/RestaurantList";
 import RestaurantPage from "../restaurant/RestaurantPage";
 import ReviewsSection from "../pages/review/ReviewsSection";
