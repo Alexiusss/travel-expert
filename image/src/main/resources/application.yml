@@ -33,3 +33,7 @@ logging:
     root: WARN
     com.example.image: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+clients:
+  auth:
+    url: http://localhost:8080

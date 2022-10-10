@@ -1,9 +1,13 @@
 package com.example.image.service;
 
+import com.example.clients.auth.AuthCheckResponse;
+import com.example.clients.auth.AuthClient;
 import com.example.image.model.Image;
 import com.example.image.repository.ImageRepository;
 import lombok.AllArgsConstructor;
 import org.joda.time.DateTime;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +24,7 @@ import static com.example.image.util.ImageUtil.getDefaultImage;
 public class ImageService {
 
     private ImageRepository imageRepository;
+    private final AuthClient authClient;
 
     public Image findImageByFileName(String fileName) throws IOException {
        Image image = imageRepository.findByFileName(fileName);
@@ -67,5 +72,15 @@ public class ImageService {
         if (Objects.equals(action, "delete")) {
             imageRepository.deleteAllByFileName(fileNames);
         }
+    }
+
+    public ResponseEntity<?> checkAuth(String authorization) {
+        AuthCheckResponse authCheckResponse = authClient.isAuth(authorization);
+
+        if ((!authCheckResponse.getAuthorities().contains("ADMIN") ||
+                !authCheckResponse.getAuthorities().contains("MODERATOR"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

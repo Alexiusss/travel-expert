@@ -44,8 +44,13 @@ public class ImageController {
 
     // https://docs.oracle.com/en/cloud/saas/marketing/responsys-develop/API/REST/api-v1.3-lists-listName-members-post-actionDelete.htm
     @PostMapping("/fileNames")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteAllByFileNames(@RequestBody String[] fileNames, @RequestParam("action") String action) throws Exception {
+    public ResponseEntity<?> deleteAllByFileNames(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+                                     @RequestBody String[] fileNames,
+                                     @RequestParam("action") String action) throws Exception {
+        ResponseEntity<?> isProhibited = imageService.checkAuth(authorization);
+        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+
         imageService.deleteAllByFileName(fileNames, action);
+        return ResponseEntity.noContent().build();
     }
 }
