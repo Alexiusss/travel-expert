@@ -15,6 +15,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import MySelect from "../components/UI/select/MySelect";
 import ItemFilter from "../components/items/ItemFilter";
 import imageService from "../services/ImageService";
+import reviewService from "../services/ReviewService";
 
 const RestaurantList = () => {
     const area = 'restaurants';
@@ -85,7 +86,11 @@ const RestaurantList = () => {
     }
 
     const removeRestaurant = (restaurant) => {
-        Promise.all([imageService.removeAllByFileNames(restaurant.fileNames), restaurantService.delete(restaurant.id)])
+        Promise.all([
+            imageService.removeAllByFileNames(restaurant.fileNames),
+            reviewService.deleteAllByItemId(restaurant.id),
+            restaurantService.delete(restaurant.id),
+        ])
             .then(() => {
                     setRestaurants(restaurants.filter(r => r.id !== restaurant.id))
                     openAlert([t('record deleted')], "success")

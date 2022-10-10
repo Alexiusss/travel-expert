@@ -5,10 +5,15 @@ import {useTranslation} from "react-i18next";
 import {getLocalizedErrorMessages} from "../utils/consts";
 import imageService from "../services/ImageService";
 import UserItem from "./UserItem";
+import reviewService from "../services/ReviewService";
 
 const UserTable = (props) => {
     const deleteUser = (user) => {
-        Promise.all([imageService.remove(user.fileName), userService.remove(user.id)])
+        Promise.all([
+            imageService.remove(user.fileName),
+            userService.remove(user.id),
+            reviewService.deleteAllByUserId(user.id)
+        ])
             .then(response => {
                     props.remove(user);
                     openAlert([t('record deleted')], "success")

@@ -51,4 +51,12 @@ export default class ReviewService {
     static async delete(id) {
         return $api.delete(REVIEWS_ROUTE+ `${id}`);
     }
+
+    static async deleteAllByUserId(userId) {
+        return $api.delete(REVIEWS_ROUTE+ `${userId}` + "/user");
+    }
+
+    static async deleteAllByItemId(itemId) {
+        return $api.delete(REVIEWS_ROUTE+ `${itemId}` + '/item');
+    }
 }
