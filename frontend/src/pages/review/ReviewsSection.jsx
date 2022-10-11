@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import reviewService from "../../services/ReviewService";
 import ReviewList from "./ReviewList";
 import {trackPromise, usePromiseTracker} from "react-promise-tracker";
-import {Box, Container} from "@material-ui/core";
+import {Container} from "@material-ui/core";
 import SkeletonCard from "./SceletonCard";
 import MyButton from "../../components/UI/button/MyButton";
 import MyModal from "../../components/UI/modal/MyModal";
@@ -124,6 +124,17 @@ const ReviewsSection = (props) => {
         }
     }
 
+    const removeImage = (fileName, itemId) => {
+        const updatedReview = reviews.find(review => review.id === itemId);
+        updatedReview.fileNames = updatedReview.fileNames.filter(imageName => imageName !== fileName);
+        Promise.all([reviewService.update(updatedReview.id, updatedReview), imageService.remove(fileName)])
+            .then(() => updateReview(updatedReview))
+            .catch(
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
+    }
+
     return (
         <>
             <Container maxWidth="md">
@@ -154,7 +165,10 @@ const ReviewsSection = (props) => {
                     ? <SkeletonCard listsToRender={10}/>
                     :
                     <>
-                        <ReviewList reviews={reviews} update={update} remove={removeReview}
+                        <ReviewList reviews={reviews}
+                                    update={update}
+                                    remove={removeReview}
+                                    removeImage={removeImage}
                                     promiseInProgress={promiseInProgress}/>
                         {(reviewsCount > 0 || reviews) &&
                             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded" className="pagination"/>

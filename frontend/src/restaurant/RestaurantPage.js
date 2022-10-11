@@ -4,6 +4,7 @@ import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
 import {Container} from "@material-ui/core";
 import restaurantService from "../services/RestaurantService";
 import reviewService from "../services/ReviewService";
+import imageService from '../services/ImageService'
 import ItemPageHeader from "../components/items/ItemPageHeader";
 import ItemContact from "../components/items/ItemContact";
 import ReviewsSection from "../pages/review/ReviewsSection";
@@ -16,6 +17,16 @@ const RestaurantPage = () => {
     const [restaurant, setRestaurant] = useState({});
     const [images, setImages] = useState([]);
     const [rating, setRating] = useState({});
+
+    const removeImage = (fileName) => {
+        const filteredImages = images.filter(imageName => imageName !== fileName);
+        const updatedRestaurant = {
+            ...restaurant,
+            fileNames: filteredImages,
+        }
+        Promise.all([restaurantService.update(updatedRestaurant, location.state.id), imageService.remove(fileName)])
+            .then(() => setImages(filteredImages))
+    }
 
     useEffect(() => {
         trackPromise(
@@ -30,6 +41,7 @@ const RestaurantPage = () => {
         trackPromise(reviewService.getRating(location.state.id), area)
             .then(({data}) => setRating(data))
     }, [])
+
     return (
         <Container>
             {promiseInProgress
@@ -42,7 +54,7 @@ const RestaurantPage = () => {
                     <br/>
                     <ItemContact item={restaurant}/>
                     <br/>
-                    <ItemImages images={images} promiseInProgress={promiseInProgress}/>
+                    <ItemImages images={images} promiseInProgress={promiseInProgress} removeImage={removeImage}/>
                     <br/>
                     <ReviewsSection itemId={location.state.id} rating={rating}/>
                 </>

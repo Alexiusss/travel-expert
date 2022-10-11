@@ -24,6 +24,7 @@ const ReviewItem = (props) => {
     const isAuthor = authUserId === props.item.userId;
     const [author, setAuthor] = useState("");
     const [reviewsCount, setReviewsCount] = useState(0);
+    const {removeImage = Function.prototype} = props;
 
     // https://stackoverflow.com/a/50607453
     const getFormattedDate = (date) => {
@@ -99,7 +100,7 @@ const ReviewItem = (props) => {
                 />
                 {props.item.fileNames.length > 0 &&
                     <CardMedia>
-                        <ItemImages images={props.item.fileNames} promiseInProgress={props.promiseInProgress}/>
+                        <ItemImages images={props.item.fileNames} itemId={props.item.id} promiseInProgress={props.promiseInProgress} removeImage={removeImage}/>
                     </CardMedia>
                 }
                 {(isAdmin || isAuthor || isAuthor) &&
