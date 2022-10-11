@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Box, ImageList, ImageListItem} from "@material-ui/core";
 import {API_URL} from "../../http/http-common";
 import {IMAGE_ROUTE} from "../../utils/consts";

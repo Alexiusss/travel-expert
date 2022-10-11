@@ -5,7 +5,7 @@ const MySelect = (props) => {
     const {t} = useTranslation();
 
     return (
-        <div>
+        <div style={{padding: 10}}>
             {t("items per page")}
             <select onChange={props.changeSize} value={props.size}>
                 {props.pageSizes.map((pageSize) => (

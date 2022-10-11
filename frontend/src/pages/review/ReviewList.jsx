@@ -5,7 +5,7 @@ import ReviewItem from "./ReviewItem";
 const ReviewList = (props) => {
 
     return (
-        <Container>
+        <Container style={{padding: 5}}>
             {props.reviews.map((review) =>
                 <ReviewItem item={review} key={review.id} update={props.update} remove={props.remove} promiseInProgress={props.promiseInProgress}/>
             )

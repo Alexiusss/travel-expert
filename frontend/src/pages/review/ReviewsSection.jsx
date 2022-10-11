@@ -156,8 +156,8 @@ const ReviewsSection = (props) => {
                     <>
                         <ReviewList reviews={reviews} update={update} remove={removeReview}
                                     promiseInProgress={promiseInProgress}/>
-                        {reviewsCount > 0 &&
-                            <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                        {(reviewsCount > 0 || reviews) &&
+                            <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded" className="pagination"/>
                         }
                     </>
                 }

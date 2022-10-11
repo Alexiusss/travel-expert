@@ -136,7 +136,7 @@ const RestaurantList = () => {
                 : <>
                     <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} update={update}
                               remove={removeRestaurant}/>
-                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded" className="pagination"/>
                 </>
             }
             <MyModal visible={modal} setVisible={setModal}>

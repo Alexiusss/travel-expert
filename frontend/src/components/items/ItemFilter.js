@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 const ItemFilter = ({filter, setFilter}) => {
     const {t} = useTranslation();
     return (
-        <div>
+        <div style={{padding: 5}}>
             <MyInput
                 value={filter.query}
                 onChange={e => setFilter({...filter, query: e.target.value})}
