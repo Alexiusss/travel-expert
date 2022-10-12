@@ -3,6 +3,7 @@ package com.example.user.servise;
 import com.example.user.AuthUser;
 import com.example.user.model.Role;
 import com.example.user.model.User;
+import com.example.user.model.dto.AuthorDTO;
 import com.example.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,11 @@ public class UserService implements UserDetailsService {
         userRepository.deleteExisted(id);
     }
 
-    public String getAuthorName(String id) {
+    public AuthorDTO getAuthor(String id) {
         User user = get(id);
-        return user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
+        String authorName = user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
+        String fileName = user.getFileName();
+        return new AuthorDTO(authorName, fileName);
     }
 
     public User get(String id) {

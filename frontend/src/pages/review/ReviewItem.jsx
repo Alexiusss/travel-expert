@@ -65,11 +65,11 @@ const ReviewItem = (props) => {
                     avatar={
                         <div>
                             <div>
-                                <Avatar src={API_URL + IMAGE_ROUTE + `rest3 (5th copy).jpg`}/>
+                                <Avatar src={API_URL + IMAGE_ROUTE + author.fileName}/>
                             </div>
                             <div>
                                 <Typography
-                                    variant="caption">{author && author}</Typography>
+                                    variant="caption">{author && author.authorName}</Typography>
                             </div>
                             <div>
                                 <Typography variant="caption">{t('reviews')+ ": " +reviewsCount}</Typography>

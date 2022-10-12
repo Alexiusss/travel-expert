@@ -1,6 +1,7 @@
 package com.example.user.controller;
 
 import com.example.user.model.User;
+import com.example.user.model.dto.AuthorDTO;
 import com.example.user.servise.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,10 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/author")
-    public ResponseEntity<String> getAuthorName(@PathVariable String id) {
+    public ResponseEntity<AuthorDTO> getAuthorName(@PathVariable String id) {
         log.info("get authorName for {}", id);
-        final String authorName = userService.getAuthorName(id);
-        return ResponseEntity.ok(authorName);
+        final AuthorDTO author = userService.getAuthor(id);
+        return ResponseEntity.ok(author);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
