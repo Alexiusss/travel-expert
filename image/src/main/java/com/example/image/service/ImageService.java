@@ -2,6 +2,7 @@ package com.example.image.service;
 
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
+import com.example.image.error.FileNameException;
 import com.example.image.model.Image;
 import com.example.image.repository.ImageRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.joda.time.DateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -52,9 +54,13 @@ public class ImageService {
     }
 
     public String generateFileName(String fileName) {
+        String cleanPath = StringUtils.cleanPath(fileName);
+        if (cleanPath.contains("..")) {
+            throw new FileNameException("Filename contains invalid path sequence " + cleanPath);
+        }
         String randomNumber = generateNumber();
         String currentDateToAsString = DateTime.now().toString("HHmmss_ddMMyyyy");
-        return currentDateToAsString + "_" + randomNumber + "_" + fileName;
+        return currentDateToAsString + "_" + randomNumber + "_" + cleanPath;
     }
 
     public String generateNumber() {
