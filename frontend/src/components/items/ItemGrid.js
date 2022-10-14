@@ -5,8 +5,7 @@ import {Grid} from "@material-ui/core";
 
 const ItemGrid = (props) => {
 
-    const removeItem = (e, item) => {
-        e.preventDefault();
+    const removeItem = (item) => {
         props.remove(item)
     }
 

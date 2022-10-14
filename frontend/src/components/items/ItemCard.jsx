@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Grid,
     Card,
@@ -15,22 +15,42 @@ import {IMAGE_ROUTE} from "../../utils/consts";
 import {API_URL} from "../../http/http-common";
 import {Rating} from "@material-ui/lab";
 import reviewService from '../../services/ReviewService';
+import AlertDialog from "../UI/modal/AlertDialog";
 
 
 const ItemCard = (props) => {
-    const {item, route} = props;
+    const {
+        itemId,
+        item = {},
+        route,
+        update = Function.prototype,
+        remove = Function.prototype
+    } = props;
     const {isAdmin} = useAuth();
     const {t} = useTranslation();
     const [ratingValue, setRatingValue] = React.useState(0);
     const image = API_URL + IMAGE_ROUTE + `${item.fileNames[0]}`;
+    const [isDialogOpened, setDialogOpen] = useState(false);
+    const [isDeleteConfirmed, setDeleteConfirmation] = useState(false);
+
+    const openDialog = (e) => {
+        e.preventDefault();
+        setDialogOpen(true)
+    }
 
     useEffect(() => {
-        reviewService.getRatingValueByItemId(props.itemId)
+        reviewService.getRatingValueByItemId(itemId)
             .then(({data}) => {
                 setRatingValue(+data)
             });
         return setRatingValue(0);
     }, [])
+
+    useEffect(() => {
+        if (isDeleteConfirmed) {
+            remove(item)
+        }
+    }, [isDeleteConfirmed])
 
     return (
         <Grid item xs={12} sm={6} md={3} key={item.id}>
@@ -54,23 +74,29 @@ const ItemCard = (props) => {
                             <Typography gutterBottom variant="h6" component="div">
                                 {item.name}
                             </Typography>
-                            <Rating name="half-rating-read" value={ratingValue} size="medium" readOnly />
+                            <Rating name="half-rating-read" value={ratingValue} size="medium" readOnly/>
                         </CardContent>
                     </CardActionArea>
                     {isAdmin ?
-                        <div style={{float: 'right'}}>
-                            <MyButton className="btn btn-outline-info btn-sm" onClick={(e) =>
-                                props.update(e, item)
-                            }>
-                                {t("edit")}
-                            </MyButton>
-                            {' '}
-                            <MyButton className="btn btn-outline-danger btn-sm"
-                                      onClick={e => props.remove(e, item)}>
-                                {t("delete")}</MyButton>
-                        </div>
+                        <>
+                            <div style={{float: 'right'}}>
+                                <MyButton className="btn btn-outline-info btn-sm" onClick={(e) =>
+                                    update(e, item)
+                                }>
+                                    {t("edit")}
+                                </MyButton>
+                                {' '}
+                                <MyButton className="btn btn-outline-danger btn-sm"
+                                          onClick={e => openDialog(e)}>
+                                    {t("delete")}</MyButton>
+                            </div>
+                            {isDialogOpened &&
+                                <AlertDialog isOpened={isDialogOpened} setOpen={setDialogOpen} title={t("are you sure")}
+                                             confirm={setDeleteConfirmation}/>
+                            }
+                        </>
                         :
-                        ""
+                        null
                     }
                 </Card>
             </Link>

@@ -7,18 +7,28 @@ import {
     DialogContentText,
     DialogTitle
 } from "@material-ui/core";
+import {useTranslation} from "react-i18next";
 
 const AlertDialog = (props) => {
+    const {t} = useTranslation();
+
     const {
-        isOpened,
+        isOpened = false,
         title = "",
         description = "",
         setOpen = Function.prototype,
         confirm = Function.prototype
     } = props;
 
-    const handleClose = () => {
+    const handleClose = (e) => {
+        e.preventDefault();
         setOpen(false)
+    }
+
+    const handleConfirm = (e) => {
+        e.preventDefault();
+        confirm(true);
+        setOpen(false);
     }
 
     return (
@@ -32,17 +42,19 @@ const AlertDialog = (props) => {
                 <DialogTitle id="alert-dialog-title">
                     {title}
                 </DialogTitle>
-                {description.length &&
+                {description.length ?
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             {description}
                         </DialogContentText>
                     </DialogContent>
+                    :
+                    null
                 }
                 <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
+                    <Button onClick={e => handleClose(e)}>{t("cancel")}</Button>
+                    <Button onClick={e => handleConfirm(e)} autoFocus>
+                        {t("confirm")}
                     </Button>
                 </DialogActions>
             </Dialog>
