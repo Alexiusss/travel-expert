@@ -30,10 +30,17 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final AuthClient authClient;
 
-    public Rating getRating(String itemId) {
-        Map<Integer, Integer> ratings = new HashMap<>();
+    public Rating getRatingByItemId(String itemId) {
         List<Review> reviewList = reviewRepository.findAllByItemId(itemId);
+        return getRating(itemId, reviewList);
+    }
+    public Rating getRatingByUserId(String userId) {
+        List<Review> reviewList = reviewRepository.findAllByUserId(userId);
+        return getRating(userId, reviewList);
+    }
 
+    public Rating getRating(String id, List<Review> reviewList) {
+        Map<Integer, Integer> ratings = new HashMap<>();
         reviewList.forEach(s -> ratings.merge(s.getRating(), 1, Math::addExact));
 
         for (int i = 1; i <= 5; i++) {
@@ -42,7 +49,7 @@ public class ReviewService {
 
         Double averageRating = getAverageRating(reviewList);
 
-        return new Rating(itemId, averageRating, ratings);
+        return new Rating(id, averageRating, ratings);
     }
 
     private Double getAverageRating(List<Review> reviewList) {
@@ -89,8 +96,8 @@ public class ReviewService {
         return reviewRepository.getFirstByItemId(userId);
     }
 
-    public Integer getRatingByItemId(String itemId) {
-        return reviewRepository.getRatingByItemId(itemId);
+    public Integer getAverageRatingByItemId(String itemId) {
+        return reviewRepository.getAverageRatingByItemId(itemId);
     }
 
     public Integer getCountByUserId(String userId) {

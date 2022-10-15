@@ -37,13 +37,19 @@ public class ReviewController {
     @GetMapping("/{itemId}/rating")
     public ResponseEntity<Integer> getByItemId(@PathVariable String itemId) {
         log.info("get review {}", itemId);
-        return ResponseEntity.ok(reviewService.getRatingByItemId(itemId));
+        return ResponseEntity.ok(reviewService.getAverageRatingByItemId(itemId));
     }
 
     @Operation(summary = "Get a rating by item id")
-    @GetMapping("/{id}/item/rating")
-    public ResponseEntity<Rating> getRating(@PathVariable String id) {
-        return ResponseEntity.ok(reviewService.getRating(id));
+    @GetMapping("/{itemId}/item/rating")
+    public ResponseEntity<Rating> getRatingByItemId(@PathVariable String itemId) {
+        return ResponseEntity.ok(reviewService.getRatingByItemId(itemId));
+    }
+
+    @Operation(summary = "Get a rating by user id")
+    @GetMapping("/{userId}/user/rating")
+    public ResponseEntity<Rating> getRatingByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(reviewService.getRatingByUserId(userId));
     }
 
     @Operation(summary = "Get the number of reviews per user id")

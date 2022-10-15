@@ -15,7 +15,7 @@ public interface ReviewRepository extends BaseRepository<Review> {
 
     @Query("SELECT AVG(r.rating) FROM Review r " +
             "WHERE r.itemId=?1")
-    Integer getRatingByItemId(String itemId);
+    Integer getAverageRatingByItemId(String itemId);
 
     @Query("SELECT COUNT(r.id) FROM Review r " +
             "WHERE r.userId=?1 " +
@@ -48,6 +48,10 @@ public interface ReviewRepository extends BaseRepository<Review> {
             "AND r.active=true " +
             "ORDER BY r.createdAt DESC")
     List<Review> findAllByItemId(String id);
+
+    @Query("SELECT r FROM Review r " +
+            "WHERE r.userId=?1")
+    List<Review> findAllByUserId(String userId);
 
     @Query("SELECT r FROM Review r " +
             "WHERE r.itemId=?1 " +
