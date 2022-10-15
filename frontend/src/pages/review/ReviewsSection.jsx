@@ -149,8 +149,10 @@ const ReviewsSection = (props) => {
                         </div>
                         <hr style={{margin: '15px 0'}}/>
                         {(props.rating && reviewsCount > 0) &&
+                            <div style={{paddingLeft: '3%'}}>
                             <ItemRating rating={props.rating} reviewsCount={reviewsCount}
                                         setRatingFilter={setRatingFilter}/>
+                            </div>
                         }
                     </>
                 )
