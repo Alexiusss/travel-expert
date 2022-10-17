@@ -2,9 +2,10 @@ import React from 'react';
 import {Popover} from "@material-ui/core";
 import ItemRating from "../../components/items/ItemRating";
 import {Link} from "react-router-dom";
+import {PROFILE} from "../../utils/consts";
 
 const ProfilePopover = (props) => {
-    const {anchorEl, setAnchorEl, authorName, rating} = props;
+    const {anchorEl, setAnchorEl, authorId, authorName, rating} = props;
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -29,8 +30,12 @@ const ProfilePopover = (props) => {
                     horizontal: 'left',
                 }}
             >
-                <div style={{padding: 7}}>
-                    <Link to='/profile/'>{authorName}</Link>
+                <div style={{padding: 7}}>}
+                    <Link to={{
+                        pathname: `${PROFILE}${authorName.replaceAll(" ", "")}`,
+                        state: {authorId: authorId}
+                    }}
+                    >{authorName}</Link>
                 </div>
                 <div style={{padding: 7}}>
                     <ItemRating rating={rating} setRatingFilter={null}/>

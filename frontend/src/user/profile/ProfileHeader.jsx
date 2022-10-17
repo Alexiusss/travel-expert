@@ -5,15 +5,19 @@ import {IMAGE_ROUTE} from "../../utils/consts";
 import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
 import MyButton from "../../components/UI/button/MyButton";
 import {useTranslation} from "react-i18next";
+import {useAuth} from "../../components/hooks/UseAuth";
 
 const ProfileHeader = (props) => {
     const {
+        id = '',
         firstName = '',
         lastName = '',
         fileName = '',
         editProfile = Function.prototype
     } = props;
     const {t} = useTranslation();
+    const {isAdmin, authUserId} = useAuth();
+    const isOwner = authUserId === id;
 
     return (
         <div>
@@ -21,12 +25,12 @@ const ProfileHeader = (props) => {
                 <CardHeader
                     avatar={
                         <div style={{display: 'flex'}}>
-                        <div className="round-image" >
-                            <img src={fileName ? API_URL + IMAGE_ROUTE + `${fileName}` : defaultAvatar} alt="Avatar"
-                                 className="rounded-circle profile-avatar"/>
-                        </div>
+                            <div className="round-image">
+                                <img src={fileName ? API_URL + IMAGE_ROUTE + `${fileName}` : defaultAvatar} alt="Avatar"
+                                     className="rounded-circle profile-avatar"/>
+                            </div>
                             <div>
-                                <h4 className="user-name">{firstName + " " + lastName.charAt(0)}</h4>
+                                <h4 className="user-name">{firstName + " " + `${lastName.length ? lastName.charAt(0) : ""}`}</h4>
                                 <div className="profile-flex">
                                     <div>
                                         <span className="profile-block">Contributions</span>
@@ -45,12 +49,16 @@ const ProfileHeader = (props) => {
                         </div>
                     }
                     action={
-                        <MyButton style={{marginTop: 10}}
-                                  className={"btn btn-outline-primary ml-2 btn-sm"}
-                                  onClick={() => editProfile()}
-                        >
-                            {t("edit")}
-                        </MyButton>
+                        (isOwner || isAdmin)
+                            ?
+                            <MyButton style={{marginTop: 10}}
+                                      className={"btn btn-outline-primary ml-2 btn-sm"}
+                                      onClick={() => editProfile()}
+                            >
+                                {t("edit")}
+                            </MyButton>
+                            :
+                            null
                     }
                 />
             </Card>

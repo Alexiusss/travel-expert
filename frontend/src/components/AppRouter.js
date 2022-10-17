@@ -21,14 +21,7 @@ const AppRouter = () => {
                 <Route exact path={"/register"} component={RegisterForm}/>
                 <Route exact path={"/restaurants/"} component={RestaurantList}/>
                 <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
-                {isAuth
-                    ?
-                    <Route exact path={"/profile"}
-                           component={ProfilePage}/>
-                    :
-                    <h3>403 Access denied</h3>
-                }
-                {/*https://stackoverflow.com/questions/66463284/react-router-warning-route-elements-should-not-change-from-controlled-to-unco*/}
+                <Route path={["/profile/", "/profile/:authorName"]} component={ProfilePage}/>
                 {(isAdmin || isModerator) &&
                     [
                         <Route exact path={"/users"} key={"/users"} component={UsersList}/>,

@@ -70,7 +70,7 @@ const ReviewItem = (props) => {
 
         <div>
         {Boolean(anchorEl) &&
-            <ProfilePopover anchorEl={anchorEl} setAnchorEl={setAnchorEl} authorName={author.authorName} rating={userRating}/>
+            <ProfilePopover anchorEl={anchorEl} setAnchorEl={setAnchorEl} {...author} rating={userRating}/>
         }
         <Card className="paperItem" elevation={3}
               style={!props.item.active ? {backgroundColor: "darkgray"} : {}}
