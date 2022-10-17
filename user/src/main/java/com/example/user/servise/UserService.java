@@ -64,7 +64,7 @@ public class UserService implements UserDetailsService {
         User user = get(id);
         String authorName = user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
         String fileName = user.getFileName();
-        return new AuthorDTO(authorName, fileName);
+        return new AuthorDTO(user.getId(), authorName, fileName);
     }
 
     public User get(String id) {
