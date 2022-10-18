@@ -7,17 +7,21 @@ import MyNotification from "../../components/UI/notification/MyNotification";
 import ProfileHeader from "./ProfileHeader";
 import "./ProfilePage.css"
 import userService from "../../services/user.service";
+import reviewService from "../../services/ReviewService";
 import {useAuth} from "../../components/hooks/UseAuth";
 import {useLocation} from "react-router-dom";
+import ReviewList from "../../pages/review/ReviewList";
+import {Container} from "@material-ui/core";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
     const {authorId} = useLocation().state || "";
-    const {authUserId} = useAuth();
+    const {isAdmin, isModerator, authUserId} = useAuth();
     const isAuthor = authUserId === authorId;
     const [modal, setModal] = useState(false);
     const [profile, setProfile] = useState({});
-    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
+    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
+    const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
         if (authorId && !isAuthor) {
@@ -40,7 +44,17 @@ const ProfilePage = () => {
                     })
                 })
         }
-    }, []);
+    }, [authorId]);
+
+    useEffect(() => {
+        if (isAuthor || isAdmin || isModerator) {
+            reviewService.getAllByUserId(authUserId)
+                .then(({data}) => setReviews(data))
+        } else {
+            reviewService.getAllActiveByUserId(authorId)
+                .then(({data}) => setReviews(data))
+        }
+    }, [authorId])
 
     const editProfile = () => {
         setModal(true);
@@ -60,6 +74,9 @@ const ProfilePage = () => {
     return (
         <div className="container justify-content-center align-items-center">
             <ProfileHeader {...profile} editProfile={editProfile}/>
+            <Container maxWidth="md">
+                <ReviewList reviews={reviews}/>
+            </Container>
             {modal &&
                 <MyModal visible={modal} setVisible={setModal}>
                     <UserEditor userFromDB={profile} update={updateProfile} modal={modal}

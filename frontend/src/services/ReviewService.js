@@ -44,6 +44,14 @@ export default class ReviewService {
         });
     }
 
+    static async getAllByUserId(userId) {
+        return $api.get(REVIEWS_ROUTE + `${userId}` + '/user');
+    }
+
+    static async getAllActiveByUserId(userId) {
+        return $api.get(REVIEWS_ROUTE + `${userId}` + '/user/active');
+    }
+
     static async create(data) {
         return $api.post(REVIEWS_ROUTE, data);
     }

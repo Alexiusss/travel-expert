@@ -17,7 +17,7 @@ const NavBar = () => {
     const changeLanguage = (language) => {
         i18n.changeLanguage(language);
     }
-    const {isAuth, isAdmin, isModerator} = useAuth();
+    const {isAuth, isAdmin, isModerator, authUserId} = useAuth();
     const dispatch = useDispatch();
 
     const logout = () => {
@@ -66,7 +66,11 @@ const NavBar = () => {
                 <div className="navbar-nav mr-auto">
                     {isAuth?
                         <li className="nav-item">
-                            <Link to={PROFILE} className="nav-link">
+                            <Link  className="nav-link"
+                                to={{
+                                pathname: PROFILE,
+                                state: {authorId: authUserId}
+                            }}>
                                 {t("profile")}
                             </Link>
                         </li>

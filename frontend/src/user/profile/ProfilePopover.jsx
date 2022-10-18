@@ -30,7 +30,7 @@ const ProfilePopover = (props) => {
                     horizontal: 'left',
                 }}
             >
-                <div style={{padding: 7}}>}
+                <div style={{padding: 7}}>
                     <Link to={{
                         pathname: `${PROFILE}${authorName.replaceAll(" ", "")}`,
                         state: {authorId: authorId}
