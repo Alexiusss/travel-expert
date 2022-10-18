@@ -54,6 +54,10 @@ public interface ReviewRepository extends BaseRepository<Review> {
     List<Review> findAllByUserId(String userId);
 
     @Query("SELECT r FROM Review r " +
+            "WHERE r.userId=?1 AND r.active=true")
+    List<Review> findAllActiveByUserId(String userId);
+
+    @Query("SELECT r FROM Review r " +
             "WHERE r.itemId=?1 " +
             "AND r.active=true " +
             "ORDER BY r.createdAt DESC")

@@ -84,6 +84,14 @@ public class ReviewService {
         return new PageImpl<>(filteredReviews, pageable, filteredReviews.size());
     }
 
+    public List<Review> getAllByUserId(String userId) {
+        return reviewRepository.findAllByUserId(userId);
+    }
+
+    public Object getAllActiveByUserId(String userId) {
+        return reviewRepository.findAllActiveByUserId(userId);
+    }
+
     public Review get(String id) {
         return reviewRepository.getExisted(id);
     }

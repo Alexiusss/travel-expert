@@ -58,19 +58,6 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getCountByUserId(userId));
     }
 
-    @Operation(summary = "Return a list of reviews by item id and filtered according to the query parameters")
-    @GetMapping("/{id}/item")
-    public ResponseEntity<?> getAllByItemId(
-            @PathVariable String id,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "", required = false) String filter,
-            @RequestParam(defaultValue = "", required = false) String[] ratings
-            ) {
-        log.info("get all reviews for item {}", id);
-        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter, ratings));
-    }
-
     @Operation(summary = "Return a list of reviews and filtered according the query parameters", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
@@ -85,6 +72,33 @@ public class ReviewController {
 
         log.info("get all reviews");
         return ResponseEntity.ok(reviewService.getAllPaginated(PageRequest.of(page, size), filter));
+    }
+
+    @Operation(summary = "Return a list of reviews by item id and filtered according to the query parameters")
+    @GetMapping("/{id}/item")
+    public ResponseEntity<?> getAllByItemId(
+            @PathVariable String id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "", required = false) String filter,
+            @RequestParam(defaultValue = "", required = false) String[] ratings
+            ) {
+        log.info("get all reviews for item {}", id);
+        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter, ratings));
+    }
+
+    @Operation(summary = "Return a list of reviews by user id")
+    @GetMapping("/{userId}/user")
+    public ResponseEntity<?> getAllByUserId(@PathVariable String userId) {
+        log.info("get all reviews for user {}", userId);
+        return ResponseEntity.ok(reviewService.getAllByUserId(userId));
+    }
+
+    @Operation(summary = "Return a list of active reviews by user id")
+    @GetMapping("/{userId}/user/active")
+    public ResponseEntity<?> getAllActiveByUserId(@PathVariable String userId) {
+        log.info("get all reviews for user {}", userId);
+        return ResponseEntity.ok(reviewService.getAllActiveByUserId(userId));
     }
 
     @Operation(summary = "Create a new review", description = "A JWT token is required to access this API.")
