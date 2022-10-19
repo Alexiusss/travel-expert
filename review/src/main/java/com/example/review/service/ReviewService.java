@@ -104,7 +104,7 @@ public class ReviewService {
         return reviewRepository.getFirstByItemId(userId);
     }
 
-    public Integer getAverageRatingByItemId(String itemId) {
+    public Double getAverageRatingByItemId(String itemId) {
         return reviewRepository.getAverageRatingByItemId(itemId);
     }
 

@@ -15,7 +15,7 @@ public interface ReviewRepository extends BaseRepository<Review> {
 
     @Query("SELECT AVG(r.rating) FROM Review r " +
             "WHERE r.itemId=?1")
-    Integer getAverageRatingByItemId(String itemId);
+    Double getAverageRatingByItemId(String itemId);
 
     @Query("SELECT COUNT(r.id) FROM Review r " +
             "WHERE r.userId=?1 " +

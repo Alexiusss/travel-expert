@@ -35,7 +35,7 @@ public class ReviewController {
 
     @Operation(summary = "Get a rating by item id")
     @GetMapping("/{itemId}/rating")
-    public ResponseEntity<Integer> getByItemId(@PathVariable String itemId) {
+    public ResponseEntity<Double> getByItemId(@PathVariable String itemId) {
         log.info("get review {}", itemId);
         return ResponseEntity.ok(reviewService.getAverageRatingByItemId(itemId));
     }

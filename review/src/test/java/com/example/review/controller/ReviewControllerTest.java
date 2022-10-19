@@ -1,6 +1,5 @@
 package com.example.review.controller;
 
-import com.example.common.util.JsonUtil;
 import com.example.review.model.Review;
 import com.example.review.repository.ReviewRepository;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.example.common.util.JsonUtil.asParsedJson;
+import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.review.controller.ReviewExceptionHandler.EXCEPTION_DUPLICATE_REVIEW;
 import static com.example.review.util.ReviewTestData.*;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -84,6 +84,30 @@ public class ReviewControllerTest {
     }
 
     @Test
+    void getByItemId() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + ITEM_1_ID + "/rating"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("3.5"));
+    }
+
+    @Test
+    void getRatingByItemId() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + ITEM_1_ID + "/item/rating"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RATING_MATCHER.contentJson(ITEM_1_RATING));
+    }
+
+    @Test
+    void getRatingByUserId() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/user/rating"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RATING_MATCHER.contentJson(USER_RATING));
+    }
+
+    @Test
     void getAllFiltered() throws Exception {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.get(REST_URL)
@@ -128,7 +152,7 @@ public class ReviewControllerTest {
         stubUserAuth();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newReview)))
+                .content(writeValue(newReview)))
                 .andExpect(status().isCreated());
 
         Review created = REVIEW_MATCHER.readFromJson(action);
@@ -148,7 +172,7 @@ public class ReviewControllerTest {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(duplicateReview)))
+                .content(writeValue(duplicateReview)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("message", containsStringIgnoringCase(EXCEPTION_DUPLICATE_REVIEW)));
     }
@@ -161,7 +185,7 @@ public class ReviewControllerTest {
         invalidReview.setTitle("");
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalidReview)))
+                .content(writeValue(invalidReview)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
 
@@ -176,7 +200,7 @@ public class ReviewControllerTest {
         stubUserAuth();
         perform(MockMvcRequestBuilders.put(REST_URL + REVIEW2_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+                .content(writeValue(updated)))
                 .andDo(print());
 
         REVIEW_MATCHER.assertMatch(reviewRepository.getExisted(REVIEW2_ID), updated);
@@ -189,7 +213,7 @@ public class ReviewControllerTest {
         invalidReview.setTitle("");
         perform(MockMvcRequestBuilders.put(REST_URL + REVIEW2_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalidReview)))
+                .content(writeValue(invalidReview)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
     }
