@@ -8,7 +8,7 @@ export default class ReviewService {
     }
 
     static async getRating(id) {
-        return $api.get(REVIEWS_ROUTE + `${id}` + '/item/rating');
+        return (await $api.get(REVIEWS_ROUTE + `${id}` + '/item/rating')).data;
     }
 
     static async getRatingByUserId(userId) {

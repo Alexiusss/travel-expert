@@ -29,17 +29,14 @@ const RestaurantPage = () => {
     }
 
     useEffect(() => {
-        trackPromise(
-            restaurantService.get(location.state.id), area)
-            .then(({data}) => {
-                setRestaurant(data)
-                setImages(data.fileNames)
+        const id = location.state.id;
+        trackPromise(Promise.all([restaurantService.get(id), reviewService.getRating(id)]), area)
+            .then((values) => {
+                const [restaurant, rating] = values;
+                setRestaurant(restaurant);
+                setImages(restaurant.fileNames);
+                setRating(rating);
             })
-    }, [])
-
-    useEffect(() => {
-        trackPromise(reviewService.getRating(location.state.id), area)
-            .then(({data}) => setRating(data))
     }, [])
 
     return (
