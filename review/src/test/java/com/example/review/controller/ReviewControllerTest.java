@@ -21,12 +21,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.review.controller.ReviewExceptionHandler.EXCEPTION_DUPLICATE_REVIEW;
 import static com.example.review.util.ReviewTestData.*;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -134,16 +138,31 @@ public class ReviewControllerTest {
     }
 
     @Test
-    void getAllPaginatedByItemId() throws Exception {
+    void getAllByItemId() throws Exception {
         String itemId = REVIEW3.getItemId();
         perform(MockMvcRequestBuilders.get(REST_URL + itemId + "/item")
                 .param("size", "20")
                 .param("page", "0"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW3))));
 
+    }
+
+    @Test
+    void getAllByUserId() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/user"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(REVIEW_MATCHER.contentJson(List.of(REVIEW2)));
+    }
+
+    @Test
+    void getAllActiveByUserId() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/user/active"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Arrays.toString(new String[0])));
     }
 
     @Test
@@ -223,6 +242,26 @@ public class ReviewControllerTest {
         stubAdminAuth();
         perform(MockMvcRequestBuilders.delete(REST_URL + REVIEW2_ID))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteAllByUserId() throws Exception {
+        stubAdminAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID + "/user"))
+                .andExpect(status().isNoContent());
+
+        int countUserReviews = reviewRepository.findAllByUserId(USER_ID).size();
+        assertEquals(0, countUserReviews);
+    }
+
+    @Test
+    void deleteAllByItemId() throws Exception {
+        stubAdminAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL + ITEM_1_ID + "/item"))
+                .andExpect(status().isNoContent());
+
+        int countItemReviews = reviewRepository.findAllByItemId(ITEM_1_ID).size();
+        assertEquals(0, countItemReviews);
     }
 
     @Test
