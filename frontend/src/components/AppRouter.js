@@ -9,6 +9,7 @@ import ProfilePage from "../user/profile/ProfilePage";
 import RestaurantList from "../restaurant/RestaurantList";
 import RestaurantPage from "../restaurant/RestaurantPage";
 import ReviewsSection from "../pages/review/ReviewsSection";
+import {NotFound} from "../pages/NotFound";
 
 const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
@@ -28,7 +29,7 @@ const AppRouter = () => {
                         <Route exact path={"/reviews"} key={"/reviews"} component={ReviewsSection}/>
                     ]
                 }
-
+                <Route component={NotFound}/>
             </Switch>
         </main>
     );

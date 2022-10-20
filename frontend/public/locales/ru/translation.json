@@ -64,5 +64,7 @@
   "published": "Опубликовано",
 
   "upload image": "загрузить фото",
-  "not uploaded": "не загружено"
+  "not uploaded": "не загружено",
+
+  "page doesn't exist": "Страница не существует"
 }
