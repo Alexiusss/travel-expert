@@ -7,6 +7,9 @@ import {useAuth} from "./hooks/UseAuth";
 import MyButton from "./UI/button/MyButton";
 import authService from "services/AuthService"
 import {removeUser} from "../store/slices/userSlice";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 const NavBar = () => {
     const {t} = useTranslation();
@@ -22,9 +25,9 @@ const NavBar = () => {
                 console.error(error))
     }
     return (
-        <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-                < Link to="/" className="navbar-brand">
+        <Navbar bg="light" expand="lg" className="px-3">
+            <Container>
+                <Link to="/" className="navbar-brand">
                     Restaurant advisor
                 </Link>
                 <Navbar.Toggle aria-controls="navbar-nav" />
@@ -67,20 +70,21 @@ const NavBar = () => {
                         }
                         <Nav.Item className="ms-auto  ">
                             {isAuth ?
-                                <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                                <MyButton style={{marginTop: 10}} className={" btn btn-outline-primary ml-2 btn-sm"}
                                           onClick={() => logout()}>
                                     Logout
                                 </MyButton>
                                 :
-                                < Link to="/login" className="nav-link">
+                                <Link to="/login" className="nav-link">
                                     Login
                                 </Link>
                             }
-                        </li>
-                    </div>
-                </div>
-            </nav>
-        </div>
+                        </Nav.Item>
+                    </Nav>
+                </Navbar.Collapse>
+
+            </Container>
+        </Navbar>
     );
 };
 
