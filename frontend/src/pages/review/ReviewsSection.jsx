@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import reviewService from "../../services/ReviewService";
 import ReviewList from "./ReviewList";
 import {trackPromise, usePromiseTracker} from "react-promise-tracker";
-import {Container} from "@material-ui/core";
+import {Container, Tooltip} from "@material-ui/core";
 import SkeletonCard from "./SceletonCard";
 import MyButton from "../../components/UI/button/MyButton";
 import MyModal from "../../components/UI/modal/MyModal";
@@ -15,6 +15,7 @@ import MySelect from "../../components/UI/select/MySelect";
 import Pagination from "@material-ui/lab/Pagination";
 import ItemRating from "../../components/items/ItemRating";
 import imageService from "../../services/ImageService";
+import {useAuth} from "../../components/hooks/UseAuth";
 
 const ReviewsSection = (props) => {
     const area = 'reviews';
@@ -30,6 +31,7 @@ const ReviewsSection = (props) => {
     const pageSizes = [20, 50, 100];
     const [filter, setFilter] = useState({ratingFilters: [], query: ''})
     const {t} = useTranslation();
+    const {isAuth} = useAuth();
 
     useEffect(() => {
         if (props.itemId == null) {
@@ -142,16 +144,27 @@ const ReviewsSection = (props) => {
                     <>
                         <div style={{display: "flex", justifyContent: 'space-between'}}>
                             <h4>Reviews <span>({reviews.length})</span></h4>
-                            <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                                      onClick={() => setModal(true)}>
-                                {t('write review')}
-                            </MyButton>
+                            {!isAuth ?
+                                <Tooltip title={t('only registered users can leave a review')}>
+                                   <span>
+                                        <MyButton disabled={true} props={"disabled"} style={{marginTop: 10}}
+                                                  className={"btn btn-outline-primary ml-2 btn-sm"}>
+                                            {t('write review')}
+                                        </MyButton>
+                                   </span>
+                                </Tooltip>
+                                :
+                                <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                                onClick={() => setModal(true)}>
+                            {t('write review')}
+                                </MyButton>
+                            }
                         </div>
                         <hr style={{margin: '15px 0'}}/>
                         {(props.rating && reviewsCount > 0) &&
                             <div style={{paddingLeft: '3%'}}>
-                            <ItemRating rating={props.rating} reviewsCount={reviewsCount}
-                                        setRatingFilter={setRatingFilter}/>
+                                <ItemRating rating={props.rating} reviewsCount={reviewsCount}
+                                            setRatingFilter={setRatingFilter}/>
                             </div>
                         }
                     </>
@@ -173,7 +186,8 @@ const ReviewsSection = (props) => {
                                     removeImage={removeImage}
                                     promiseInProgress={promiseInProgress}/>
                         {(reviewsCount > 0 || reviews) &&
-                            <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded" className="pagination"/>
+                            <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"
+                                        className="pagination"/>
                         }
                     </>
                 }

@@ -66,5 +66,6 @@
   "upload image": "загрузить фото",
   "not uploaded": "не загружено",
 
-  "page doesn't exist": "Страница не существует"
+  "page doesn't exist": "Страница не существует",
+  "only registered users can leave a review": "Тольк зарегистрированные пользователи могут оставлять отзывы"
 }
