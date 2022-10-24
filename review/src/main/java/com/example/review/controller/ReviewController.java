@@ -133,7 +133,7 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Delete a review by user id", description = "A JWT token is required to access this API.")
+    @Operation(summary = "Delete all reviews by user id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{userId}/user")
     public ResponseEntity<Review> deleteAllByUserId(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String userId) {
@@ -146,7 +146,7 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Delete a review by item id", description = "A JWT token is required to access this API.")
+    @Operation(summary = "Delete all reviews by item id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{itemId}/item")
     public ResponseEntity<Review> deleteAllByItemId(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String itemId) {

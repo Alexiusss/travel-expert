@@ -91,7 +91,7 @@ const ReviewsSection = (props) => {
     }
 
     const removeReview = (review) => {
-        Promise.all([imageService.removeAllByFileNames(review.filenames), reviewService.delete(review.id)])
+        Promise.all([imageService.removeAllByFileNames(review.fileNames), reviewService.delete(review.id)])
             .then(() => {
                 setReviews(reviews.filter(r => r.id !== review.id));
                 openAlert([t('record deleted')], "success");
