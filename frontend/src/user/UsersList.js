@@ -25,7 +25,7 @@ const UsersList = () => {
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(20);
     const pageSizes = [20, 50, 100];
-    const [userFromDB, setUserFromDB] = useState([]);
+    const [userFromDB, setUserFromDB] = useState({});
 
     useEffect(() => {
         trackPromise(userService.getAll(size, page), area).then(({data}) => {
@@ -109,10 +109,10 @@ const UsersList = () => {
                        modalVisible={setModal} setAlert={setAlert}/>
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
-            <MyModal visible={modal} setVisible={setModal}>
-                <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
-                            modal={modal} setAlert={setAlert}/>
-            </MyModal>
+                <MyModal visible={modal} setVisible={setModal}>
+                    <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
+                                modal={modal} setAlert={setAlert}/>
+                </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </div>
     );

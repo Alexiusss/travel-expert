@@ -18,7 +18,6 @@ const UserEditor = (props) => {
     const [fileNames, setFileNames] = useState([]);
     const [images, setImages] = useState([]);
 
-
     const cleanForm = () => {
         setEmail('');
         setFirstName('');
@@ -90,7 +89,7 @@ const UserEditor = (props) => {
     }, [props.modal])
 
     useEffect(() => {
-        if (props.userFromDB) {
+        if (props.userFromDB.id) {
             setEmail('' + props.userFromDB.email)
             setFirstName('' + props.userFromDB.firstName)
             setLastName('' + props.userFromDB.lastName)

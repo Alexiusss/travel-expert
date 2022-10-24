@@ -80,7 +80,7 @@ const RestaurantEditor = (props) => {
         }, [props.modal]);
 
         useEffect(() => {
-            if (props.restaurantFromDB) {
+            if (props.restaurantFromDB.id) {
                 setName('' + props.restaurantFromDB.name);
                 setCuisine('' + props.restaurantFromDB.cuisine);
                 setEmail('' + props.restaurantFromDB.email);

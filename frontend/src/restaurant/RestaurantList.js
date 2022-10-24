@@ -21,7 +21,7 @@ const RestaurantList = () => {
     const area = 'restaurants';
     const {promiseInProgress} = usePromiseTracker({area});
     const [restaurants, setRestaurants] = useState([]);
-    const [restaurantFromDB, setRestaurantFromDB] = useState([])
+    const [restaurantFromDB, setRestaurantFromDB] = useState({})
     const {isAdmin} = useAuth();
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
@@ -52,7 +52,7 @@ const RestaurantList = () => {
     const update = (restaurant) => {
         restaurantService.get(restaurant.id)
             .then(response => {
-                setRestaurantFromDB(response.data)
+                setRestaurantFromDB(response)
                 setModal(true)
             })
             .catch(
