@@ -12,6 +12,8 @@ import {useAuth} from "../../components/hooks/UseAuth";
 import {useLocation} from "react-router-dom";
 import ReviewList from "../../pages/review/ReviewList";
 import {Container} from "@material-ui/core";
+import imageService from "../../services/ImageService";
+import {getLocalizedErrorMessages} from "../../utils/consts";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
@@ -71,11 +73,27 @@ const ProfilePage = () => {
         })
     }
 
+    const removeReview = (review) => {
+        Promise.all([reviewService.delete(review.id), imageService.removeAllByFileNames(review.fileNames)])
+            .then(() => {
+                setReviews(reviews.filter(item => item.id !== review.id));
+                setModal(false);
+                openAlert([t('record deleted')], "success")
+            })
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
+    }
+
+    const openAlert = (msg, severity) => {
+        setAlert({severity: severity, message: msg, open: true})
+    }
+
     return (
         <div className="container justify-content-center align-items-center">
             <ProfileHeader {...profile} editProfile={editProfile}/>
             <Container maxWidth="md">
-                <ReviewList reviews={reviews}/>
+                <ReviewList reviews={reviews} remove={removeReview}/>
             </Container>
             {modal &&
                 <MyModal visible={modal} setVisible={setModal}>

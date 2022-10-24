@@ -83,7 +83,7 @@ public class ImageService {
     public ResponseEntity<?> checkAuth(String authorization) {
         AuthCheckResponse authCheckResponse = authClient.isAuth(authorization);
 
-        if ((!authCheckResponse.getAuthorities().contains("ADMIN") ||
+        if ((!authCheckResponse.getAuthorities().contains("ADMIN") &&
                 !authCheckResponse.getAuthorities().contains("MODERATOR"))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
