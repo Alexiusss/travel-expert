@@ -61,7 +61,22 @@ class RestaurantControllerTest {
     }
 
     @Test
+    public void getByName() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1.getName() + "/name"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(RESTAURANT_MATCHER.contentJson(RESTAURANT1));
+    }
+
+    @Test
     public void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
+    }
+
+    @Test
+    public void getNotFoundByName() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
