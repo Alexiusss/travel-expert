@@ -20,7 +20,7 @@ import AlertDialog from "../UI/modal/AlertDialog";
 
 const ItemCard = (props) => {
     const {
-        itemId,
+        itemId = "",
         item = {},
         route,
         update = Function.prototype,
@@ -28,7 +28,7 @@ const ItemCard = (props) => {
     } = props;
     const {isAdmin} = useAuth();
     const {t} = useTranslation();
-    const [ratingValue, setRatingValue] = React.useState(0);
+    const [ratingValue, setRatingValue] = useState(0);
     const image = API_URL + IMAGE_ROUTE + `${item.fileNames[0]}`;
     const [isDialogOpened, setDialogOpen] = useState(false);
     const [isDeleteConfirmed, setDeleteConfirmation] = useState(false);
@@ -43,7 +43,6 @@ const ItemCard = (props) => {
             .then(({data}) => {
                 setRatingValue(+data)
             });
-        return setRatingValue(0);
     }, [])
 
     useEffect(() => {

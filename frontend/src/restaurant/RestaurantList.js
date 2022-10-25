@@ -16,18 +16,22 @@ import MySelect from "../components/UI/select/MySelect";
 import ItemFilter from "../components/items/ItemFilter";
 import imageService from "../services/ImageService";
 import reviewService from "../services/ReviewService";
+import {useHistory, useLocation} from "react-router-dom";
 
 const RestaurantList = () => {
     const area = 'restaurants';
     const {promiseInProgress} = usePromiseTracker({area});
+    const {pathname, search} = useLocation();
+    const {push} = useHistory();
+    const params = new URLSearchParams(search);
     const [restaurants, setRestaurants] = useState([]);
     const [restaurantFromDB, setRestaurantFromDB] = useState({})
     const {isAdmin} = useAuth();
     const [totalPages, setTotalPages] = useState(0);
-    const [page, setPage] = useState(1);
-    const [size, setSize] = useState(12);
+    const [page, setPage] = useState(+params.get('page') || 1);
+    const [size, setSize] = useState(+params.get('size') || 12);
     const pageSizes = [12, 36, 96];
-    const [filter, setFilter] = useState({config: null, query: ''})
+    const [filter, setFilter] = useState({config: null, query: params.get('query') || ''})
     const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'})
     const {t} = useTranslation();
@@ -38,6 +42,15 @@ const RestaurantList = () => {
             setRestaurants(data.content);
             setTotalPages(data.totalPages);
         });
+
+        if (filter.query.length) {
+            push({
+                pathname,
+                search: `?query=${filter.query}&size=${size}&page=${page}`,
+            });
+        } else {
+            push(pathname)
+        }
     }, [setRestaurants, page, size, filter])
 
     const openAlert = (msg, severity) => {
@@ -136,7 +149,8 @@ const RestaurantList = () => {
                 : <>
                     <ItemGrid items={restaurants} route={RESTAURANTS_ROUTE} update={update}
                               remove={removeRestaurant}/>
-                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded" className="pagination"/>
+                    <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"
+                                className="pagination"/>
                 </>
             }
             <MyModal visible={modal} setVisible={setModal}>
