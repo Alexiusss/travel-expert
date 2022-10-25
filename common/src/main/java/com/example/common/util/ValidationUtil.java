@@ -47,4 +47,8 @@ public class ValidationUtil {
     public static <T> T checkNotFoundWithId(Optional<T> optional, String id) {
         return checkNotFoundWithId("Entity with id=" + id +" not found", optional);
     }
+
+    public static <T> T checkNotFoundWithName(Optional<T> optional, String id) {
+        return checkNotFoundWithId("Entity with name=" + id +" not found", optional);
+    }
 }

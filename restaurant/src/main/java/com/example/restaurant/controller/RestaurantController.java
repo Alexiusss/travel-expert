@@ -31,6 +31,12 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.get(id));
     }
 
+    @GetMapping("/{name}/name")
+    public ResponseEntity<Restaurant> getByName(@PathVariable String name) {
+        log.info("get restaurant {}", name);
+        return ResponseEntity.ok(restaurantService.getByName(name));
+    }
+
     @GetMapping
     public Page<Restaurant> getAll(
             @RequestParam(defaultValue = "0") int page,

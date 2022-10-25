@@ -2,6 +2,7 @@ package com.example.restaurant.service;
 
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
+import com.example.common.util.ValidationUtil;
 import com.example.restaurant.model.Restaurant;
 import com.example.restaurant.repository.RestaurantRepository;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,11 @@ public class RestaurantService {
 
     public Restaurant get(String id) {
         return restaurantRepository.getExisted(id);
+    }
+
+    public Restaurant getByName(String name) {
+        String restaurantName = name.replaceAll("_", " ");
+        return ValidationUtil.checkNotFoundWithName(restaurantRepository.findByName(restaurantName), restaurantName);
     }
 
     public void delete(String id) {
