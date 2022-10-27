@@ -20,6 +20,12 @@ export const getLocalizedErrorMessages = (messages) => {
     });
 }
 
+// https://stackoverflow.com/a/50607453
+export const getFormattedDate = (date, i18n) => {
+    const DATE_OPTIONS = {year: 'numeric', month: 'short', day: 'numeric'};
+    return new Date(date).toLocaleDateString(i18n.language, DATE_OPTIONS);
+}
+
 export const getAccessToken = () => {
     let accessToken = store.getState().user.token;
     if (accessToken === "undefined" || accessToken === null) {

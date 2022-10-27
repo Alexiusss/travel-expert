@@ -11,9 +11,10 @@ import reviewService from "../../services/ReviewService";
 import {useAuth} from "../../components/hooks/UseAuth";
 import {useLocation} from "react-router-dom";
 import ReviewList from "../../pages/review/ReviewList";
-import {Container} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import imageService from "../../services/ImageService";
 import {getLocalizedErrorMessages} from "../../utils/consts";
+import Intro from "../../pages/review/Intro";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
@@ -32,6 +33,7 @@ const ProfilePage = () => {
                     id: data.authorId,
                     firstName: data.authorName,
                     fileName: data.fileName,
+                    registeredAt: data.registeredAt,
                 }))
         } else {
             authService.profile()
@@ -43,6 +45,7 @@ const ProfilePage = () => {
                         lastName: data.lastName,
                         enabled: data.enabled,
                         fileName: data.fileName,
+                        registeredAt: data.createdAt,
                     })
                 })
         }
@@ -92,9 +95,15 @@ const ProfilePage = () => {
     return (
         <div className="container justify-content-center align-items-center">
             <ProfileHeader {...profile} editProfile={editProfile}/>
-            <Container maxWidth="md">
-                <ReviewList reviews={reviews} remove={removeReview}/>
-            </Container>
+            <Grid container
+                  spacing={1}
+                  direction="row"
+            >
+                <Intro {...profile}/>
+                <Grid item xs={12} sm={12} md={6} key="introKey">
+                    <ReviewList reviews={reviews} remove={removeReview}/>
+                </Grid>
+            </Grid>
             {modal &&
                 <MyModal visible={modal} setVisible={setModal}>
                     <UserEditor userFromDB={profile} update={updateProfile} modal={modal}
