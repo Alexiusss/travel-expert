@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/author")
-    public ResponseEntity<AuthorDTO> getAuthorName(@PathVariable String id) {
+    public ResponseEntity<AuthorDTO> getAuthor(@PathVariable String id) {
         log.info("get authorName for {}", id);
         final AuthorDTO author = userService.getAuthor(id);
         return ResponseEntity.ok(author);

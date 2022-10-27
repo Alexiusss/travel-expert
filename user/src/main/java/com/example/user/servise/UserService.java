@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.time.Instant;
 import java.util.Set;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
@@ -64,7 +65,8 @@ public class UserService implements UserDetailsService {
         User user = get(id);
         String authorName = user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
         String fileName = user.getFileName();
-        return new AuthorDTO(user.getId(), authorName, fileName);
+        Instant registeredAt = user.getCreatedAt();
+        return new AuthorDTO(user.getId(), authorName, fileName, registeredAt);
     }
 
     public User get(String id) {
