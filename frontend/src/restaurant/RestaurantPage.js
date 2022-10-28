@@ -66,7 +66,9 @@ const RestaurantPage = () => {
                     <br/>
                     <ItemImages images={images} promiseInProgress={promiseInProgress} removeImage={removeImage}/>
                     <br/>
-                    <ReviewsSection itemId={id} rating={rating}/>
+                    {id.length ?
+                        <ReviewsSection itemId={id} rating={rating}/> : null
+                    }
                 </>
             }
         </Container>

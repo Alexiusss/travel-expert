@@ -23,7 +23,7 @@ const ItemRating = (props) => {
                                     <FormControlLabel
                                         control={
                                             <Checkbox onChange={setRatingFilter} size="small" color="default"
-                                                      value={key || ''}/>
+                                                      value={key || ''} disabled={value===0}/>
                                         }
                                         label={t(labels[key])}
                                     />

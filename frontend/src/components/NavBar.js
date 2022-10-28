@@ -68,9 +68,9 @@ const NavBar = () => {
                             :
                             null
                         }
-                        <Nav.Item className="ms-auto  ">
+                        <Nav.Item className="ms-auto centered">
                             {isAuth ?
-                                <MyButton style={{marginTop: 10}} className={" btn btn-outline-primary ml-2 btn-sm"}
+                                <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
                                           onClick={() => logout()}>
                                     Logout
                                 </MyButton>
