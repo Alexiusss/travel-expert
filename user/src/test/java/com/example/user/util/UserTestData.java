@@ -4,6 +4,7 @@ import com.example.common.util.MatcherFactory;
 import com.example.common.util.JsonUtil;
 import com.example.user.model.Role;
 import com.example.user.model.User;
+import com.example.user.model.dto.AuthorDTO;
 import lombok.experimental.UtilityClass;
 
 import java.sql.Timestamp;
@@ -14,6 +15,7 @@ import java.util.List;
 @UtilityClass
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class,"createdAt","modifiedAt", "password");
+    public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class);
 
     public static final String ADMIN_ID = "1";
     public static final String MODER_ID = "2";
@@ -29,6 +31,12 @@ public class UserTestData {
     public static final User MODER = new User(MODER_ID, null, null, 0, MODER_MAIL, "Moder", "ModerLast", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
     public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", "userPassword", true, null, Collections.singleton(Role.USER));
     public static final String USER_AUTHORS_NAME = USER.getFirstName() + " " + USER.getLastName().charAt(0) + ".";
+
+    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getFileName(), USER.getCreatedAt());
+
+    private static String getAuthorName(User user) {
+        return user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
+    }
 
     public static User getNew() {
        return new User("new_user@gmail.com", "New user", "NewUserLast", "NewPassword", false, null, Collections.singleton(Role.USER));

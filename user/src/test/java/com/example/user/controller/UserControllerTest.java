@@ -44,11 +44,11 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getAuthorName() throws Exception {
+    void getAuthor() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/author"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(USER_AUTHORS_NAME));
+                .andExpect(AUTHOR_MATCHER.contentJson(AUTHOR));
     }
 
     @Test
