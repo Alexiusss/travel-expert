@@ -55,7 +55,7 @@ const ItemCard = (props) => {
         <Grid item xs={12} sm={6} md={3} key={item.id}>
             <Link
                 to={{
-                    pathname: `${route}${item.name.replaceAll(" ", "_")}`,
+                    pathname: `${route}${item.name.replaceAll(" ", "_")}-${itemId}`,
                     // https://stackoverflow.com/a/63876129
                     state: {id: item.id}
                 }}

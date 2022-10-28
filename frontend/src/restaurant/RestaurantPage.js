@@ -11,8 +11,8 @@ import ReviewsSection from "../pages/review/ReviewsSection";
 import ItemImages from "../components/items/ItemImages";
 
 const RestaurantPage = () => {
-    const {pathname, state} = useLocation();
-    const [id, setId] = useState("");
+    const {pathname} = useLocation();
+    const [id, setId] = useState(pathname.replace(/.+-/, ""));
     const area = 'restaurants';
     const {promiseInProgress} = usePromiseTracker({area});
     const [restaurant, setRestaurant] = useState({});
@@ -30,26 +30,13 @@ const RestaurantPage = () => {
     }
 
     useEffect(() => {
-        if (state) {
-            setId(state.id)
-            trackPromise(Promise.all([restaurantService.get(state.id), reviewService.getRating(state.id)]), area)
+            trackPromise(Promise.all([restaurantService.get(id), reviewService.getRating(id)]), area)
                 .then((values) => {
                     const [restaurant, rating] = values;
                     setRestaurant(restaurant);
                     setImages(restaurant.fileNames);
                     setRating(rating);
                 })
-        } else if (pathname) {
-            const name = pathname.replace("/restaurants/", "");
-            trackPromise(restaurantService.getByName(name), area)
-                .then(value => {
-                    setId(value.id);
-                    setRestaurant(value);
-                    setImages(value.fileNames);
-                    return reviewService.getRating(value.id)
-                })
-                .then(value => setRating(value))
-        }
     }, [])
 
     return (
