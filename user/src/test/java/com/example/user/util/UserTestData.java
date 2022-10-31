@@ -5,6 +5,7 @@ import com.example.common.util.JsonUtil;
 import com.example.user.model.Role;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthorDTO;
+import com.example.user.model.dto.RegistrationDTO;
 import lombok.experimental.UtilityClass;
 
 import java.sql.Timestamp;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @UtilityClass
 public class UserTestData {
-    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class,"createdAt","modifiedAt", "password");
+    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "createdAt", "modifiedAt", "password");
     public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class);
 
     public static final String ADMIN_ID = "1";
@@ -38,14 +39,23 @@ public class UserTestData {
         return user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
     }
 
-    public static User getNew() {
+        public static User getNewUser() {
        return new User("new_user@gmail.com", "New user", "NewUserLast", "NewPassword", false, null, Collections.singleton(Role.USER));
     }
 
+    public static RegistrationDTO getNewRegistration() {
+        return new RegistrationDTO("new_user@gmail.com", "New user", "NewUserLast", "NewPassword");
+    }
+
     public static User getUpdated() {
-       return new User(USER_ID, null, null, 0, "user@gmail.com", "Updated user name", "Updated UserLast", "newPass", true, null, Collections.singleton(Role.USER));
+        return new User(USER_ID, null, null, 0, "user@gmail.com", "Updated user name", "Updated UserLast", "newPass", true, null, Collections.singleton(Role.USER));
     }
 
     public static String jsonWithPassword(User user, String passw) {
-        return JsonUtil.writeAdditionProps(user, "password", passw);}
+        return JsonUtil.writeAdditionProps(user, "password", passw);
+    }
+
+    public static String jsonWithPassword(RegistrationDTO registration, String passw) {
+        return JsonUtil.writeAdditionProps(registration, "password", passw);
+    }
 }

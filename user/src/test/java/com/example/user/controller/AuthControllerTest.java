@@ -2,6 +2,7 @@ package com.example.user.controller;
 
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthRequest;
+import com.example.user.model.dto.RegistrationDTO;
 import com.example.user.repository.UserRepository;
 import com.example.common.util.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -59,17 +60,17 @@ public class AuthControllerTest extends AbstractControllerTest {
 
     @Test
     void registerAndActivate() throws Exception {
-        User newUser = getNew();
+        RegistrationDTO newRegistration = getNewRegistration();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .content(jsonWithPassword(newRegistration, newRegistration.getPassword())))
                 .andExpect(status().isCreated());
 
         User registeredUser = USER_MATCHER.readFromJson(action);
 
         perform(MockMvcRequestBuilders.post(REST_URL + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(new AuthRequest(newUser.getEmail(), newUser.getPassword()))))
+                .content(JsonUtil.writeValue(new AuthRequest(newRegistration.getEmail(), newRegistration.getPassword()))))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo("User is disabled")));
 
@@ -78,13 +79,8 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .andExpect(content().string("User successfully activated"));
 
         String newId = registeredUser.getId();
-        int newVersion = registeredUser.getVersion();
-        newUser.setId(newId);
-        newUser.setVersion(newVersion);
         User userFromDB = userRepository.getById(newId);
-        newUser.setEnabled(userFromDB.isEnabled());
 
-        USER_MATCHER.assertMatch(userFromDB, newUser);
         assertTrue(userFromDB.isEnabled());
         assertNull(userFromDB.getActivationCode());
     }
@@ -92,12 +88,12 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     void registerDuplicateEmail() throws Exception {
-        User duplicateUser = getNew();
-        duplicateUser.setEmail("user@gmail.com");
+        RegistrationDTO duplicateRegistration = getNewRegistration();
+        duplicateRegistration.setEmail("user@gmail.com");
 
         perform(MockMvcRequestBuilders.post(REST_URL + "register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(duplicateUser, duplicateUser.getPassword())))
+                .content(jsonWithPassword(duplicateRegistration, duplicateRegistration.getPassword())))
                 .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_DUPLICATE_EMAIL)));
@@ -105,12 +101,12 @@ public class AuthControllerTest extends AbstractControllerTest {
 
     @Test
     void registerInvalid() throws Exception {
-        User newUser = getNew();
-        newUser.setPassword("");
+        RegistrationDTO newRegistration = getNewRegistration();
+        newRegistration.setPassword("");
 
         perform(MockMvcRequestBuilders.post(REST_URL + "register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .content(jsonWithPassword(newRegistration, newRegistration.getPassword())))
                 .andExpect(status().isUnprocessableEntity());
     }
 

@@ -67,7 +67,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void create() throws Exception {
-        User newUser = getNew();
+        User newUser = getNewUser();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
@@ -86,7 +86,7 @@ public class UserControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     void createDuplicate() throws Exception {
-        User newUser = getNew();
+        User newUser = getNewUser();
         newUser.setEmail(USER_MAIL);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void createInvalid() throws Exception {
-        User invalidUser = getNew();
+        User invalidUser = getNewUser();
         invalidUser.setEmail("");
         invalidUser.setFirstName("");
         perform(MockMvcRequestBuilders.post(REST_URL)
