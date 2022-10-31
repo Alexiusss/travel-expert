@@ -5,6 +5,7 @@ import com.example.user.AuthUser;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthRequest;
 import com.example.user.model.dto.JwtResponse;
+import com.example.user.model.dto.RegistrationDTO;
 import com.example.user.servise.AuthService;
 import com.example.user.servise.UserService;
 import com.example.user.util.JwtUtil;
@@ -63,9 +64,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody User user) {
-        log.info("registration {}", user);
-        User created = authService.registerUser(user);
+    public ResponseEntity<?> register(@Valid @RequestBody RegistrationDTO registration) {
+        log.info("registration {}", registration);
+        User created = authService.registerUser(registration);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

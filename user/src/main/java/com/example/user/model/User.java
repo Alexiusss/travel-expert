@@ -2,10 +2,7 @@ package com.example.user.model;
 
 import com.example.common.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -21,7 +18,9 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 public class User extends BaseEntity implements HasIdAndEmail {
