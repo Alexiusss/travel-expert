@@ -78,7 +78,7 @@ const ReviewItem = (props) => {
                             </div>
                             <div>
                                 <Typography
-                                    variant="caption">{author && author.authorName}</Typography>
+                                    variant="caption">{author && author.username}</Typography>
                             </div>
                             <div>
                                 <Typography variant="caption">{t('reviews') + ": " + reviewsCount}</Typography>

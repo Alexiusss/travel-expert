@@ -9,59 +9,81 @@ import "./ProfilePage.css"
 import userService from "../../services/user.service";
 import reviewService from "../../services/ReviewService";
 import {useAuth} from "../../components/hooks/UseAuth";
-import {useLocation} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import ReviewList from "../../pages/review/ReviewList";
 import {Grid} from "@material-ui/core";
 import imageService from "../../services/ImageService";
-import {getLocalizedErrorMessages} from "../../utils/consts";
+import {getLocalizedErrorMessages, PROFILE} from "../../utils/consts";
 import Intro from "../../pages/review/Intro";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
-    const {authorId} = useLocation().state || "";
+    const {pathname, state} = useLocation();
+    const {push} = useHistory();
     const {isAdmin, isModerator, authUserId} = useAuth();
+    const username = pathname.replace(PROFILE, "");
+    const [profile, setProfile] = useState({});
+    const [authorId, setAuthorId] = useState(state ? state.id : profile.id);
     const isAuthor = authUserId === authorId;
     const [modal, setModal] = useState(false);
-    const [profile, setProfile] = useState({});
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
     const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
-        if (authorId && !isAuthor) {
-            userService.getAuthor(authorId)
-                .then(({data}) => setProfile({
-                    id: data.authorId,
-                    firstName: data.authorName,
-                    fileName: data.fileName,
-                    registeredAt: data.registeredAt,
-                }))
-        } else {
-            authService.profile()
+        if (username.length) {
+            userService.getAuthorByUsername(username)
                 .then(({data}) => {
                     setProfile({
-                        id: data.id,
-                        email: data.email,
-                        firstName: data.firstName,
-                        lastName: data.lastName,
-                        enabled: data.enabled,
+                        id: data.authorId,
+                        firstName: data.authorName,
+                        username: data.username,
                         fileName: data.fileName,
-                        registeredAt: data.createdAt,
+                        registeredAt: data.registeredAt,
                     })
+                    setAuthorId(data.authorId)
+                })
+        } else {
+            userService.getAuthor(authUserId)
+                .then(({data}) => {
+                    setProfile({
+                        id: data.authorId,
+                        firstName: data.authorName,
+                        username: data.username,
+                        fileName: data.fileName,
+                        registeredAt: data.registeredAt,
+                    })
+                    setAuthorId(data.authorId)
+                    push(PROFILE + data.username)
                 })
         }
-    }, [authorId]);
+    }, []);
 
     useEffect(() => {
-        if (isAuthor || isAdmin || isModerator) {
-            reviewService.getAllByUserId(authUserId)
-                .then(({data}) => setReviews(data))
-        } else {
-            reviewService.getAllActiveByUserId(authorId)
-                .then(({data}) => setReviews(data))
+        if (authorId) {
+            if (isAuthor || isAdmin || isModerator) {
+                reviewService.getAllByUserId(authorId)
+                    .then(({data}) => setReviews(data))
+            } else {
+                reviewService.getAllActiveByUserId(authorId)
+                    .then(({data}) => setReviews(data))
+            }
         }
     }, [authorId])
 
     const editProfile = () => {
+        authService.profile()
+            .then(({data}) => {
+                setProfile({
+                    id: data.id,
+                    email: data.email,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    username: data.username,
+                    enabled: data.enabled,
+                    fileName: data.fileName,
+                    registeredAt: data.createdAt,
+                })
+            })
         setModal(true);
     }
 

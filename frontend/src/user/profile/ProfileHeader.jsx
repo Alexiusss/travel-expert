@@ -11,7 +11,7 @@ const ProfileHeader = (props) => {
     const {
         id = '',
         firstName = '',
-        lastName = '',
+        username = '',
         fileName = '',
         editProfile = Function.prototype
     } = props;
@@ -30,7 +30,10 @@ const ProfileHeader = (props) => {
                                      className="rounded-circle profile-avatar"/>
                             </div>
                             <div>
-                                <h4 className="user-name">{firstName + " " + `${lastName.length ? lastName.charAt(0) : ""}`}</h4>
+                                <div className="username">
+                                <h4 >{firstName}</h4>
+                                <span>@{username}</span>
+                                </div>
                                 <div className="profile-flex">
                                     <div>
                                         <span className="profile-block">Contributions</span>

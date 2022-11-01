@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {PROFILE} from "../../utils/consts";
 
 const ProfilePopover = (props) => {
-    const {anchorEl, setAnchorEl, authorId, authorName, rating} = props;
+    const {anchorEl, setAnchorEl, authorId, authorName, username, rating} = props;
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -32,7 +32,7 @@ const ProfilePopover = (props) => {
             >
                 <div style={{padding: 7}}>
                     <Link to={{
-                        pathname: `${PROFILE}${authorName.replaceAll(" ", "")}`,
+                        pathname: `${PROFILE}${username}`,
                         state: {authorId: authorId}
                     }}
                     >{authorName}</Link>
