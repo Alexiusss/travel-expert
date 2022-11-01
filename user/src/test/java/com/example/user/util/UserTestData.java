@@ -27,20 +27,20 @@ public class UserTestData {
     public static final String ADMIN_MAIL = "admin@gmail.com";
     public static final String MODER_MAIL = "moder@gmail.com";
     public static final String USER_MAIL = "user@gmail.com";
+    public static final String USERNAME = "userName";
 
-    public static final User ADMIN = new User(ADMIN_ID, null, null, 0, ADMIN_MAIL, "Admin", "AdminLast", "adminPassword", true, null, List.of(Role.ADMIN, Role.MODERATOR, Role.USER));
-    public static final User MODER = new User(MODER_ID, null, null, 0, MODER_MAIL, "Moder", "ModerLast", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
-    public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", "userPassword", true, null, Collections.singleton(Role.USER));
-    public static final String USER_AUTHORS_NAME = USER.getFirstName() + " " + USER.getLastName().charAt(0) + ".";
+    public static final User ADMIN = new User(ADMIN_ID, null, null, 0, ADMIN_MAIL, "Admin", "AdminLast", "adminUserName", "adminPassword", true, null, List.of(Role.ADMIN, Role.MODERATOR, Role.USER));
+    public static final User MODER = new User(MODER_ID, null, null, 0, MODER_MAIL, "Moder", "ModerLast", "moderUserName", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
+    public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", USERNAME, "userPassword", true, null, Collections.singleton(Role.USER));
 
-    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getFileName(), USER.getCreatedAt());
+    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getUsername(), USER.getFileName(), USER.getCreatedAt());
 
     private static String getAuthorName(User user) {
-        return user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
+        return user.getFirstName() + " " + user.getLastName();
     }
 
-        public static User getNewUser() {
-       return new User("new_user@gmail.com", "New user", "NewUserLast", "NewPassword", false, null, Collections.singleton(Role.USER));
+    public static User getNewUser() {
+        return new User("new_user@gmail.com", "New user", "NewUserLast", "newUserName", "NewPassword", false, null, Collections.singleton(Role.USER));
     }
 
     public static RegistrationDTO getNewRegistration() {
@@ -48,7 +48,7 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        return new User(USER_ID, null, null, 0, "user@gmail.com", "Updated user name", "Updated UserLast", "newPass", true, null, Collections.singleton(Role.USER));
+        return new User(USER_ID, null, null, 0, "user@gmail.com", "Updated user name", "Updated UserLast", "updatedUserName", "newPass", true, null, Collections.singleton(Role.USER));
     }
 
     public static String jsonWithPassword(User user, String passw) {

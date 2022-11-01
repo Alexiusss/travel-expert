@@ -55,7 +55,6 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo("Bad credentials")))
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
-
     }
 
     @Test
@@ -116,7 +115,6 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Activation code not found!"));
     }
-
 
     @Test
     void logout() throws Exception {
