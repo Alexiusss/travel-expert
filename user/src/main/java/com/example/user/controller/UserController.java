@@ -37,8 +37,15 @@ public class UserController {
     @GetMapping(value = "/{id}/author")
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable String id) {
         log.info("get authorName for {}", id);
-        final AuthorDTO author = userService.getAuthor(id);
+        final AuthorDTO author = userService.getAuthorById(id);
         return ResponseEntity.ok(author);
+    }
+
+    @GetMapping(value = "/{username}/authorByUsername")
+    public ResponseEntity<AuthorDTO> getByAuthorUsername(@PathVariable String username) {
+        log.info("get authorName for {}", username);
+        final AuthorDTO user = userService.getAuthorByUserName(username);
+        return ResponseEntity.ok(user);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")

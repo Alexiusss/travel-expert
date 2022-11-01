@@ -19,8 +19,7 @@ import org.springframework.util.ObjectUtils;
 import java.time.Instant;
 import java.util.Set;
 
-import static com.example.common.util.ValidationUtil.assureIdConsistent;
-import static com.example.common.util.ValidationUtil.checkNew;
+import static com.example.common.util.ValidationUtil.*;
 import static com.example.user.util.UserUtil.prepareToSave;
 
 @Service
@@ -44,6 +43,7 @@ public class UserService implements UserDetailsService {
             userFromDB.setFirstName(user.getFirstName());
             userFromDB.setLastName(user.getLastName());
             userFromDB.setFileName(user.getFileName());
+            userFromDB.setUsername(user.getUsername());
             if (!ObjectUtils.isEmpty(user.getPassword())) {
                 userFromDB.setPassword(user.getPassword());
                 prepareToSave(userFromDB);
@@ -61,13 +61,24 @@ public class UserService implements UserDetailsService {
         userRepository.deleteExisted(id);
     }
 
-    public AuthorDTO getAuthor(String id) {
+    public AuthorDTO getAuthorById(String id) {
         User user = get(id);
-        String authorName = user.getFirstName() + " " + user.getLastName().charAt(0) + ".";
+        return getAuthorDTO(user);
+    }
+
+    public AuthorDTO getAuthorByUserName(String username) {
+        User user = checkNotFoundWithName(userRepository.findByUsername(username), username);
+        return getAuthorDTO(user);
+    }
+
+    private AuthorDTO getAuthorDTO(User user) {
+        String username = user.getUsername();
+        String authorName = user.getFirstName() + " " + user.getLastName();
         String fileName = user.getFileName();
         Instant registeredAt = user.getCreatedAt();
-        return new AuthorDTO(user.getId(), authorName, fileName, registeredAt);
+        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt);
     }
+
 
     public User get(String id) {
         return userRepository.getExisted(id);
