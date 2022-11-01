@@ -41,6 +41,11 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @Size(max = 128)
     private String lastName;
 
+    @Column(name = "username")
+    @NotBlank
+    @Size(min = 5, max = 128)
+    private String username;
+
     @Column(name = "password", nullable = false)
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -62,21 +67,23 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    public User(String email, String firstName, String lastName, String password, boolean enabled, String activationCode, Collection<Role> roles) {
+    public User(String email, String firstName, String lastName, String username, String password, boolean enabled, String activationCode, Collection<Role> roles) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.activationCode = activationCode;
         setRoles(roles);
     }
 
-    public User(String id, Instant createdAt, Instant modifiedAt, int version, String email, String firstName, String lastName, String password, boolean enabled, String activationCode, Collection<Role> roles) {
+    public User(String id, Instant createdAt, Instant modifiedAt, int version, String email, String firstName, String lastName, String username, String password, boolean enabled, String activationCode, Collection<Role> roles) {
         super(id, createdAt, modifiedAt, version);
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.activationCode = activationCode;

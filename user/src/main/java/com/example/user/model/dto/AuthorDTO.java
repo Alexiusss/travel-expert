@@ -10,6 +10,7 @@ import java.time.Instant;
 public class AuthorDTO {
     String authorId;
     String authorName;
+    String username;
     String fileName;
     Instant registeredAt;
 }
