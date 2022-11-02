@@ -9,6 +9,7 @@ import ItemPageHeader from "../components/items/ItemPageHeader";
 import ItemContact from "../components/items/ItemContact";
 import ReviewsSection from "../pages/review/ReviewsSection";
 import ItemImages from "../components/items/ItemImages";
+import {NotFound} from "../pages/NotFound";
 
 const RestaurantPage = () => {
     const {pathname} = useLocation();
@@ -30,13 +31,13 @@ const RestaurantPage = () => {
     }
 
     useEffect(() => {
-            trackPromise(Promise.all([restaurantService.get(id), reviewService.getRating(id)]), area)
-                .then((values) => {
-                    const [restaurant, rating] = values;
-                    setRestaurant(restaurant);
-                    setImages(restaurant.fileNames);
-                    setRating(rating);
-                })
+        trackPromise(Promise.all([restaurantService.get(id), reviewService.getRating(id)]), area)
+            .then((values) => {
+                const [restaurant, rating] = values;
+                setRestaurant(restaurant);
+                setImages(restaurant.fileNames);
+                setRating(rating);
+            })
     }, [])
 
     return (
@@ -46,15 +47,24 @@ const RestaurantPage = () => {
                 <div>Data is loading</div>
                 :
                 <>
-                    <br/>
-                    <ItemPageHeader name={restaurant.name} description={restaurant.cuisine} rating={rating}/>
-                    <br/>
-                    <ItemContact item={restaurant}/>
-                    <br/>
-                    <ItemImages images={images} promiseInProgress={promiseInProgress} removeImage={removeImage}/>
-                    <br/>
-                    {id.length ?
-                        <ReviewsSection itemId={id} rating={rating}/> : null
+                    {
+                        restaurant.name ?
+                            <>
+                                <br/>
+                                <ItemPageHeader name={restaurant.name} description={restaurant.cuisine}
+                                                rating={rating}/>
+                                <br/>
+                                <ItemContact item={restaurant}/>
+                                <br/>
+                                <ItemImages images={images} promiseInProgress={promiseInProgress}
+                                            removeImage={removeImage}/>
+                                <br/>
+                                {id.length ?
+                                    <ReviewsSection itemId={id} rating={rating}/> : null
+                                }
+                            </>
+                            :
+                            <NotFound/>
                     }
                 </>
             }

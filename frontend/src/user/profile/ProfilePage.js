@@ -15,6 +15,7 @@ import {Grid} from "@material-ui/core";
 import imageService from "../../services/ImageService";
 import {getLocalizedErrorMessages, PROFILE} from "../../utils/consts";
 import Intro from "../../pages/review/Intro";
+import {NotFound} from "../../pages/NotFound";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
@@ -117,27 +118,33 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="container justify-content-center align-items-center">
-            <ProfileHeader {...profile} editProfile={editProfile}/>
-            <Grid container
-                  spacing={1}
-                  direction="row"
-            >
-                <Intro {...profile}/>
-                <Grid item xs={12} sm={12} md={6} key="introKey">
-                    <ReviewList reviews={reviews} remove={removeReview}/>
-                </Grid>
-            </Grid>
-            {modal &&
-                <MyModal visible={modal} setVisible={setModal}>
-                    <UserEditor userFromDB={profile} update={updateProfile} modal={modal}
-                                setAlert={setAlert}/>
-                </MyModal>
-            }
+        <>
+            {profile.username ?
+                <div className="container justify-content-center align-items-center">
+                    <ProfileHeader {...profile} editProfile={editProfile}/>
+                    <Grid container
+                          spacing={1}
+                          direction="row"
+                    >
+                        <Intro {...profile}/>
+                        <Grid item xs={12} sm={12} md={6} key="introKey">
+                            <ReviewList reviews={reviews} remove={removeReview}/>
+                        </Grid>
+                    </Grid>
+                    {modal &&
+                        <MyModal visible={modal} setVisible={setModal}>
+                            <UserEditor userFromDB={profile} update={updateProfile} modal={modal}
+                                        setAlert={setAlert}/>
+                        </MyModal>
+                    }
 
-            <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}
-                            severity={alert.severity}/>
-        </div>
+                    <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}
+                                    severity={alert.severity}/>
+                </div>
+                :
+                <NotFound/>
+            }
+        </>
     );
 };
 
