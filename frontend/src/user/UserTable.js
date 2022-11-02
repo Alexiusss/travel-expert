@@ -89,6 +89,15 @@ const UserTable = (props) => {
                     <th>
                         <button
                             type="button"
+                            onClick={() => requestSort('username')}
+                            className={getClassNamesFor('username')}
+                        >
+                            {t("username")}
+                        </button>
+                    </th>
+                    <th>
+                        <button
+                            type="button"
                             onClick={() => requestSort('email')}
                             className={getClassNamesFor('email')}
                         >

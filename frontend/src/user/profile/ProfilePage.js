@@ -84,7 +84,7 @@ const ProfilePage = () => {
                     registeredAt: data.createdAt,
                 })
             })
-        setModal(true);
+            .then(() => setModal(true))
     }
 
     const updateProfile = (updateProfile) => {
@@ -94,8 +94,10 @@ const ProfilePage = () => {
             email: updateProfile.email,
             firstName: updateProfile.firstName,
             lastName: updateProfile.lastName,
+            username: updateProfile.username,
             fileName: updateProfile.fileName,
         })
+        push(PROFILE + updateProfile.username)
     }
 
     const removeReview = (review) => {

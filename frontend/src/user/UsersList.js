@@ -35,7 +35,7 @@ const UsersList = () => {
     }, [setUsers, page, size]);
 
     const [filter, setFilter] = useState({config: null, query: ''})
-    const searchedColumns = ["email", "firstName", "lastName"];
+    const searchedColumns = ["email", "firstName", "lastName", "username"];
     const sortedAndSearchedUsers = useItems(users, filter.config, filter.query, searchedColumns);
 
     const [modal, setModal] = useState(false);
@@ -62,6 +62,7 @@ const UsersList = () => {
                         email: updatedUser.email,
                         firstName: updatedUser.firstName,
                         lastName: updatedUser.lastName,
+                        username: updatedUser.username,
                         password: updatedUser.password,
                         enabled: updatedUser.enabled
                     }

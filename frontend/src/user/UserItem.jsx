@@ -17,6 +17,7 @@ const UserItem = (props) => {
         <tr>
             <td>{user.firstName}</td>
             <td>{user.lastName}</td>
+            <td>{user.username}</td>
             <td>{user.email}</td>
             <td><input type="checkbox" checked={user.enabled}
                        onChange={() => enableUser(user, !user.enabled)}/></td>

@@ -11,6 +11,7 @@ const UserEditor = (props) => {
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [id, setId] = useState(null)
     const {t} = useTranslation();
@@ -30,7 +31,7 @@ const UserEditor = (props) => {
 
     const saveUser = (e) => {
         e.preventDefault()
-        const user = {email, firstName, lastName, password, fileName: fileNames[0], id}
+        const user = {email, firstName, lastName, username, password, fileName: fileNames[0], id}
         if (id) {
             if (currentUserId === id) {
                 authService.updateProfile(user)
@@ -93,6 +94,7 @@ const UserEditor = (props) => {
             setEmail('' + props.userFromDB.email)
             setFirstName('' + props.userFromDB.firstName)
             setLastName('' + props.userFromDB.lastName)
+            setUsername('' + props.userFromDB.username)
             setId('' + props.userFromDB.id)
             setFileNames([props.userFromDB.fileName] || [])
         }
@@ -140,6 +142,17 @@ const UserEditor = (props) => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder={t("enter last name")}
+                    />
+                </div>
+
+                <div className="form-group" style={{marginTop: 5}}>
+                    <input
+                        type="text"
+                        className="form-control col-4"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder={t("enter username")}
                     />
                 </div>
 
