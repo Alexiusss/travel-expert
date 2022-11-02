@@ -23,6 +23,7 @@ const UserEditor = (props) => {
         setEmail('');
         setFirstName('');
         setLastName('');
+        setUsername('');
         setPassword('');
         setId(null);
         setImages([]);
@@ -41,7 +42,6 @@ const UserEditor = (props) => {
                         openAlert([t('record saved')], "success")
                     })
                     .catch(error => {
-                        console.error(error)
                         openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
                     })
             } else {
@@ -76,6 +76,24 @@ const UserEditor = (props) => {
             })
             .catch(error => {
                 openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
+    }
+
+    const checkUsername = (e) => {
+        e.preventDefault();
+        let name = e.target.value;
+        setUsername(name)
+        userService.getAuthorByUsername(name)
+            .then(({data}) => {
+                if (data.username === name) {
+                    openAlert([t('username has already been taken')], "error");
+                }
+            })
+            .catch(error => {
+                let message = error.response.data.message;
+                if (!message.includes("not found")) {
+                    openAlert(getLocalizedErrorMessages(message), "error");
+                }
             })
     }
 
@@ -151,7 +169,7 @@ const UserEditor = (props) => {
                         className="form-control col-4"
                         id="username"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => checkUsername(e)}
                         placeholder={t("enter username")}
                     />
                 </div>

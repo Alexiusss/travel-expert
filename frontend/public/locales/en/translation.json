@@ -22,6 +22,7 @@
   "Duplicate email": "User with the same e-mail already exists",
   "Duplicate review": "This is your repetitive review of this object. You can delete the old review and write a new one.",
   "User is disabled": "Confirm your account. The link contained in the e-mail is sent to the address specified during registration.",
+  "username has already been taken": "Username has already been taken",
 
   "modification is forbidden": "Admin modification is forbidden",
 
