@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -56,6 +57,7 @@ public class AuthService {
                 .email(registrationDTO.getEmail())
                 .firstName(registrationDTO.getFirstName())
                 .lastName(registrationDTO.getLastName())
+                .username(generateNewUsername(registrationDTO))
                 .password(registrationDTO.getPassword())
                 .enabled(false)
                 .roles(Set.of(Role.USER))
@@ -66,6 +68,16 @@ public class AuthService {
         sendMessage(user);
 
         return user;
+    }
+
+    private String generateNewUsername(RegistrationDTO registrationDTO) {
+        String username = registrationDTO.getFirstName() + registrationDTO.getLastName();
+        Optional<Integer> maxUserNameIndex = userRepository.findMaxUsernameIndex(username);
+        if (maxUserNameIndex.isPresent()) {
+            int newIndex = maxUserNameIndex.get() + 1;
+            return newIndex + username;
+        }
+        return username;
     }
 
     private void sendMessage(User user) {
