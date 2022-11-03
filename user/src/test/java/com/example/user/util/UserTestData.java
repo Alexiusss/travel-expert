@@ -40,11 +40,11 @@ public class UserTestData {
     }
 
     public static User getNewUser() {
-        return new User("new_user@gmail.com", "New user", "NewUserLast", "newUserName", "NewPassword", false, null, Collections.singleton(Role.USER));
+        return new User("new_user@gmail.com", "Newuser", "NewUserLast", "newUserName", "NewPassword", false, null, Collections.singleton(Role.USER));
     }
 
     public static RegistrationDTO getNewRegistration() {
-        return new RegistrationDTO("new_user@gmail.com", "New user", "NewUserLast", "NewPassword");
+        return new RegistrationDTO("new_user@gmail.com", "Newuser", "NewUserLast", "NewPassword");
     }
 
     public static User getUpdated() {
