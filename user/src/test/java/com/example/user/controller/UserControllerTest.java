@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.common.error.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
 import static com.example.common.util.JsonUtil.asParsedJson;
+import static com.example.user.controller.UserExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
+import static com.example.user.controller.UserExceptionHandler.EXCEPTION_DUPLICATE_USERNAME;
 import static com.example.user.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -93,14 +95,27 @@ public class UserControllerTest extends AbstractControllerTest {
     // https://github.com/spring-projects/spring-boot/issues/5993#issuecomment-221550622
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    void createDuplicate() throws Exception {
+    void createWithDuplicateEmail() throws Exception {
         User newUser = getNewUser();
         newUser.setEmail(USER_MAIL);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", equalTo(EXCEPTION_DUPLICATE_EMAIL)));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void createWithDuplicateUsername() throws Exception {
+        User newUser = getNewUser();
+        newUser.setUsername(USERNAME);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", equalTo(EXCEPTION_DUPLICATE_USERNAME)));
     }
 
     @Test
