@@ -73,7 +73,7 @@ const ItemCard = (props) => {
                             <Typography gutterBottom variant="h6" component="div">
                                 {item.name}
                             </Typography>
-                            <Rating name="half-rating-read" value={ratingValue} size="medium" readOnly/>
+                            <Rating name="half-rating-read" value={ratingValue} precision={0.1} size="medium" readOnly/>
                         </CardContent>
                     </CardActionArea>
                     {isAdmin ?

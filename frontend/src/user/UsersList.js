@@ -110,10 +110,12 @@ const UsersList = () => {
                        modalVisible={setModal} setAlert={setAlert}/>
 
             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"/>
+            { modal ?
                 <MyModal visible={modal} setVisible={setModal}>
                     <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
                                 modal={modal} setAlert={setAlert}/>
-                </MyModal>
+                </MyModal> : null
+            }
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </div>
     );
