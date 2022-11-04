@@ -11,11 +11,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.Map;
+
 @RestControllerAdvice
 public class UserExceptionHandler extends GlobalExceptionHandler {
 
     public static final String EXCEPTION_DUPLICATE_EMAIL = "Duplicate email";
-    public static final String EMAIL_UNIQUE_CONSTRAINT = "user_email_unique";
+    public static final String EXCEPTION_DUPLICATE_USERNAME = "username has already been taken";
+
+    public static final Map<String, String> CONSTRAINTS_MAP = Map.of(
+            "user_email_unique", EXCEPTION_DUPLICATE_EMAIL,
+            "username_unique", EXCEPTION_DUPLICATE_USERNAME
+    );
 
     public UserExceptionHandler(ErrorAttributes errorAttributes) {
         super(errorAttributes);
@@ -26,8 +33,10 @@ public class UserExceptionHandler extends GlobalExceptionHandler {
     public ResponseEntity<?> conflict(WebRequest request,DataIntegrityViolationException ex) {
         String rootMsg = ValidationUtil.getRootCause(ex).getMessage();
         String message = "";
-        if (rootMsg.contains(EMAIL_UNIQUE_CONSTRAINT)) {
-            message = EXCEPTION_DUPLICATE_EMAIL;
+        for (Map.Entry<String, String> entry: CONSTRAINTS_MAP.entrySet()) {
+            if (rootMsg.toLowerCase().contains(entry.getKey().toLowerCase())){
+                message = entry.getValue();
+            }
         }
         return createResponseEntity(request, ErrorAttributeOptions.of(), message, HttpStatus.CONFLICT);
     }
