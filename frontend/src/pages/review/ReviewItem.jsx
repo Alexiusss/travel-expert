@@ -30,8 +30,6 @@ const ReviewItem = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [userRating, setUserRating] = useState({});
 
-
-
     const updateReview = (e, review) => {
         e.preventDefault();
         props.update(review);

@@ -1,7 +1,7 @@
 package com.example.user.controller;
 
 import com.example.common.GlobalExceptionHandler;
-import com.example.common.util.ValidationUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,7 +13,11 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Map;
 
+import static com.example.common.util.ValidationUtil.getRootCause;
+import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.STACK_TRACE;
+
 @RestControllerAdvice
+@Slf4j
 public class UserExceptionHandler extends GlobalExceptionHandler {
 
     public static final String EXCEPTION_DUPLICATE_EMAIL = "Duplicate email";
@@ -30,14 +34,15 @@ public class UserExceptionHandler extends GlobalExceptionHandler {
 
     // https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<?> conflict(WebRequest request,DataIntegrityViolationException ex) {
-        String rootMsg = ValidationUtil.getRootCause(ex).getMessage();
-        String message = "";
+    public ResponseEntity<?> conflict(WebRequest request, DataIntegrityViolationException ex) {
+        String rootMsg = getRootCause(ex).getMessage();
         for (Map.Entry<String, String> entry: CONSTRAINTS_MAP.entrySet()) {
             if (rootMsg.toLowerCase().contains(entry.getKey().toLowerCase())){
-                message = entry.getValue();
+                log.warn("Conflict at request  {}: {}", request, rootMsg);
+                return createResponseEntity(request, ErrorAttributeOptions.of(), entry.getValue(), HttpStatus.CONFLICT);
             }
         }
-        return createResponseEntity(request, ErrorAttributeOptions.of(), message, HttpStatus.CONFLICT);
+        log.error("Conflict at request " + request, getRootCause(ex));
+        return createResponseEntity(request, ErrorAttributeOptions.of(STACK_TRACE), rootMsg, HttpStatus.CONFLICT);
     }
 }

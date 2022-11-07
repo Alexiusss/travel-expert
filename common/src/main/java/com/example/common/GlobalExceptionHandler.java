@@ -5,9 +5,9 @@ import com.example.common.error.NotFoundException;
 import com.example.common.util.ValidationUtil;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,16 +30,19 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 
 @RestControllerAdvice
 @AllArgsConstructor
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final ErrorAttributes errorAttributes;
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
+        log.error("ApplicationException: {}", ex.getMessage());
         return createResponseEntity(request, ex.getOptions(), null, ex.getStatus());
     }
 
     @ExceptionHandler({EntityNotFoundException.class, BadCredentialsException.class, DisabledException.class})
-    public ResponseEntity<?> handleException(WebRequest request) {
+    public ResponseEntity<?> handleException(WebRequest request, Exception ex) {
+        log.error(ex.getClass().getSimpleName() + ": {}", ex.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), null, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
@@ -50,6 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<?> handleFeignStatusException(WebRequest request, FeignException ex) {
+        log.error("FeignException: {}", ex.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(), null, HttpStatus.valueOf(ex.status()));
     }
 
@@ -57,6 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(
             @NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+        log.error("Exception: ", ex);
         super.handleExceptionInternal(ex, body, headers, status, request);
         return createResponseEntity(request, ErrorAttributeOptions.of(), ValidationUtil.getRootCause(ex).getMessage(), status);
     }

@@ -2,6 +2,7 @@ package com.example.review.controller;
 
 import com.example.common.GlobalExceptionHandler;
 import com.example.common.util.ValidationUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,7 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import static com.example.common.util.ValidationUtil.getRootCause;
+import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.STACK_TRACE;
+
 @RestControllerAdvice
+@Slf4j
 public class ReviewExceptionHandler extends GlobalExceptionHandler {
 
     public static final String EXCEPTION_DUPLICATE_REVIEW = "Duplicate review";
@@ -23,11 +28,12 @@ public class ReviewExceptionHandler extends GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> conflict(WebRequest request, DataIntegrityViolationException ex) {
-        String rootMsg = ValidationUtil.getRootCause(ex).getMessage();
-        String message = "";
+        String rootMsg = getRootCause(ex).getMessage();
         if (rootMsg.contains(REVIEW_UNIQUE_CONSTRAINT)) {
-            message = EXCEPTION_DUPLICATE_REVIEW;
+            log.warn("Conflict at request  {}: {}", request, rootMsg);
+            return createResponseEntity(request, ErrorAttributeOptions.of(), EXCEPTION_DUPLICATE_REVIEW, HttpStatus.CONFLICT);
         }
-        return createResponseEntity(request, ErrorAttributeOptions.of(), message, HttpStatus.CONFLICT);
+        log.error("Conflict at request " + request, getRootCause(ex));
+        return createResponseEntity(request, ErrorAttributeOptions.of(STACK_TRACE), rootMsg, HttpStatus.CONFLICT);
     }
 }

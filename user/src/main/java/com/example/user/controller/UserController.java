@@ -72,7 +72,7 @@ public class UserController {
         log.info("update {} with id={}", user, id);
         checkModificationAllowed(id);
         assureIdConsistent(user, id);
-       User updatedUser = userService.updateUser(user, id);
+        User updatedUser = userService.updateUser(user, id);
         return ResponseEntity.ok(updatedUser);
     }
 
