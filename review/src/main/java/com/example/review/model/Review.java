@@ -10,13 +10,14 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 
-import javax.persistence.*;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.Instant;
+import java.util.Set;
 
 @TypeDefs(
         @TypeDef(
@@ -78,6 +79,11 @@ public class Review implements HasId {
 
     @NotBlank
     private String itemId;
+
+    @CollectionTable(name = "likes", joinColumns = @JoinColumn(name = "review_id"))
+    @Column(name = "user_id")
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Set<String> likes;
 
     public String id() {
         Assert.notNull(id, "Entity must have id");
