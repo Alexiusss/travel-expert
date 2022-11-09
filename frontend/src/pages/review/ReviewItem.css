@@ -1,0 +1,23 @@
+@media (min-width: 450px) {
+    .like {
+        margin-left: calc(30%)
+    }
+}
+
+@media (min-width: 600px) {
+    .like {
+        margin-left: calc(60% - 5vw)
+    }
+}
+
+@media (min-width: 950px) {
+    .like {
+        margin-left: calc(70% - 5vw)
+    }
+}
+
+@media (min-width: 1280px) {
+    .like {
+        margin-left: calc(80% - 6vw)
+    }
+}

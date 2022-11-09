@@ -5,6 +5,7 @@ import {
     Button, CardActions,
     CardHeader,
     CardMedia,
+    IconButton,
     Typography
 } from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
@@ -17,15 +18,18 @@ import {Card} from "reactstrap";
 import userService from "../../services/user.service";
 import reviewService from "../../services/ReviewService";
 import ProfilePopover from "../../user/profile/ProfilePopover";
+import './ReviewItem.css';
 
 const ReviewItem = (props) => {
 
     const {t, i18n} = useTranslation();
-    const {authUserId, isAdmin, isModerator} = useAuth();
+    const {authUserId, isAuth, isAdmin, isModerator} = useAuth();
     const isAuthor = authUserId === props.item.userId;
     const [author, setAuthor] = useState("");
     const [reviewsCount, setReviewsCount] = useState(0);
     const {removeImage = Function.prototype} = props;
+    const [likes, setLikes] = useState(props.item.likes || [])
+    const isAuthUserLiked = likes.includes(authUserId);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [userRating, setUserRating] = useState({});
@@ -87,7 +91,7 @@ const ReviewItem = (props) => {
                         <Box
                             sx={{
                                 display: 'flex',
-                                alignItems: 'center',
+                                alignItems: 'center'
                             }}
                         >
                             <Rating name="half-rating-read" defaultValue={0} value={props.item.rating}
@@ -95,6 +99,17 @@ const ReviewItem = (props) => {
                                     readOnly/>
                             <Box
                                 sx={{ml: 1}}><small>{t("published")} {getFormattedDate(props.item.createdAt, i18n)}</small></Box>
+                            <div className="like">
+                                {isAuth ?
+                                    <IconButton>
+                                        {isAuthUserLiked ?
+                                            <i className="bi bi-heart-fill small"/>
+                                            :
+                                            <i className="bi bi-heart small"/>
+                                        }
+                                    </IconButton> : null
+                                }
+                            </div>
                         </Box>
                     }
                     subheader={
