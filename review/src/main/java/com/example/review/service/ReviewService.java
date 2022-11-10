@@ -6,6 +6,7 @@ import com.example.review.model.Review;
 import com.example.review.model.dto.Rating;
 import com.example.review.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
@@ -25,6 +27,7 @@ import static com.example.common.util.ValidationUtil.checkNew;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -34,6 +37,7 @@ public class ReviewService {
         List<Review> reviewList = reviewRepository.findAllByItemId(itemId);
         return getRating(itemId, reviewList);
     }
+
     public Rating getRatingByUserId(String userId) {
         List<Review> reviewList = reviewRepository.findAllByUserId(userId);
         return getRating(userId, reviewList);
@@ -133,6 +137,19 @@ public class ReviewService {
         reviewFromDB.setFileNames(review.getFileNames());
     }
 
+    @Transactional
+    public void like(String reviewId, String userId) {
+        Review reviewFromDB = reviewRepository.getExisted(reviewId);
+        Set<String> likes = reviewFromDB.getLikes();
+        if (likes.contains(userId)) {
+            log.info("unlike for review {} from user {}", reviewId, userId);
+            likes.remove(userId);
+        } else {
+            log.info("like for review {} from user {}", reviewId, userId);
+            likes.add(userId);
+        }
+    }
+
     public ResponseEntity<Review> checkAuth(String authorization, Review review) {
         AuthCheckResponse authCheckResponse = authClient.isAuth(authorization);
 
@@ -158,4 +175,5 @@ public class ReviewService {
     public void deleteAllByItemId(String itemId) {
         reviewRepository.deleteAllByItemId(itemId);
     }
+
 }

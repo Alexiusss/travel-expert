@@ -4,6 +4,7 @@ import com.example.common.BaseRepository;
 import com.example.review.model.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,9 @@ public interface ReviewRepository extends BaseRepository<Review> {
             "AND r.active=true")
     Integer getCountByUserId(String userId);
 
+    //    https://stackoverflow.com/a/46013654/548473
     @Override
+    @EntityGraph(attributePaths = "likes", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Review r " +
             "ORDER BY r.createdAt DESC")
     Page<Review> findAll(Pageable pageable);
@@ -37,6 +40,7 @@ public interface ReviewRepository extends BaseRepository<Review> {
     @Transactional
     void deleteAllByItemId(String itemId);
 
+    @EntityGraph(attributePaths = "likes", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Review r " +
             "WHERE lower(r.title) LIKE lower(concat('%', :filter,'%')) " +
             "OR lower(r.description) LIKE lower(concat('%', :filter,'%')) " +
@@ -49,20 +53,24 @@ public interface ReviewRepository extends BaseRepository<Review> {
             "ORDER BY r.createdAt DESC")
     List<Review> findAllByItemId(String id);
 
+    @EntityGraph(attributePaths = "likes", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Review r " +
             "WHERE r.userId=?1")
     List<Review> findAllByUserId(String userId);
 
+    @EntityGraph(attributePaths = "likes", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Review r " +
             "WHERE r.userId=?1 AND r.active=true")
     List<Review> findAllActiveByUserId(String userId);
 
+    @EntityGraph(attributePaths = "likes", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Review r " +
             "WHERE r.itemId=?1 " +
             "AND r.active=true " +
             "ORDER BY r.createdAt DESC")
     Page<Review> findAllByItemId(Pageable pageable, String id);
 
+    @EntityGraph(attributePaths = "likes", type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Review r " +
             "WHERE r.itemId=:id " +
             "AND r.active=true " +
