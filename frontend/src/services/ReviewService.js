@@ -71,4 +71,8 @@ export default class ReviewService {
     static async deleteAllByItemId(itemId) {
         return $api.delete(REVIEWS_ROUTE+ `${itemId}` + '/item');
     }
+
+    static like(id, userId) {
+        return $api.patch(REVIEWS_ROUTE + `${id}` + "/like", userId);
+    }
 }

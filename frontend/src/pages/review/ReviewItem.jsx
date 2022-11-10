@@ -24,53 +24,53 @@ const ReviewItem = (props) => {
 
     const {t, i18n} = useTranslation();
     const {authUserId, isAuth, isAdmin, isModerator} = useAuth();
-    const isAuthor = authUserId === props.item.userId;
+    const {id, userId, createdAt, title, description, fileNames = [], active, rating, likes = []} = props.item;
+    const {update = Function.prototype, removeImage = Function.prototype, remove = Function.prototype, like = Function.prototype} = props;
+    const isAuthor = authUserId === userId;
     const [author, setAuthor] = useState("");
     const [reviewsCount, setReviewsCount] = useState(0);
-    const {removeImage = Function.prototype} = props;
-    const [likes, setLikes] = useState(props.item.likes || [])
     const isAuthUserLiked = likes.includes(authUserId);
+    const likesCount = likes.length || 0;
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [userRating, setUserRating] = useState({});
 
     const updateReview = (e, review) => {
         e.preventDefault();
-        props.update(review);
+        update(review);
     }
 
     const removeReview = (e, reviewId) => {
         e.preventDefault();
-        props.remove(reviewId)
+        remove(reviewId)
     }
 
     const openProfilePopover = (e) => {
-        reviewService.getRatingByUserId(props.item.userId)
+        reviewService.getRatingByUserId(userId)
             .then(({data}) => setUserRating(data))
         setAnchorEl(e.currentTarget)
     }
 
     useEffect(() => {
-        userService.getAuthor(props.item.userId)
+        userService.getAuthor(userId)
             .then(({data}) => {
                 setAuthor(data)
             })
     }, [])
 
     useEffect(() => {
-        reviewService.getCountByUserId(props.item.userId)
+        reviewService.getCountByUserId(userId)
             .then(({data}) => {
                 setReviewsCount(data)
             })
     }, [])
-
     return (
         <div>
             {Boolean(anchorEl) &&
                 <ProfilePopover anchorEl={anchorEl} setAnchorEl={setAnchorEl} {...author} rating={userRating}/>
             }
             <Card className="paperItem" elevation={3}
-                  style={!props.item.active ? {backgroundColor: "darkgray"} : {}}
+                  style={!active ? {backgroundColor: "darkgray"} : {}}
             >
                 <CardHeader
                     avatar={
@@ -94,35 +94,36 @@ const ReviewItem = (props) => {
                                 alignItems: 'center'
                             }}
                         >
-                            <Rating name="half-rating-read" defaultValue={0} value={props.item.rating}
+                            <Rating name="half-rating-read" defaultValue={0} value={rating}
                                     size="small"
                                     readOnly/>
                             <Box
-                                sx={{ml: 1}}><small>{t("published")} {getFormattedDate(props.item.createdAt, i18n)}</small></Box>
-                            <div className="like">
-                                {isAuth ?
-                                    <IconButton>
+                                sx={{ml: 1}}><small>{t("published")} {getFormattedDate(createdAt, i18n)}</small></Box>
+                            {(isAuth && props.item.active) ?
+                                <div className="row-cols-2 like">
+                                    <IconButton onClick={() => props.like(id, isAuthUserLiked)}>
                                         {isAuthUserLiked ?
-                                            <i className="bi bi-heart-fill small"/>
+                                            <span id="heart-icon" className="bi bi-heart-fill small"/>
                                             :
-                                            <i className="bi bi-heart small"/>
+                                            <span id="heart-icon" className="bi bi-heart small"/>
                                         }
-                                    </IconButton> : null
-                                }
-                            </div>
+                                    </IconButton>
+                                    {likesCount > 0 ? likesCount: null}
+                                </div> : null
+                            }
                         </Box>
                     }
                     subheader={
                         <>
-                            <h6> {props.item.title} </h6>
-                            <p>{props.item.description}</p>
+                            <h6> {title} </h6>
+                            <p>{description}</p>
 
                         </>
                     }
                 />
                 {props.item.fileNames.length > 0 &&
                     <CardMedia>
-                        <ItemImages images={props.item.fileNames} itemId={props.item.id}
+                        <ItemImages images={fileNames} itemId={id}
                                     promiseInProgress={props.promiseInProgress} removeImage={removeImage}/>
                     </CardMedia>
                 }
@@ -130,7 +131,7 @@ const ReviewItem = (props) => {
                     <CardActions>
                         {isModerator &&
                             <Button size="small" color="primary"
-                                    onClick={e => updateReview(e, props.item.id)}
+                                    onClick={e => updateReview(e, id)}
                             >
                                 {t("edit")}
                             </Button>

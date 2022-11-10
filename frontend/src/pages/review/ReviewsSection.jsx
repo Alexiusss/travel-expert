@@ -31,7 +31,7 @@ const ReviewsSection = (props) => {
     const pageSizes = [20, 50, 100];
     const [filter, setFilter] = useState({ratingFilters: [], query: ''})
     const {t} = useTranslation();
-    const {isAuth} = useAuth();
+    const {isAuth, authUserId} = useAuth();
 
     useEffect(() => {
         if (props.itemId == null) {
@@ -88,6 +88,29 @@ const ReviewsSection = (props) => {
             })
         })
         openAlert([t('record saved')], "success")
+    }
+
+    const like = (reviewId, isAuthUserLiked) => {
+        reviewService.like(reviewId, authUserId)
+            .then(() => {
+                setReviews(reviews.map(review => {
+                    if (review.id === reviewId) {
+                        let likes = review.likes;
+                        if (isAuthUserLiked) {
+                            return {
+                                ...review,
+                                likes: likes.filter(userId => userId !== authUserId)
+                            }
+                        } else {
+                            return {
+                                ...review,
+                                likes: [...likes, authUserId]
+                            }
+                        }
+                    }
+                    return review;
+                }))
+            })
     }
 
     const removeReview = (review) => {
@@ -155,8 +178,8 @@ const ReviewsSection = (props) => {
                                 </Tooltip>
                                 :
                                 <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                                onClick={() => setModal(true)}>
-                            {t('write review')}
+                                          onClick={() => setModal(true)}>
+                                    {t('write review')}
                                 </MyButton>
                             }
                         </div>
@@ -182,6 +205,7 @@ const ReviewsSection = (props) => {
                     <>
                         <ReviewList reviews={reviews}
                                     update={update}
+                                    like={like}
                                     remove={removeReview}
                                     removeImage={removeImage}
                                     promiseInProgress={promiseInProgress}/>
