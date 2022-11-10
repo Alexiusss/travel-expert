@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.common.util.JsonUtil.writeValue;
@@ -235,6 +237,36 @@ public class ReviewControllerTest {
                 .content(writeValue(invalidReview)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", containsStringIgnoringCase(NOT_BLANK)));
+    }
+
+    @Test
+    void like() throws Exception {
+        stubUserAuth();
+        perform(MockMvcRequestBuilders.patch(REST_URL + REVIEW1_ID + "/like")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(MODER_ID))
+                .andExpect(status().isNoContent());
+
+        Set<String> likes = new HashSet<>(REVIEW1_LIKES);
+        likes.add(MODER_ID);
+        Set<String> likesFromDB = reviewRepository.getExisted(REVIEW1_ID).getLikes();
+
+        assertEquals(likes, likesFromDB);
+    }
+
+    @Test
+    void unlike() throws Exception {
+        stubUserAuth();
+        perform(MockMvcRequestBuilders.patch(REST_URL + REVIEW1_ID + "/like")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(USER_ID))
+                .andExpect(status().isNoContent());
+
+        Set<String> likes = new HashSet<>(REVIEW1_LIKES);
+        likes.remove(USER_ID);
+        Set<String> likesFromDB = reviewRepository.getExisted(REVIEW1_ID).getLikes();
+
+        assertEquals(likes, likesFromDB);
     }
 
     @Test
