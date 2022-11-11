@@ -1,6 +1,7 @@
 package com.example.user.model;
 
 import com.example.common.HasIdAndEmail;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -68,6 +69,18 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @ElementCollection(fetch = FetchType.EAGER)
     @BatchSize(size = 200)
     private Set<Role> roles;
+
+    @CollectionTable(name = "user_subscriptions", joinColumns = @JoinColumn(name = "channel_id"))
+    @Column(name = "subscriber_id")
+    @ElementCollection(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<String> subscribers;
+
+    @CollectionTable(name = "user_subscriptions", joinColumns = @JoinColumn(name = "subscriber_id"))
+    @Column(name = "channel_id")
+    @ElementCollection(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<String> subscriptions;
 
     public User(String email, String firstName, String lastName, String username, String password, boolean enabled, String activationCode, Collection<Role> roles) {
         this.email = email;
