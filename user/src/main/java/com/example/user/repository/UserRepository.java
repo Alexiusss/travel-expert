@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserRepository extends BaseRepository<User> {
 
     @Override
-    @EntityGraph(attributePaths = {"roles"})
+    @EntityGraph(attributePaths = {"roles"}, type = EntityGraph.EntityGraphType.LOAD)
     List<User> findAll();
 
     Optional<User> findByEmailIgnoreCase(String email);

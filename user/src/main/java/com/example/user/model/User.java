@@ -3,6 +3,7 @@ package com.example.user.model;
 import com.example.common.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -65,6 +66,7 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique")})
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @BatchSize(size = 200)
     private Set<Role> roles;
 
     public User(String email, String firstName, String lastName, String username, String password, boolean enabled, String activationCode, Collection<Role> roles) {
