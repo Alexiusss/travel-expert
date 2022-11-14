@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader} from "@material-ui/core";
+import {Card, CardActions, CardHeader} from "@material-ui/core";
 import {API_URL} from "../../http/http-common";
 import {IMAGE_ROUTE} from "../../utils/consts";
 import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
@@ -13,11 +13,17 @@ const ProfileHeader = (props) => {
         firstName = '',
         username = '',
         fileName = '',
-        editProfile = Function.prototype
+        subscribers = [],
+        subscriptions = [],
+        contributionsCount = 0,
+        editProfile = Function.prototype,
+        unSubscribe = Function.prototype,
+        subscribe = Function.prototype
     } = props;
     const {t} = useTranslation();
-    const {isAdmin, authUserId} = useAuth();
+    const {isAuth, isAdmin, authUserId} = useAuth();
     const isOwner = authUserId === id;
+    const isAuthUserSubscribed = subscribers.includes(authUserId) || false;
 
     return (
         <div>
@@ -31,37 +37,47 @@ const ProfileHeader = (props) => {
                             </div>
                             <div>
                                 <div className="username">
-                                <h4 >{firstName}</h4>
-                                <span>@{username}</span>
+                                    <h4>{firstName}</h4>
+                                    <span>@{username}</span>
                                 </div>
                                 <div className="profile-flex">
                                     <div>
-                                        <span className="profile-block">Contributions</span>
-                                        <span className="profile-block">0</span>
+                                        <span className="profile-block">{t('contributions')}</span>
+                                        <span className="profile-block">{contributionsCount}</span>
                                     </div>
                                     <div>
-                                        <span className="profile-block">Followers</span>
-                                        <span className="profile-block">0</span>
+                                        <span className="profile-block">{t('followers')}</span>
+                                        <span className="profile-block">{subscribers.length}</span>
                                     </div>
                                     <div>
-                                        <span className="profile-block">Following</span>
-                                        <span className="profile-block">0</span>
+                                        <span className="profile-block">{t('following')}</span>
+                                        <span className="profile-block">{subscriptions.length}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
                     action={
-                        (isOwner || isAdmin)
-                            ?
-                            <MyButton style={{marginTop: 10}}
-                                      className={"btn btn-outline-primary ml-2 btn-sm"}
-                                      onClick={() => editProfile()}
-                            >
-                                {t("edit")}
-                            </MyButton>
-                            :
-                            null
+                        <CardActions style={{marginTop: 10}}>
+                            {(isAuth && !isOwner) ?
+                                <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
+                                          onClick={() => isAuthUserSubscribed ? unSubscribe() : subscribe()}
+                                >
+                                    {isAuthUserSubscribed ? t('unsubscribe') : t('follow')}
+                                </MyButton> : <></>
+                            }
+
+                            {(isOwner || isAdmin)
+                                ?
+                                <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
+                                          onClick={() => editProfile()}
+                                >
+                                    {t("edit")}
+                                </MyButton>
+                                :
+                                null
+                            }
+                        </CardActions>
                     }
                 />
             </Card>

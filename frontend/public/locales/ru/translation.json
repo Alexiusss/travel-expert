@@ -67,6 +67,12 @@
   "publish": "Опубликовать",
   "published": "Опубликовано",
 
+  "contributions": "Публикации",
+  "followers": "Подписчики",
+  "following": "Подписки",
+  "follow": "Подписаться",
+  "unsubscribe": "Отписаться",
+
   "upload image": "загрузить фото",
   "not uploaded": "не загружено",
 

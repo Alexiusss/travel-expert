@@ -40,6 +40,8 @@ const ProfilePage = () => {
                         username: data.username,
                         fileName: data.fileName,
                         registeredAt: data.registeredAt,
+                        subscribers: data.subscribers,
+                        subscriptions: data.subscriptions,
                     })
                     setAuthorId(data.authorId)
                 })
@@ -52,6 +54,8 @@ const ProfilePage = () => {
                         username: data.username,
                         fileName: data.fileName,
                         registeredAt: data.registeredAt,
+                        subscribers: data.subscribers,
+                        subscriptions: data.subscriptions,
                     })
                     setAuthorId(data.authorId)
                     push(PROFILE + data.username)
@@ -113,6 +117,22 @@ const ProfilePage = () => {
             })
     }
 
+    const subscribe = () => {
+        userService.subscribe(authorId)
+            .then(() => setProfile({
+                ...profile,
+                subscribers: [...profile.subscribers, authUserId],
+            }))
+    }
+
+    const unSubscribe = () => {
+        userService.unSubscribe(authorId)
+            .then(() => setProfile({
+                ...profile,
+                subscribers: profile.subscribers.filter(userId => userId !== authUserId),
+            }))
+    }
+
     const openAlert = (msg, severity) => {
         setAlert({severity: severity, message: msg, open: true})
     }
@@ -121,7 +141,12 @@ const ProfilePage = () => {
         <>
             {profile.username ?
                 <div className="container justify-content-center align-items-center">
-                    <ProfileHeader {...profile} editProfile={editProfile}/>
+                    <ProfileHeader {...profile}
+                                   editProfile={editProfile}
+                                   contributionsCount={reviews.length}
+                                   subscribe={subscribe}
+                                   unSubscribe={unSubscribe}
+                    />
                     <Grid container
                           spacing={1}
                           direction="row"

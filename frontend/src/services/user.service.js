@@ -30,6 +30,14 @@ const update = (data, id) => {
     return httpClient.put(USERS_ROUTE + `${id}`, data);
 };
 
+const subscribe = (id) => {
+    return httpClient.get(USERS_ROUTE + 'subscribe/' + `${id}`)
+}
+
+const unSubscribe = (id) => {
+    return httpClient.get(USERS_ROUTE + 'unSubscribe/' + `${id}`)
+}
+
 const enable = (id, enabled) => {
     return httpClient.patch(USERS_ROUTE + `${id}` + "?enable=" + enabled);
 };
@@ -38,4 +46,4 @@ const remove = (id) => {
     return httpClient.delete(USERS_ROUTE + `${id}`);
 };
 
-export default { getAll, create, get, getAuthor, getAuthorByUsername, update, enable, remove };
+export default { getAll, create, get, getAuthor, getAuthorByUsername, update, subscribe, unSubscribe, enable, remove };

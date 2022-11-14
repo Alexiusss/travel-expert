@@ -68,6 +68,12 @@
   "publish": "Publish",
   "published": "Published",
 
+  "contributions": "Contributions",
+  "followers": "Followers",
+  "following": "Following",
+  "follow": "Follow",
+  "unsubscribe": "Unsubscribe",
+
   "upload image": "upload image",
   "not uploaded": "not uploaded",
 
