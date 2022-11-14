@@ -52,6 +52,18 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public void subscribe(AuthUser authUser, String userId){
+        User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(userId), userId);
+        user.getSubscribers().add(authUser.id());
+    }
+
+    @Transactional
+    public void unSubscribe(AuthUser authUser, String userId){
+        User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(userId), userId);
+        user.getSubscribers().remove(authUser.id());
+    }
+
+    @Transactional
     public void enableUser(String id, boolean enable) {
         User user = userRepository.getExisted(id);
         user.setEnabled(enable);
@@ -62,7 +74,7 @@ public class UserService implements UserDetailsService {
     }
 
     public AuthorDTO getAuthorById(String id) {
-        User user = get(id);
+        User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(id), id);
         return getAuthorDTO(user);
     }
 
@@ -76,7 +88,9 @@ public class UserService implements UserDetailsService {
         String authorName = user.getFirstName() + " " + user.getLastName();
         String fileName = user.getFileName();
         Instant registeredAt = user.getCreatedAt();
-        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt);
+        Set<String> subscribers = user.getSubscribers();
+        Set<String> subscriptions = user.getSubscriptions();
+        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions);
     }
 
 

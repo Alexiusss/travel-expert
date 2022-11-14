@@ -18,7 +18,15 @@ public interface UserRepository extends BaseRepository<User> {
 
     User findByActivationCode(String code);
 
+    @EntityGraph(attributePaths = {"roles", "subscribers", "subscriptions"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT u FROM User u " +
+            "WHERE u.username=?1")
     Optional<User> findByUsername(String username);
+
+    @EntityGraph(attributePaths = {"roles", "subscribers", "subscriptions"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT u FROM User u " +
+            "WHERE u.id=?1")
+    Optional<User> findByIdWithSubscriptions(String id);
 
     //https://dba.stackexchange.com/a/285241
     //https://stackoverflow.com/a/13659984

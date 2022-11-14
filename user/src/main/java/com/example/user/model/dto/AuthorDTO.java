@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -13,4 +14,6 @@ public class AuthorDTO {
     String username;
     String fileName;
     Instant registeredAt;
+    Set<String> subscribers;
+    Set<String> subscriptions;
 }

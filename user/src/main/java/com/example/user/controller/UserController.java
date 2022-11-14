@@ -1,5 +1,6 @@
 package com.example.user.controller;
 
+import com.example.user.AuthUser;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthorDTO;
 import com.example.user.servise.UserService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -83,6 +85,20 @@ public class UserController {
         log.info(enable ? "enable {}" : "disable {}", id);
         checkModificationAllowed(id);
         userService.enableUser(id, enable);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("subscribe/{userId}")
+    public void subscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
+        log.info("user {} subscribe to user {}", authUser.id(), userId);
+        userService.subscribe(authUser, userId);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("unSubscribe/{userId}")
+    public void unSubscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
+        log.info("user {} unsubscribe from user {}", authUser.id(), userId);
+        userService.unSubscribe(authUser, userId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
