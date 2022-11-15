@@ -12,11 +12,12 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @UtilityClass
 public class UserTestData {
-    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "createdAt", "modifiedAt", "password");
-    public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class);
+    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "createdAt", "modifiedAt", "password", "subscribers", "subscriptions");
+    public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class, "subscribers", "subscriptions");
 
     public static final String ADMIN_ID = "1";
     public static final String MODER_ID = "2";
@@ -33,7 +34,7 @@ public class UserTestData {
     public static final User MODER = new User(MODER_ID, null, null, 0, MODER_MAIL, "Moder", "ModerLast", "moderUserName", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
     public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", USERNAME, "userPassword", true, null, Collections.singleton(Role.USER));
 
-    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getUsername(), USER.getFileName(), USER.getCreatedAt());
+    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getUsername(), USER.getFileName(), USER.getCreatedAt(), Set.of(), Set.of());
 
     private static String getAuthorName(User user) {
         return user.getFirstName() + " " + user.getLastName();

@@ -1,6 +1,8 @@
 DELETE
 FROM user_role;
 DELETE
+FROM user_subscriptions;
+DELETE
 FROM users;
 
 INSERT INTO users (id, created_at, modified_at, version, activation_code, enabled, email, first_name, last_name, username, password)
@@ -15,3 +17,7 @@ VALUES ('ADMIN', 1),
        ('MODERATOR', 2),
        ('USER', 2),
        ('USER', 3);
+
+INSERT INTO user_subscriptions (channel_id, subscriber_id)
+VALUES ( '1','2' ),
+       ( '1','3' );

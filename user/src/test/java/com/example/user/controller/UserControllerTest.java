@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 import static com.example.common.error.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
 import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.user.controller.UserExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
@@ -18,6 +20,7 @@ import static com.example.user.controller.UserExceptionHandler.EXCEPTION_DUPLICA
 import static com.example.user.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -182,5 +185,30 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk());
 
         USER_MATCHER.assertMatch(userRepository.getById(USER_ID), getUpdated());
+    }
+
+    @Test
+    void subscribe() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "subscribe/" + USER_ID))
+                .andExpect(status().isOk());
+
+        Set<String> adminSubscriptions = userRepository.findByIdWithSubscriptions(ADMIN_ID).get().getSubscriptions();
+        assertTrue(adminSubscriptions.contains(USER_ID));
+
+        Set<String> userSubscribers = userRepository.findByIdWithSubscriptions(USER_ID).get().getSubscribers();
+        assertTrue(userSubscribers.contains(ADMIN_ID));
+    }
+
+    @Test
+    @WithUserDetails(USER_MAIL)
+    void unSubscribe() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "unSubscribe/" + ADMIN_ID))
+                .andExpect(status().isOk());
+
+        Set<String> userSubscriptions = userRepository.findByIdWithSubscriptions(USER_ID).get().getSubscriptions();
+        assertFalse(userSubscriptions.contains(ADMIN_ID));
+
+        Set<String> adminSubscribers = userRepository.findByIdWithSubscriptions(ADMIN_ID).get().getSubscribers();
+        assertFalse(adminSubscribers.contains(USER_ID));
     }
 }
