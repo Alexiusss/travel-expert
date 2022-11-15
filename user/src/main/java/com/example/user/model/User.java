@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -73,12 +75,17 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @CollectionTable(name = "user_subscriptions", joinColumns = @JoinColumn(name = "channel_id"))
     @Column(name = "subscriber_id")
     @ElementCollection(fetch = FetchType.LAZY)
+    // https://stackoverflow.com/a/62848296
+    @JoinColumn(name = "channel_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Set<String> subscribers;
 
     @CollectionTable(name = "user_subscriptions", joinColumns = @JoinColumn(name = "subscriber_id"))
     @Column(name = "channel_id")
     @ElementCollection(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscriber_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Set<String> subscriptions;
 
