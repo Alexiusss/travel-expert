@@ -73,10 +73,16 @@ const RegisterForm = () => {
                             type="password"
                         />
                     </div>
-                    <button style={{marginTop: 15}} className={"btn btn-outline-primary ml-2 btn-sm"}
-                            onClick={(e) => register(e)}>
-                        {t("sign up")}
-                    </button>
+                    <div style={{marginTop: 15}}>
+                        <button style={{float: "left"}} className={"btn btn-outline-success ml-2 btn-sm"}
+                                onClick={(e) => register(e)}>
+                            {t("sign up")}
+                        </button>
+                        <button style={{float: "right"}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                                onClick={() => push('/login')}>
+                            {t("sign in")}
+                        </button>
+                    </div>
                 </form>
                 <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
             </div>

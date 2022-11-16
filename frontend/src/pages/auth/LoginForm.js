@@ -59,10 +59,16 @@ const LoginForm = () => {
                         type="password"
                     />
                 </div>
-                <button style={{marginTop: 15}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                <div style={{marginTop: 15}}>
+                <button style={{float: "left"}} className={"btn btn-outline-primary ml-2 btn-sm"}
                         onClick={(e) => login(e)}>
                     {t("sign in")}
                 </button>
+                <button style={{float: "right"}} className={"btn btn-outline-success ml-2 btn-sm"}
+                        onClick={() => push('/register')}>
+                    {t("sign up")}
+                </button>
+                </div>
             </form>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </div>
