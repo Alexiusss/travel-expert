@@ -18,7 +18,8 @@ const ProfileHeader = (props) => {
         contributionsCount = 0,
         editProfile = Function.prototype,
         unSubscribe = Function.prototype,
-        subscribe = Function.prototype
+        subscribe = Function.prototype,
+        setSubModal = Function.prototype
     } = props;
     const {t} = useTranslation();
     const {isAuth, isAdmin, authUserId} = useAuth();
@@ -47,11 +48,15 @@ const ProfileHeader = (props) => {
                                     </div>
                                     <div>
                                         <span className="profile-block">{t('followers')}</span>
-                                        <span className="profile-block">{subscribers.length}</span>
+                                        <span className="profile-block">
+                                        <a onClick={() => setSubModal(true)}>{subscribers.length}</a>
+                                        </span>
                                     </div>
                                     <div>
                                         <span className="profile-block">{t('following')}</span>
-                                        <span className="profile-block">{subscriptions.length}</span>
+                                        <span className="profile-block">
+                                            <a onClick={() => setSubModal(true)}>{subscriptions.length}</a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>

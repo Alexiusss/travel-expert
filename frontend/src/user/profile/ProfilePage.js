@@ -16,6 +16,7 @@ import imageService from "../../services/ImageService";
 import {getLocalizedErrorMessages, PROFILE} from "../../utils/consts";
 import Intro from "../../pages/review/Intro";
 import {NotFound} from "../../pages/NotFound";
+import SubList from "./SubList";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
@@ -27,6 +28,7 @@ const ProfilePage = () => {
     const [authorId, setAuthorId] = useState(state ? state.id : profile.id);
     const isAuthor = authUserId === authorId;
     const [modal, setModal] = useState(false);
+    const [subModal, setSubModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
     const [reviews, setReviews] = useState([]);
 
@@ -79,6 +81,7 @@ const ProfilePage = () => {
         authService.profile()
             .then(({data}) => {
                 setProfile({
+                    ...profile,
                     id: data.id,
                     email: data.email,
                     firstName: data.firstName,
@@ -146,6 +149,7 @@ const ProfilePage = () => {
                                    contributionsCount={reviews.length}
                                    subscribe={subscribe}
                                    unSubscribe={unSubscribe}
+                                   setSubModal={setSubModal}
                     />
                     <Grid container
                           spacing={1}
@@ -162,7 +166,11 @@ const ProfilePage = () => {
                                         setAlert={setAlert}/>
                         </MyModal>
                     }
-
+                    {subModal &&
+                        <MyModal visible={subModal} setVisible={setSubModal}>
+                            <SubList items={profile.subscribers}/>
+                        </MyModal>
+                    }
                     <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}
                                     severity={alert.severity}/>
                 </div>
