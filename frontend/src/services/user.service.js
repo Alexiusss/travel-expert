@@ -22,6 +22,10 @@ const getAuthor = (id) => {
     return httpClient.get(USERS_ROUTE + `${id}` + '/author');
 };
 
+const getAuthorList = (ids) => {
+    return httpClient.post(USERS_ROUTE +'authorList', ids);
+};
+
 const getAuthorByUsername = (username) => {
     return httpClient.get(USERS_ROUTE + `${username}` + "/authorByUsername");
 };
@@ -46,4 +50,4 @@ const remove = (id) => {
     return httpClient.delete(USERS_ROUTE + `${id}`);
 };
 
-export default { getAll, create, get, getAuthor, getAuthorByUsername, update, subscribe, unSubscribe, enable, remove };
+export default { getAll, create, get, getAuthor, getAuthorByUsername, getAuthorList, update, subscribe, unSubscribe, enable, remove };

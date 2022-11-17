@@ -31,6 +31,7 @@ const ProfilePage = () => {
     const [subModal, setSubModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
     const [reviews, setReviews] = useState([]);
+    const [subscribers, setSubscribers] = useState([]);
 
     useEffect(() => {
         if (username.length) {
@@ -136,6 +137,14 @@ const ProfilePage = () => {
             }))
     }
 
+    const loadSubscribers = (subIds = []) => {
+        userService.getAuthorList(subIds)
+            .then(({data}) => {
+                setSubscribers(data);
+                setSubModal(true);
+            })
+    }
+
     const openAlert = (msg, severity) => {
         setAlert({severity: severity, message: msg, open: true})
     }
@@ -149,7 +158,7 @@ const ProfilePage = () => {
                                    contributionsCount={reviews.length}
                                    subscribe={subscribe}
                                    unSubscribe={unSubscribe}
-                                   setSubModal={setSubModal}
+                                   loadSubscribers={loadSubscribers}
                     />
                     <Grid container
                           spacing={1}
@@ -168,7 +177,7 @@ const ProfilePage = () => {
                     }
                     {subModal &&
                         <MyModal visible={subModal} setVisible={setSubModal}>
-                            <SubList items={profile.subscribers}/>
+                            <SubList items={subscribers} loadSubscribers={loadSubscribers}/>
                         </MyModal>
                     }
                     <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}

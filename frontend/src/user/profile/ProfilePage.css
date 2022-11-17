@@ -18,3 +18,20 @@
     display: block;
     padding: 5px;
 }
+
+@media (min-width: 150px) {
+    .sub-list {
+        width: 100rem;
+        height: 100rem;
+        overflow: scroll;
+    }
+}
+
+@media (min-width: 770px) {
+    .sub-list {
+        width: 720px;
+        height: 550px;
+        overflow: scroll;
+    }
+}
+
