@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.user.util.UserUtil.checkModificationAllowed;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -38,9 +41,16 @@ public class UserController {
 
     @GetMapping(value = "/{id}/author")
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable String id) {
-        log.info("get authorName for {}", id);
+        log.info("get author for {}", id);
         final AuthorDTO author = userService.getAuthorById(id);
         return ResponseEntity.ok(author);
+    }
+
+    @PostMapping("/authorList")
+    public ResponseEntity<List<AuthorDTO>> getAuthorList(@RequestBody String[] authors) {
+        log.info("get authorList for {}", Arrays.toString(authors));
+        final List<AuthorDTO> authorList = userService.getAllAuthorsById(authors);
+        return ResponseEntity.ok(authorList);
     }
 
     @GetMapping(value = "/{username}/authorByUsername")

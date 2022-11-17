@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.*;
 import static com.example.user.util.UserUtil.prepareToSave;
@@ -76,6 +78,11 @@ public class UserService implements UserDetailsService {
     public AuthorDTO getAuthorById(String id) {
         User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(id), id);
         return getAuthorDTO(user);
+    }
+
+    public List<AuthorDTO> getAllAuthorsById(String[] authors) {
+        List<User> users = userRepository.findAllByIdWithSubscriptions(authors);
+        return users.stream().map(this::getAuthorDTO).collect(Collectors.toList());
     }
 
     public AuthorDTO getAuthorByUserName(String username) {

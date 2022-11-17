@@ -28,6 +28,11 @@ public interface UserRepository extends BaseRepository<User> {
             "WHERE u.id=?1")
     Optional<User> findByIdWithSubscriptions(String id);
 
+    @EntityGraph(attributePaths = {"roles", "subscribers", "subscriptions"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT u FROM User u " +
+            "WHERE u.id IN ?1")
+    List<User> findAllByIdWithSubscriptions(String[] ids);
+
     //https://dba.stackexchange.com/a/285241
     //https://stackoverflow.com/a/13659984
     @Query(value = "SELECT MAX(CAST(coalesce(nullif(regexp_replace(username, '[^0-9]', '', 'gi'), ''), '0') AS INTEGER)) " +
