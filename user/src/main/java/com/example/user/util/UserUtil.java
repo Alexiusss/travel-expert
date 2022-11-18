@@ -2,10 +2,14 @@ package com.example.user.util;
 
 import com.example.common.error.ModificationRestrictionException;
 import com.example.user.model.User;
+import com.example.user.model.dto.AuthorDTO;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
+
+import java.time.Instant;
+import java.util.Set;
 
 @UtilityClass
 public class UserUtil {
@@ -22,5 +26,15 @@ public class UserUtil {
         if (id.equals("1")) {
             throw new ModificationRestrictionException();
         }
+    }
+
+    public static AuthorDTO getAuthorDTO(User user) {
+        String username = user.getUsername();
+        String authorName = user.getFirstName() + " " + user.getLastName();
+        String fileName = user.getFileName();
+        Instant registeredAt = user.getCreatedAt();
+        Set<String> subscribers = user.getSubscribers();
+        Set<String> subscriptions = user.getSubscriptions();
+        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions);
     }
 }

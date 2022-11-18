@@ -5,6 +5,7 @@ import com.example.user.model.Role;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthorDTO;
 import com.example.user.repository.UserRepository;
+import com.example.user.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,12 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.*;
+import static com.example.user.util.UserUtil.getAuthorDTO;
 import static com.example.user.util.UserUtil.prepareToSave;
 
 @Service
@@ -82,22 +83,12 @@ public class UserService implements UserDetailsService {
 
     public List<AuthorDTO> getAllAuthorsById(String[] authors) {
         List<User> users = userRepository.findAllByIdWithSubscriptions(authors);
-        return users.stream().map(this::getAuthorDTO).collect(Collectors.toList());
+        return users.stream().map(UserUtil::getAuthorDTO).collect(Collectors.toList());
     }
 
     public AuthorDTO getAuthorByUserName(String username) {
         User user = checkNotFoundWithName(userRepository.findByUsername(username), username);
         return getAuthorDTO(user);
-    }
-
-    private AuthorDTO getAuthorDTO(User user) {
-        String username = user.getUsername();
-        String authorName = user.getFirstName() + " " + user.getLastName();
-        String fileName = user.getFileName();
-        Instant registeredAt = user.getCreatedAt();
-        Set<String> subscribers = user.getSubscribers();
-        Set<String> subscriptions = user.getSubscriptions();
-        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions);
     }
 
 

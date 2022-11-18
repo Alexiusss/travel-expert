@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static com.example.common.error.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
@@ -54,6 +56,16 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(AUTHOR_MATCHER.contentJson(AUTHOR));
+    }
+
+    @Test
+    void getAuthorList() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + "authorList")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Arrays.toString(new String[]{USER_ID})))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(AUTHOR_MATCHER.contentJson(List.of(AUTHOR)));
     }
 
     @Test
