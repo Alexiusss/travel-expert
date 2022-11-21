@@ -1,12 +1,59 @@
 import React from 'react';
+import {IMAGE_ROUTE} from "../../utils/consts";
+import {API_URL} from "../../http/http-common";
+import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
+import {useTranslation} from "react-i18next";
+import MyButton from "../../components/UI/button/MyButton";
+import {useAuth} from "../../components/hooks/UseAuth";
 
 const SubItem = (props) => {
-    const {item} = props;
+    const {t} = useTranslation();
+    const {authorId, authorName, username, fileName, subscribers} = props.item;
+    const {isAuth, authUserId} = useAuth();
+    const isOwner = authUserId === authorId;
+    const isAuthUserSubscribed = subscribers.includes(authUserId) || false;
+
     return (
-        <div>
-            {item.authorId}
-        </div>
-    );
+        <a href={`/profile/${username}`}>
+            <div className="author-card">
+                <div className="avatar-section">
+                    <span className="author-avatar">
+                        <img alt="Avatar" src={fileName ? API_URL + IMAGE_ROUTE + `${fileName}` : defaultAvatar}/>
+                    </span>
+                </div>
+                <div style={{flexGrow: 1, minWidth: 0, width: "100%"}}>
+                    <div>
+                        <span className="author-name">{authorName}</span>
+                        <span className="username">@{username}</span>
+                    </div>
+                    <div className="author-info">
+                    <span className="author-subs">
+                        <span className="bC">
+                        {subscribers.length}
+                            </span>
+                        followers {t('')}
+                    </span>
+                        <span className="author-subs">
+                            <span className="bC">
+                        5
+                                </span>
+                            contributions
+                    </span>
+                    </div>
+                </div>
+                {(isAuth && !isOwner) ?
+                    <div className="button-section">
+                        <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}>
+                            {isAuthUserSubscribed ? t('unsubscribe') : t('follow')}
+                        </MyButton>
+                    </div>
+                    : null
+                }
+
+            </div>
+        </a>
+    )
+        ;
 };
 
 export default SubItem;
