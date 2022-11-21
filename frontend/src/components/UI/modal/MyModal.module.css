@@ -9,7 +9,6 @@
 }
 
 .myModalContent {
-    padding: 25px;
     background: white;
     border-radius: 5px;
     min-width: 250px;
@@ -17,6 +16,21 @@
 
 .myModal.active {
     display: flex;
+    align-content: center;
     justify-content: center;
     align-items: center;
+}
+
+@media (min-width: 250px) {
+    .myModalContent {
+        height: calc(100vh - 0px);
+        width: 100rem;
+    }
+}
+
+@media (min-width: 770px) {
+    .myModalContent {
+        width: auto;
+        height: auto;
+    }
 }

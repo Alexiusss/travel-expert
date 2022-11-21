@@ -99,7 +99,7 @@ const RestaurantEditor = (props) => {
         }, [images])
 
         return (
-            <div className='container'>
+            <div className='container' style={{padding:25}}>
                 <h4>{t("restaurant editor")}</h4>
                 <hr/>
                 <form>

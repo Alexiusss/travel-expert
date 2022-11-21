@@ -113,7 +113,7 @@ const ReviewEditor = (props) => {
     }, [images])
 
     return (
-        <Container>
+        <Container style={{padding:25}}>
             <h4>{t("review editor")}</h4>
             <hr/>
             <form>

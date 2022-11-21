@@ -126,7 +126,7 @@ const UserEditor = (props) => {
 
 
     return (
-        <div className='container'>
+        <div className='container' style={{padding:25}}>
             <h4>{t("user editor")}</h4>
             <hr/>
             <form>
