@@ -121,20 +121,52 @@ const ProfilePage = () => {
             })
     }
 
-    const subscribe = () => {
-        userService.subscribe(authorId)
-            .then(() => setProfile({
-                ...profile,
-                subscribers: [...profile.subscribers, authUserId],
-            }))
+    const subscribe = (e, id = null) => {
+        if (id) {
+            e.stopPropagation()
+            e.preventDefault();
+            userService.subscribe(id)
+                .then(() => setSubscribers(subscribers.map(subscriber => {
+                        if (subscriber.authorId === id) {
+                            return {
+                                ...subscriber,
+                                subscribers: [...subscriber.subscribers, authUserId]
+                            }
+                        } else {
+                            return subscriber;
+                        }
+                    }))
+                )
+        } else {
+            userService.subscribe(authorId)
+                .then(() => setProfile({
+                    ...profile,
+                    subscribers: [...profile.subscribers, authUserId],
+                }))
+        }
     }
 
-    const unSubscribe = () => {
-        userService.unSubscribe(authorId)
-            .then(() => setProfile({
-                ...profile,
-                subscribers: profile.subscribers.filter(userId => userId !== authUserId),
-            }))
+    const unSubscribe = (e, id = null) => {
+        if (id) {
+            e.preventDefault();
+            e.stopPropagation()
+            userService.unSubscribe(id)
+                .then(() => setSubscribers(subscribers.map(subscriber => {
+                    if (subscriber.authorId === id) {
+                        return {
+                            ...subscriber,
+                            subscribers: subscriber.subscribers.filter(userId => userId !== authUserId)
+                        }
+                    }
+                    return subscriber;
+                })))
+        } else {
+            userService.unSubscribe(authorId)
+                .then(() => setProfile({
+                    ...profile,
+                    subscribers: profile.subscribers.filter(userId => userId !== authUserId),
+                }))
+        }
     }
 
     const loadSubscribers = (subIds = []) => {
@@ -177,7 +209,8 @@ const ProfilePage = () => {
                     }
                     {subModal &&
                         <MyModal visible={subModal} setVisible={setSubModal}>
-                            <SubList items={subscribers} loadSubscribers={loadSubscribers}/>
+                            <SubList items={subscribers} loadSubscribers={loadSubscribers} subscribe={subscribe}
+                                     unsubscribe={unSubscribe}/>
                         </MyModal>
                     }
                     <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}

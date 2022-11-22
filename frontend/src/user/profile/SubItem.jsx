@@ -1,5 +1,5 @@
 import React from 'react';
-import {IMAGE_ROUTE} from "../../utils/consts";
+import {IMAGE_ROUTE, PROFILE} from "../../utils/consts";
 import {API_URL} from "../../http/http-common";
 import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
 import {useTranslation} from "react-i18next";
@@ -8,7 +8,17 @@ import {useAuth} from "../../components/hooks/UseAuth";
 
 const SubItem = (props) => {
     const {t} = useTranslation();
-    const {authorId, authorName, username, fileName, subscribers} = props.item;
+    const {
+        authorId,
+        authorName,
+        username,
+        fileName,
+        subscribers = [],
+    } = props.item;
+    const {
+        subscribe = Function.prototype,
+        unsubscribe = Function.prototype
+    } = props;
     const {isAuth, authUserId} = useAuth();
     const isOwner = authUserId === authorId;
     const isAuthUserSubscribed = subscribers.includes(authUserId) || false;
@@ -43,13 +53,14 @@ const SubItem = (props) => {
                 </div>
                 {(isAuth && !isOwner) ?
                     <div className="button-section">
-                        <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}>
+                        <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
+                                  onClick={(e) => isAuthUserSubscribed ? unsubscribe(e, authorId) : subscribe(e, authorId)}
+                        >
                             {isAuthUserSubscribed ? t('unsubscribe') : t('follow')}
                         </MyButton>
                     </div>
                     : null
                 }
-
             </div>
         </a>
     )
