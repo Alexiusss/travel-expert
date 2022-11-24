@@ -1,5 +1,6 @@
 package com.example.review.controller;
 
+import com.example.clients.review.ReviewResponse;
 import com.example.review.model.Review;
 import com.example.review.model.dto.Rating;
 import com.example.review.service.ReviewService;
@@ -8,13 +9,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -57,6 +58,13 @@ public class ReviewController {
     @GetMapping("/{userId}/user/count")
     public ResponseEntity<Integer> getCountByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(reviewService.getCountByUserId(userId));
+    }
+
+    @Operation(summary = "Get the number of reviews by users by their ids")
+    @PostMapping("/user/reviewCountActive")
+    public ResponseEntity<List<ReviewResponse>> getActiveReviewsCountByUsersIds(@RequestBody String[] authors) {
+        List<ReviewResponse> list = reviewService.getActiveReviewsCountByUsersIds(authors);
+        return ResponseEntity.ok(list);
     }
 
     @Operation(summary = "Return a list of reviews and filtered according the query parameters", description = "A JWT token is required to access this API.")

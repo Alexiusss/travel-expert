@@ -2,6 +2,7 @@ package com.example.review.service;
 
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
+import com.example.clients.review.ReviewResponse;
 import com.example.review.model.Review;
 import com.example.review.model.dto.Rating;
 import com.example.review.repository.ReviewRepository;
@@ -114,6 +115,10 @@ public class ReviewService {
 
     public Integer getCountByUserId(String userId) {
         return reviewRepository.getCountByUserId(userId);
+    }
+
+    public List<ReviewResponse> getActiveReviewsCountByUsersIds(String[] authors) {
+        return reviewRepository.getActiveReviewsCountByUsersIds(authors);
     }
 
     public Review create(Review review) {

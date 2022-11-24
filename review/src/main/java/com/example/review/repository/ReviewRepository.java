@@ -1,5 +1,6 @@
 package com.example.review.repository;
 
+import com.example.clients.review.ReviewResponse;
 import com.example.common.BaseRepository;
 import com.example.review.model.Review;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,13 @@ public interface ReviewRepository extends BaseRepository<Review> {
             "WHERE r.userId=?1 " +
             "AND r.active=true")
     Integer getCountByUserId(String userId);
+
+    @Query("SELECT DISTINCT NEW com.example.clients.review.ReviewResponse("+
+            "r.userId, COUNT(r.id))   " +
+            "FROM Review r " +
+            "WHERE r.userId IN ?1 AND r.active=true " +
+            "GROUP BY r.userId")
+    List<ReviewResponse> getActiveReviewsCountByUsersIds(String[] authors);
 
     //    https://stackoverflow.com/a/46013654/548473
     @Override
