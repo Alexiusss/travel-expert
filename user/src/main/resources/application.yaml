@@ -42,6 +42,8 @@ eureka:
 clients:
   notification:
     url: http://localhost:8081
+  review:
+    url: http://localhost:8084
 
 myhostname: localhost:8080
 
