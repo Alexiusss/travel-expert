@@ -200,15 +200,16 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(USER_MAIL)
     void subscribe() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "subscribe/" + USER_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + "subscribe/" + MODER_ID))
                 .andExpect(status().isOk());
 
-        Set<String> adminSubscriptions = userRepository.findByIdWithSubscriptions(ADMIN_ID).get().getSubscriptions();
-        assertTrue(adminSubscriptions.contains(USER_ID));
+        Set<String> adminSubscriptions = userRepository.findByIdWithSubscriptions(USER_ID).get().getSubscriptions();
+        assertTrue(adminSubscriptions.contains(MODER_ID));
 
-        Set<String> userSubscribers = userRepository.findByIdWithSubscriptions(USER_ID).get().getSubscribers();
-        assertTrue(userSubscribers.contains(ADMIN_ID));
+        Set<String> userSubscribers = userRepository.findByIdWithSubscriptions(MODER_ID).get().getSubscribers();
+        assertTrue(userSubscribers.contains(USER_ID));
     }
 
     @Test
