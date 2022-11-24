@@ -35,6 +35,6 @@ public class UserUtil {
         Instant registeredAt = user.getCreatedAt();
         Set<String> subscribers = user.getSubscribers();
         Set<String> subscriptions = user.getSubscriptions();
-        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions);
+        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions, 0L);
     }
 }

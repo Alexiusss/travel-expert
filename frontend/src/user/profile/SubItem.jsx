@@ -1,5 +1,5 @@
 import React from 'react';
-import {IMAGE_ROUTE, PROFILE} from "../../utils/consts";
+import {IMAGE_ROUTE} from "../../utils/consts";
 import {API_URL} from "../../http/http-common";
 import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
 import {useTranslation} from "react-i18next";
@@ -14,6 +14,7 @@ const SubItem = (props) => {
         username,
         fileName,
         subscribers = [],
+        reviewsCount = 0
     } = props.item;
     const {
         subscribe = Function.prototype,
@@ -45,7 +46,7 @@ const SubItem = (props) => {
                     </span>
                         <span className="author-subs">
                             <span className="bC">
-                        5
+                        {reviewsCount}
                                 </span>
                             contributions
                     </span>
