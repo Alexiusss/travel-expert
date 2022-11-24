@@ -25,10 +25,15 @@ const ReviewItem = (props) => {
     const {t, i18n} = useTranslation();
     const {authUserId, isAuth, isAdmin, isModerator} = useAuth();
     const {id, userId, createdAt, title, description, fileNames = [], active, rating, likes = []} = props.item;
-    const {update = Function.prototype, removeImage = Function.prototype, remove = Function.prototype, like = Function.prototype} = props;
+    const {
+        update = Function.prototype,
+        removeImage = Function.prototype,
+        remove = Function.prototype,
+        like = Function.prototype
+    } = props;
     const isAuthor = authUserId === userId;
-    const [author, setAuthor] = useState("");
-    const [reviewsCount, setReviewsCount] = useState(0);
+    const [author, setAuthor] = useState(props.author || {});
+    const [reviewsCount, setReviewsCount] = useState(props.reviewsCount || 0);
     const isAuthUserLiked = likes.includes(authUserId);
     const likesCount = likes.length || 0;
 
@@ -52,17 +57,21 @@ const ReviewItem = (props) => {
     }
 
     useEffect(() => {
-        userService.getAuthor(userId)
-            .then(({data}) => {
-                setAuthor(data)
-            })
+        if (!props.author) {
+            userService.getAuthor(userId)
+                .then(({data}) => {
+                    setAuthor(data)
+                })
+        }
     }, [])
 
     useEffect(() => {
-        reviewService.getCountByUserId(userId)
-            .then(({data}) => {
-                setReviewsCount(data)
-            })
+        if (!props.author) {
+            reviewService.getCountByUserId(userId)
+                .then(({data}) => {
+                    setReviewsCount(data)
+                })
+        }
     }, [])
     return (
         <div>
@@ -108,7 +117,7 @@ const ReviewItem = (props) => {
                                             <span id="heart-icon" className="bi bi-heart small"/>
                                         }
                                     </IconButton>
-                                    {likesCount > 0 ? likesCount: null}
+                                    {likesCount > 0 ? likesCount : null}
                                 </div> : null
                             }
                         </Box>

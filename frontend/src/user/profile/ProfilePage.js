@@ -198,7 +198,7 @@ const ProfilePage = () => {
                     >
                         <Intro {...profile}/>
                         <Grid item xs={12} sm={12} md={6} key="introKey">
-                            <ReviewList reviews={reviews} remove={removeReview}/>
+                            <ReviewList reviews={reviews} remove={removeReview} author={profile} reviewsCount={reviews.length}/>
                         </Grid>
                     </Grid>
                     {modal &&
