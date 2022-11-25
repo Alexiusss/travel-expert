@@ -217,10 +217,11 @@ const ReviewsSection = (props) => {
                 }
             </Container>
             <MyModal visible={modal} setVisible={setModal}>
-                <ReviewEditor itemId={props.itemId} setAlert={setAlert}
-                              modal={modal} setModal={setModal}
-                              reviewFomDB={reviewFromDB}
-                              updateReview={updateReview}
+                <ReviewEditor
+                    itemId={props.itemId} setAlert={setAlert}
+                    modal={modal} setModal={setModal}
+                    reviewFomDB={reviewFromDB}
+                    updateReview={updateReview}
                 />
             </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>

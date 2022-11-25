@@ -113,7 +113,7 @@ const UsersList = () => {
             { modal ?
                 <MyModal visible={modal} setVisible={setModal}>
                     <UserEditor userFromDB={userFromDB} create={createUser} update={updateUser}
-                                modal={modal} setAlert={setAlert}/>
+                                modal={modal} setModal={setModal} setAlert={setAlert}/>
                 </MyModal> : null
             }
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>

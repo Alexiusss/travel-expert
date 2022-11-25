@@ -6,6 +6,7 @@ import {getLocalizedErrorMessages} from "../utils/consts";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css'
 import {Button} from "@material-ui/core";
+import ButtonSection from "../components/UI/button/ButtonSection";
 
 const RestaurantEditor = (props) => {
         const [name, setName] = useState('');
@@ -57,6 +58,11 @@ const RestaurantEditor = (props) => {
                 })
         }
 
+        const close = (e) => {
+            e.preventDefault();
+            props.setModal(false)
+        }
+
         const openAlert = (msg, severity) => {
             props.setAlert({severity: severity, message: msg, open: true})
         }
@@ -99,7 +105,7 @@ const RestaurantEditor = (props) => {
         }, [images])
 
         return (
-            <div className='container' style={{padding:25}}>
+            <div className='container' style={{padding: 25}}>
                 <h4>{t("restaurant editor")}</h4>
                 <hr/>
                 <form>
@@ -166,11 +172,8 @@ const RestaurantEditor = (props) => {
                         </Button>
                         <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                     </div>
-                    <div>
-                        <button onClick={(e => saveRestaurant(e))} className="btn btn-outline-primary ml-2 btn-sm"
-                                style={{marginTop: 10}}>{t("save")}
-                        </button>
-                    </div>
+
+                    <ButtonSection save={saveRestaurant} close={close}/>
                 </form>
             </div>
         );

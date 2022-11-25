@@ -6,6 +6,7 @@ import {useAuth} from "../../components/hooks/UseAuth";
 import {Rating} from "@material-ui/lab";
 import {getLocalizedErrorMessages} from "../../utils/consts";
 import imageService from "../../services/ImageService";
+import ButtonSection from "../../components/UI/button/ButtonSection";
 
 const ReviewEditor = (props) => {
     const [title, setTitle] = useState('');
@@ -54,6 +55,11 @@ const ReviewEditor = (props) => {
                     openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
                 })
         }
+    }
+
+    const close = (e) => {
+        e.preventDefault();
+        props.setModal(false)
     }
 
     const uploadImages = (images) => {
@@ -113,7 +119,7 @@ const ReviewEditor = (props) => {
     }, [images])
 
     return (
-        <Container style={{padding:25}}>
+        <Container style={{padding: 25}}>
             <h4>{t("review editor")}</h4>
             <hr/>
             <form>
@@ -173,11 +179,7 @@ const ReviewEditor = (props) => {
                         </label>
                     </div>
                 )}
-                <div>
-                    <button onClick={(e => saveReview(e))} className="btn btn-outline-primary ml-2 btn-sm"
-                            style={{marginTop: 10}}>{t("save")}
-                    </button>
-                </div>
+                <ButtonSection save={saveReview} close={close}/>
             </form>
         </Container>
     );

@@ -156,7 +156,7 @@ const RestaurantList = () => {
             <MyModal visible={modal} setVisible={setModal}>
                 <RestaurantEditor create={createRestaurant} update={updateRestaurant}
                                   restaurantFromDB={restaurantFromDB} setAlert={setAlert}
-                                  modal={modal}/>
+                                  modal={modal} setModal={setModal}/>
             </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </Container>

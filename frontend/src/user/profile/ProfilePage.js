@@ -203,7 +203,8 @@ const ProfilePage = () => {
                     </Grid>
                     {modal &&
                         <MyModal visible={modal} setVisible={setModal}>
-                            <UserEditor userFromDB={profile} update={updateProfile} modal={modal}
+                            <UserEditor userFromDB={profile} update={updateProfile}
+                                        modal={modal} setModal={setModal}
                                         setAlert={setAlert}/>
                         </MyModal>
                     }

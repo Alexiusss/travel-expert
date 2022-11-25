@@ -6,6 +6,7 @@ import {getLocalizedErrorMessages} from "../utils/consts";
 import {useAuth} from "../components/hooks/UseAuth";
 import {Button} from "@material-ui/core";
 import imageService from '../services/ImageService'
+import ButtonSection from "../components/UI/button/ButtonSection";
 
 const UserEditor = (props) => {
     const [email, setEmail] = useState('');
@@ -95,6 +96,11 @@ const UserEditor = (props) => {
                     openAlert(getLocalizedErrorMessages(message), "error");
                 }
             })
+    }
+
+    const close = (e) => {
+        e.preventDefault();
+        props.setModal(false)
     }
 
     const openAlert = (msg, severity) => {
@@ -195,11 +201,7 @@ const UserEditor = (props) => {
                     <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                 </div>
 
-                <div>
-                    <button onClick={(e => saveUser(e))} className="btn btn-outline-primary ml-2 btn-sm"
-                            style={{marginTop: 10}}>{t("save")}
-                    </button>
-                </div>
+                <ButtonSection save={saveUser} close={close}/>
             </form>
         </div>
     );
