@@ -210,8 +210,12 @@ const ProfilePage = () => {
                     }
                     {subModal &&
                         <MyModal visible={subModal} setVisible={setSubModal}>
-                            <SubList items={subscribers} loadSubscribers={loadSubscribers} subscribe={subscribe}
-                                     unsubscribe={unSubscribe}/>
+                            <SubList items={subscribers}
+                                     loadSubscribers={loadSubscribers}
+                                     subscribe={subscribe}
+                                     unsubscribe={unSubscribe}
+                                     close={() => setSubModal(false)}
+                            />
                         </MyModal>
                     }
                     <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}
