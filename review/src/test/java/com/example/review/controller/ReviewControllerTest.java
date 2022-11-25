@@ -30,8 +30,7 @@ import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.review.controller.ReviewExceptionHandler.EXCEPTION_DUPLICATE_REVIEW;
 import static com.example.review.util.ReviewTestData.*;
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -87,6 +86,16 @@ public class ReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string("1"));
+    }
+
+    @Test
+    void getActiveReviewsCountByUsersIds() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + "user/reviewCountActive")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(List.of(ADMIN_ID, MODER_ID))))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(REVIEW_RESPONSE_MATCHER.contentJson(List.of(ADMIN_REVIEW_COUNT, MODER_REVIEW_COUNT)));
     }
 
     @Test

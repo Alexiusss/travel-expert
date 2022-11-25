@@ -1,6 +1,7 @@
 package com.example.review.util;
 
 import com.example.clients.auth.AuthCheckResponse;
+import com.example.clients.review.ReviewResponse;
 import com.example.common.util.JsonUtil;
 import com.example.common.util.MatcherFactory;
 import com.example.review.model.Review;
@@ -21,6 +22,7 @@ public class ReviewTestData {
 
     public static final MatcherFactory.Matcher<Review> REVIEW_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Review.class,"createdAt","modifiedAt");
     public static final MatcherFactory.Matcher<Rating> RATING_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Rating.class,"ratingsMap");
+    public static final MatcherFactory.Matcher<ReviewResponse> REVIEW_RESPONSE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(ReviewResponse.class);
 
     public static final String REVIEW1_ID = "11";
     public static final String REVIEW2_ID = "12";
@@ -34,6 +36,8 @@ public class ReviewTestData {
     public static final String MODER_ID = "3";
     public static final String ITEM_1_ID = "1";
     public static final Set<String> REVIEW1_LIKES = Set.of(ADMIN_ID, USER_ID);
+    public static final ReviewResponse ADMIN_REVIEW_COUNT = new ReviewResponse(ADMIN_ID, 1L);
+    public static final ReviewResponse MODER_REVIEW_COUNT = new ReviewResponse(MODER_ID, 1L);
     public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
     public static final AuthCheckResponse AUTH_USER_RESPONSE = new AuthCheckResponse(USER_ID, List.of("USER"));
 
