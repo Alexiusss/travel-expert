@@ -30,7 +30,8 @@ public interface UserRepository extends BaseRepository<User> {
 
     @EntityGraph(attributePaths = {"roles", "subscribers", "subscriptions"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u " +
-            "WHERE u.id IN ?1")
+            "WHERE u.id IN ?1 " +
+            "ORDER BY u.subscribers.size DESC ")
     List<User> findAllByIdWithSubscriptions(String[] ids);
 
     //https://dba.stackexchange.com/a/285241
