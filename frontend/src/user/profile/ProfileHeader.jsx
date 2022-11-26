@@ -6,6 +6,7 @@ import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
 import MyButton from "../../components/UI/button/MyButton";
 import {useTranslation} from "react-i18next";
 import {useAuth} from "../../components/hooks/UseAuth";
+import './ProfileHeader.css'
 
 const ProfileHeader = (props) => {
     const {
@@ -37,9 +38,9 @@ const ProfileHeader = (props) => {
                                      className="rounded-circle profile-avatar"/>
                             </div>
                             <div>
-                                <div className="username">
-                                    <h4>{firstName}</h4>
-                                    <span>@{username}</span>
+                                <div >
+                                    <span className="profile-name">{firstName}</span>
+                                    <span className="profile-username">@{username}</span>
                                 </div>
                                 <div className="profile-flex">
                                     <div>

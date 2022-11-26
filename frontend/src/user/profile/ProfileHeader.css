@@ -1,0 +1,86 @@
+@media (min-width: 250px) {
+    .profile-avatar {
+        margin-right: 15px;
+        height: 75px;
+        width: 75px;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .profile-name {
+        color: black;
+        font-size: 15px;
+        line-height: 19px;
+        font-weight: 500;
+    }
+
+    .profile-username {
+        display: block;
+        color: dimgrey;
+        font-size: 13px;
+        line-height: 17px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .profile-flex {
+        display: inline-flex;
+        padding: 5px 0;
+    }
+
+    .profile-block {
+        display: block;
+        padding: 5px 5px 0;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .profile-block a {
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    /*https://www.askingbox.com/question/css-underline-links-only-when-mouse-cursor-is-over-them*/
+    .profile-block a:hover {
+        text-decoration:underline !important;
+    }
+}
+
+@media (min-width: 770px) {
+    .profile-avatar {
+        height: 120px;
+        width: 120px;
+    }
+
+    .profile-name {
+        color: black;
+        font-size: 25px;
+        line-height: 19px;
+        font-weight: 500;
+    }
+
+    .profile-username {
+        display: block;
+        color: dimgrey;
+        font-size: 15px;
+        line-height: 17px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .profile-flex {
+        padding: 5px 0;
+    }
+
+    .profile-block {
+        display: block;
+        padding: 5px 20px;
+        font-size: 17px
+    }
+
+    .profile-block a {
+        font-size: 18px;
+        font-weight: 700;
+    }
+}
