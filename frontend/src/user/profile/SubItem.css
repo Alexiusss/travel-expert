@@ -1,22 +1,17 @@
-.profile-avatar {
-    height: 120px;
-    width: 120px;
+.author-name {
+    color: black;
+    font-size: 15px;
+    line-height: 19px;
+    font-weight: 500;
 }
 
 .username {
     display: block;
-    padding: 5px;
-    margin-left: 15px
-}
-
-.profile-flex {
-    display: inline-flex;
-    padding: 15px
-}
-
-.profile-block {
-    display: block;
-    padding: 5px;
+    color: dimgrey;
+    font-size: 13px;
+    line-height: 17px;
+    margin: 0;
+    padding: 0;
 }
 
 .author-avatar {
@@ -27,26 +22,23 @@
     overflow: hidden;
 }
 
-.sub-header {
-    height: 40px;
-    background: #f8f9fa;
+.author-subs {
+    float: left;
+    color: dimgrey;
+    font-size: 13px;
+    line-height: 17px;
+    overflow: hidden;
+    margin-right: 7px;
 }
 
-#close {
-    height: 40px;
-    width: 40px;
-    float:right;
-    text-align: center;
-    font-size: 25px;
+.bC {
+    color: black;
+    font-weight: 500;
+    margin-right: 1px;
 }
+
 
 @media (min-width: 250px) {
-    .sub-list {
-        padding: 5px 10px;
-        overflow: scroll;
-        height: calc(100vh - 40px);
-    }
-
     .author-card {
         padding: 10px 0;
         cursor: pointer;
@@ -78,17 +70,9 @@
         float: bottom;
         padding-top: 10px;
     }
-
 }
 
 @media (min-width: 770px) {
-    .sub-list {
-        padding: 0;
-        width: 720px;
-        height: 550px;
-        overflow: scroll;
-    }
-
     .author-card {
         padding: 15px;
         display: flex;
@@ -115,34 +99,3 @@
         float: right;
     }
 }
-
-.author-name {
-    color: black;
-    font-size: 15px;
-    line-height: 19px;
-    font-weight: 500;
-}
-
-.username {
-    color: dimgrey;
-    font-size: 13px;
-    line-height: 17px;
-    margin: 0;
-    padding: 0;
-}
-
-.author-subs {
-    float: left;
-    color: dimgrey;
-    font-size: 13px;
-    line-height: 17px;
-    overflow: hidden;
-    margin-right: 7px;
-}
-
-.bC {
-    color: black;
-    font-weight: 500;
-    margin-right: 1px;
-}
-

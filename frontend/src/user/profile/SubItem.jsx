@@ -5,6 +5,7 @@ import defaultAvatar from "../../components/UI/images/DefaultAvatar.jpg";
 import {useTranslation} from "react-i18next";
 import MyButton from "../../components/UI/button/MyButton";
 import {useAuth} from "../../components/hooks/UseAuth";
+import "./SubItem.css";
 
 const SubItem = (props) => {
     const {t} = useTranslation();

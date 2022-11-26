@@ -1,0 +1,29 @@
+.sub-header {
+    height: 40px;
+    background: #f8f9fa;
+}
+
+#close {
+    height: 40px;
+    width: 40px;
+    float:right;
+    text-align: center;
+    font-size: 25px;
+}
+
+@media (min-width: 250px) {
+    .sub-list {
+        padding: 5px 10px;
+        overflow: scroll;
+        height: calc(100vh - 40px);
+    }
+}
+
+@media (min-width: 770px) {
+    .sub-list {
+        padding: 0;
+        width: 720px;
+        height: 550px;
+        overflow: scroll;
+    }
+}

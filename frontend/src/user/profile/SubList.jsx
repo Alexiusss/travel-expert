@@ -1,6 +1,6 @@
 import React from 'react';
 import SubItem from "./SubItem";
-import './ProfilePage.css'
+import './Sublist.css'
 
 const SubList = (props) => {
     const {

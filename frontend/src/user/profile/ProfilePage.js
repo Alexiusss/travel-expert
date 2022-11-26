@@ -4,8 +4,6 @@ import {useTranslation} from "react-i18next";
 import MyModal from "../../components/UI/modal/MyModal";
 import UserEditor from "../UserEditor";
 import MyNotification from "../../components/UI/notification/MyNotification";
-import ProfileHeader from "./ProfileHeader";
-import "./ProfilePage.css"
 import userService from "../../services/user.service";
 import reviewService from "../../services/ReviewService";
 import {useAuth} from "../../components/hooks/UseAuth";
@@ -17,6 +15,7 @@ import {getLocalizedErrorMessages, PROFILE} from "../../utils/consts";
 import Intro from "../../pages/review/Intro";
 import {NotFound} from "../../pages/NotFound";
 import SubList from "./SubList";
+import ProfileHeader from "./ProfileHeader";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
