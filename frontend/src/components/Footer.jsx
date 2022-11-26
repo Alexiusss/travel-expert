@@ -13,10 +13,10 @@ const Footer = () => {
 
     return (
         <footer className="text-center text-lg-start bg-light text-muted">
-            <div className="text-center p-4" >
+            <div className="text-center p-2" >
                 <div className="container centered" >
                     © {new Date().getFullYear()} Copyright Text
-                    <a href="#!">
+                    <a href="#!" style={{padding: "15px"}}>
                          GitHub
                     </a>
                     <FormControl sx={{ m: 1, minWidth: 80}}>

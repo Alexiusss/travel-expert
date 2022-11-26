@@ -63,8 +63,8 @@ const UserTable = (props) => {
     const {t} = useTranslation();
 
     return (
-        <div>
-            <table className="table table-striped">
+        <div className="table-container">
+            <table className="table table-striped table-responsive">
                 <thead>
                 <tr>
                     <th>
