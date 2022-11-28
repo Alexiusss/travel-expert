@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:12.10:///test_images
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
+  jpa:
+    show-sql: true
+
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: false
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      registerWithEureka: false
