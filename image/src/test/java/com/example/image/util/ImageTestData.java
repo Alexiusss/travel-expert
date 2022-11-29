@@ -4,7 +4,6 @@ import com.example.clients.auth.AuthCheckResponse;
 import com.example.common.util.JsonUtil;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.experimental.UtilityClass;
-import org.assertj.core.util.Arrays;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -31,6 +30,6 @@ public class ImageTestData {
 
     public static MockMultipartFile getNewImage(String fileName) throws IOException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        return new MockMultipartFile("files", "image1.jpg", String.valueOf(MediaType.IMAGE_JPEG), loader.getResourceAsStream("/images/image1.jpeg"));
+        return new MockMultipartFile("files", "image1.jpg", String.valueOf(MediaType.IMAGE_JPEG), loader.getResourceAsStream("/images/" + fileName));
     }
 }
