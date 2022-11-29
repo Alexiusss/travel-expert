@@ -1,5 +1,10 @@
 package com.example.image.controller;
 
+import com.example.image.repository.ImageRepository;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,6 +37,13 @@ public class ImageControllerTest {
 
     private ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    @BeforeAll
+    static void init() {
+        WireMockServer wireMockServer = new WireMockServer(new WireMockConfiguration().port(7077));
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 7077);
     }
 
     @Test
