@@ -90,29 +90,6 @@ const ReviewsSection = (props) => {
         openAlert([t('record saved')], "success")
     }
 
-    const like = (reviewId, isAuthUserLiked) => {
-        reviewService.like(reviewId, authUserId)
-            .then(() => {
-                setReviews(reviews.map(review => {
-                    if (review.id === reviewId) {
-                        let likes = review.likes;
-                        if (isAuthUserLiked) {
-                            return {
-                                ...review,
-                                likes: likes.filter(userId => userId !== authUserId)
-                            }
-                        } else {
-                            return {
-                                ...review,
-                                likes: [...likes, authUserId]
-                            }
-                        }
-                    }
-                    return review;
-                }))
-            })
-    }
-
     const removeReview = (review) => {
         Promise.all([imageService.removeAllByFileNames(review.fileNames), reviewService.delete(review.id)])
             .then(() => {
@@ -204,8 +181,8 @@ const ReviewsSection = (props) => {
                     :
                     <>
                         <ReviewList reviews={reviews}
+                                    setReviews={setReviews}
                                     update={update}
-                                    like={like}
                                     remove={removeReview}
                                     removeImage={removeImage}
                                     promiseInProgress={promiseInProgress}/>

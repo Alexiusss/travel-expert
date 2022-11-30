@@ -110,7 +110,7 @@ const ReviewItem = (props) => {
                                 sx={{ml: 1}}><small>{t("published")} {getFormattedDate(createdAt, i18n)}</small></Box>
                             {(isAuth && props.item.active) ?
                                 <div className="row-cols-2 like">
-                                    <IconButton onClick={() => props.like(id, isAuthUserLiked)}>
+                                    <IconButton onClick={() => like(id, isAuthUserLiked)}>
                                         {isAuthUserLiked ?
                                             <span id="heart-icon" className="bi bi-heart-fill small"/>
                                             :
