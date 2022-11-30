@@ -38,7 +38,7 @@ const ProfileHeader = (props) => {
                                      className="rounded-circle profile-avatar"/>
                             </div>
                             <div>
-                                <div >
+                                <div>
                                     <span className="profile-name">{firstName}</span>
                                     <span className="profile-username">@{username}</span>
                                 </div>
@@ -50,13 +50,21 @@ const ProfileHeader = (props) => {
                                     <div>
                                         <span className="profile-block">{t('followers')}</span>
                                         <span className="profile-block">
-                                        <a onClick={() => loadSubscribers(subscribers)}>{subscribers.length}</a>
+                                            {subscribers.length ?
+                                                <a onClick={() => loadSubscribers(subscribers)}>{subscribers.length}</a>
+                                                :
+                                                subscribers.length
+                                            }
                                         </span>
                                     </div>
                                     <div>
                                         <span className="profile-block">{t('following')}</span>
                                         <span className="profile-block">
-                                            <a onClick={() => loadSubscribers(subscriptions)}>{subscriptions.length}</a>
+                                            {subscriptions.length ?
+                                                <a onClick={() => loadSubscribers(subscriptions)}>{subscriptions.length}</a>
+                                                :
+                                                subscriptions.length
+                                            }
                                         </span>
                                     </div>
                                 </div>
