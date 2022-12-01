@@ -2,6 +2,8 @@ package com.example.image.controller;
 
 import com.example.image.model.Image;
 import com.example.image.service.ImageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,24 +26,29 @@ public class ImageController {
 
     private ImageService imageService;
 
+    @Operation(summary = "Get an image by its id")
     @GetMapping("/{fileName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws Exception {
         Image image = imageService.findImageByFileName(fileName);
         return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
     }
 
+    @Operation(summary = "Upload the image set")
     @PostMapping
     public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files) throws Exception {
         List<String> images = imageService.uploadImages(files);
         return ResponseEntity.ok(images);
     }
 
+    @Operation(summary = "Delete a picture by its id")
     @DeleteMapping("/{fileName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String fileName) throws Exception {
         imageService.deleteByFileName(fileName);
     }
 
+    @Operation(summary = "Delete a group of pictures per ids", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     // https://docs.oracle.com/en/cloud/saas/marketing/responsys-develop/API/REST/api-v1.3-lists-listName-members-post-actionDelete.htm
     @PostMapping("/fileNames")
     public ResponseEntity<?> deleteAllByFileNames(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
