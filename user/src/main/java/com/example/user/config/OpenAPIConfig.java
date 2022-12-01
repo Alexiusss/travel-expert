@@ -1,5 +1,7 @@
 package com.example.user.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -8,15 +10,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+//  https://www.baeldung.com/openapi-jwt-authentication
+@SecurityScheme(
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class OpenAPIConfig {
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${application-description}") String appDescription, @Value("${application-version}") String appVersion) {
+    public OpenAPI customOpenAPI(@Value("${application-version}") String appVersion) {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Restaurant Advisor")
+                        .title("User microservice")
                         .version(appVersion)
-                        .description(appDescription)
                         .termsOfService("http://swagger.io/terms/")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")));
     }

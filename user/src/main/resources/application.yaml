@@ -55,5 +55,4 @@ refresh.token.expiration: 30
 
 cookies.domain: localhost
 
-application-description: Service designed to assist people in choosing a restaurant
 application-version: 1.0.0

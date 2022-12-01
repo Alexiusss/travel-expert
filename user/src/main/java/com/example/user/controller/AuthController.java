@@ -9,6 +9,7 @@ import com.example.user.model.dto.RegistrationDTO;
 import com.example.user.servise.AuthService;
 import com.example.user.servise.UserService;
 import com.example.user.util.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,7 @@ public class AuthController {
     @Autowired
     UserService userService;
 
+    @Operation(summary = "Log in using email and password")
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
         log.info("Login {}", request.getEmail());
@@ -63,6 +65,7 @@ public class AuthController {
                 .body(jwtResponse);
     }
 
+    @Operation(summary = "Registration of a new user account")
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegistrationDTO registration) {
         log.info("registration {}", registration);
@@ -74,6 +77,7 @@ public class AuthController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @Operation(summary = "Activating a user account via email confirmation code")
     @GetMapping("/activate/{code}")
     public ResponseEntity<?> activate(@PathVariable String code) {
         boolean isActivated = authService.activateUser(code);
@@ -85,6 +89,7 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "JWT token validation")
     @GetMapping("/validate")
     public ResponseEntity<AuthCheckResponse> validateToken(@RequestHeader(name = "Authorization", defaultValue = "No token") String authorization,
                                                            @AuthenticationPrincipal AuthUser user) {
@@ -97,6 +102,7 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Refresh access token using refresh token")
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh-token") String refreshToken) {
         UserDetails userDetails = userService.loadUserByUsername(getUserEmailFromRefreshToken(refreshToken));
@@ -108,6 +114,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    @Operation(summary = "Logoff from the system")
     @GetMapping("/logout")
     public ResponseEntity<?> logout() {
         ResponseCookie cookie = generateLogoutCookie(domain);

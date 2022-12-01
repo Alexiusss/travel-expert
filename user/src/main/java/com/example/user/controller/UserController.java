@@ -4,6 +4,8 @@ import com.example.user.AuthUser;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthorDTO;
 import com.example.user.servise.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Operation(summary = "Get a user by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
@@ -39,6 +43,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Get a author DTO by its id")
     @GetMapping(value = "/{id}/author")
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable String id) {
         log.info("get author for {}", id);
@@ -46,6 +51,7 @@ public class UserController {
         return ResponseEntity.ok(author);
     }
 
+    @Operation(summary = "Get a list of author DTO by id array")
     @PostMapping("/authorList")
     public ResponseEntity<List<AuthorDTO>> getAuthorList(@RequestBody String[] authors) {
         log.info("get authorList for {}", Arrays.toString(authors));
@@ -53,6 +59,7 @@ public class UserController {
         return ResponseEntity.ok(authorList);
     }
 
+    @Operation(summary = "Get a author DTO by username")
     @GetMapping(value = "/{username}/authorByUsername")
     public ResponseEntity<AuthorDTO> getByAuthorUsername(@PathVariable String username) {
         log.info("get authorName for {}", username);
@@ -60,6 +67,8 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @GetMapping
     public Page<User> getAll(
@@ -70,6 +79,8 @@ public class UserController {
         return userService.findAllPaginated(PageRequest.of(page, size));
     }
 
+    @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
@@ -78,6 +89,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @Operation(summary = "Update a user by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
@@ -88,6 +101,8 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @Operation(summary = "Enable/disable a user account by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @PatchMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -97,20 +112,8 @@ public class UserController {
         userService.enableUser(id, enable);
     }
 
-    @PreAuthorize("hasAuthority('USER')")
-    @GetMapping("subscribe/{userId}")
-    public void subscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
-        log.info("user {} subscribe to user {}", authUser.id(), userId);
-        userService.subscribe(authUser, userId);
-    }
-
-    @PreAuthorize("hasAuthority('USER')")
-    @GetMapping("unSubscribe/{userId}")
-    public void unSubscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
-        log.info("user {} unsubscribe from user {}", authUser.id(), userId);
-        userService.unSubscribe(authUser, userId);
-    }
-
+    @Operation(summary = "Delete a user account by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -118,5 +121,21 @@ public class UserController {
         log.info("delete {}", id);
         checkModificationAllowed(id);
         userService.deleteUser(id);
+    }
+
+    @Operation(summary = "Subscribe to user per its id")
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("subscribe/{userId}")
+    public void subscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
+        log.info("user {} subscribe to user {}", authUser.id(), userId);
+        userService.subscribe(authUser, userId);
+    }
+
+    @Operation(summary = "Unsubscribe from the user by his id")
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("unSubscribe/{userId}")
+    public void unSubscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
+        log.info("user {} unsubscribe from user {}", authUser.id(), userId);
+        userService.unSubscribe(authUser, userId);
     }
 }

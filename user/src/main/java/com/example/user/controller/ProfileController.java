@@ -3,6 +3,8 @@ package com.example.user.controller;
 import com.example.user.AuthUser;
 import com.example.user.model.User;
 import com.example.user.servise.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,6 +30,8 @@ public class ProfileController {
     @Autowired
     UserService userService;
 
+    @Operation(summary = "Get a user profile by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     public ResponseEntity<User> get(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get profile {}", authUser.id());
@@ -35,6 +39,8 @@ public class ProfileController {
         return ResponseEntity.ok(user.get());
     }
 
+    @Operation(summary = "Update a user profile by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody User user) {
         log.info("update {} with id={}", user, authUser.id());
