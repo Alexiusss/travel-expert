@@ -1,11 +1,11 @@
 package com.example.user.servise;
 
+import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewClient;
 import com.example.clients.review.ReviewResponse;
 import com.example.user.AuthUser;
 import com.example.user.model.Role;
 import com.example.user.model.User;
-import com.example.user.model.dto.AuthorDTO;
 import com.example.user.repository.UserRepository;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;

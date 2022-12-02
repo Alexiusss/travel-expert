@@ -1,8 +1,8 @@
 package com.example.user.controller;
 
+import com.example.clients.auth.AuthorDTO;
 import com.example.user.AuthUser;
 import com.example.user.model.User;
-import com.example.user.model.dto.AuthorDTO;
 import com.example.user.servise.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

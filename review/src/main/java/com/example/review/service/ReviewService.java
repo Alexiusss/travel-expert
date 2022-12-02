@@ -2,9 +2,11 @@ package com.example.review.service;
 
 import com.example.clients.auth.AuthCheckResponse;
 import com.example.clients.auth.AuthClient;
+import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewResponse;
 import com.example.review.model.Review;
 import com.example.review.model.dto.Rating;
+import com.example.review.model.dto.ReviewDTO;
 import com.example.review.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,14 +65,17 @@ public class ReviewService {
                 .average().orElse(0.0);
     }
 
-    public Page<Review> getAllPaginated(Pageable pageable, String filter) {
+    public Page<ReviewDTO> getAllPaginated(Pageable pageable, String filter) {
+        Page<Review> reviews;
         if (filter.isEmpty()) {
-            return reviewRepository.findAll(pageable);
+            reviews = reviewRepository.findAll(pageable);
+        } else {
+            reviews = reviewRepository.findAllWithFilter(pageable, filter);
         }
-        return reviewRepository.findAllWithFilter(pageable, filter);
+        return setAuthors(reviews, getUserIds(reviews));
     }
 
-    public Page<Review> getAllPaginatedByItemId(Pageable pageable, String id, String filter, String[] ratings) {
+    public Page<ReviewDTO> getAllPaginatedByItemId(Pageable pageable, String id, String filter, String[] ratings) {
         Page<Review> reviews;
         if (filter.isEmpty()) {
             reviews = reviewRepository.findAllByItemId(pageable, id);
@@ -78,10 +83,40 @@ public class ReviewService {
             reviews = reviewRepository.findAllByItemIdFiltered(pageable, id, filter);
         }
         if (ratings.length > 0) {
-
             reviews = getAllFilteredByRatings(reviews, pageable, ratings);
         }
-        return reviews;
+        return setAuthors(reviews, getUserIds(reviews));
+    }
+
+    private Set<String> getUserIds(Page<Review> reviews) {
+        return reviews.get().map(Review::getUserId).collect(Collectors.toSet());
+    }
+
+    public Page<ReviewDTO> setAuthors(Page<Review> reviewPage, Set<String> userListIds) {
+        List<AuthorDTO> authorList = authClient.getAuthorList(userListIds);
+        return reviewPage.map(review -> createReviewDTO(review, authorList));
+    }
+
+    private ReviewDTO createReviewDTO (Review review, List<AuthorDTO> authorList) {
+        return ReviewDTO
+                .builder()
+                .id(review.id())
+                .createdAt(review.getCreatedAt())
+                .title(review.getTitle())
+                .description(review.getDescription())
+                .fileNames(review.getFileNames())
+                .active(review.isActive())
+                .rating(review.getRating())
+                .likes(review.getLikes())
+                .author(getAuthor(authorList, review.getUserId()))
+                .build();
+    }
+
+    private AuthorDTO getAuthor(List<AuthorDTO> authorList, String id){
+        return authorList.stream()
+                .filter(author -> author.getAuthorId().equals(id))
+                .findAny()
+                .orElseThrow();
     }
 
     public Page<Review> getAllFilteredByRatings(Page<Review> reviews, Pageable pageable, String[] ratings) {

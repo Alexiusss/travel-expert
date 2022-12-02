@@ -3,11 +3,13 @@ package com.example.review.controller;
 import com.example.clients.review.ReviewResponse;
 import com.example.review.model.Review;
 import com.example.review.model.dto.Rating;
+import com.example.review.model.dto.ReviewDTO;
 import com.example.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -93,7 +95,8 @@ public class ReviewController {
             @RequestParam(defaultValue = "", required = false) String[] ratings
     ) {
         log.info("get all reviews for item {}", id);
-        return ResponseEntity.ok(reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter, ratings));
+        Page<ReviewDTO> reviewPage = reviewService.getAllPaginatedByItemId(PageRequest.of(page, size), id, filter, ratings);
+        return ResponseEntity.ok(reviewPage);
     }
 
     @Operation(summary = "Return a list of reviews by user id")
