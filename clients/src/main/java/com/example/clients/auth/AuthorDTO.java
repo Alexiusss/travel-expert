@@ -1,4 +1,4 @@
-package com.example.user.model.dto;
+package com.example.clients.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
