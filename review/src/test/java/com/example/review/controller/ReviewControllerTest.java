@@ -125,20 +125,22 @@ public class ReviewControllerTest {
     @Test
     void getAllFiltered() throws Exception {
         stubAdminAuth();
+        stubAuthorList();
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("filter", REVIEW3.getTitle()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW3))));
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW_DTO))));
     }
 
     @Test
     void getAllPaginated() throws Exception {
         stubAdminAuth();
+        stubAuthorList();
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("size", "2")
                 .param("page", "1"))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW3))));
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW_DTO))));
     }
 
     @Test
@@ -151,12 +153,13 @@ public class ReviewControllerTest {
     @Test
     void getAllByItemId() throws Exception {
         String itemId = REVIEW3.getItemId();
+        stubAuthorList();
         perform(MockMvcRequestBuilders.get(REST_URL + itemId + "/item")
                 .param("size", "20")
                 .param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW3))));
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(REVIEW_DTO))));
 
     }
 

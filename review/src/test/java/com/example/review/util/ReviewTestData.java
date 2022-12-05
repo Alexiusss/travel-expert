@@ -1,13 +1,18 @@
 package com.example.review.util;
 
 import com.example.clients.auth.AuthCheckResponse;
+import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewResponse;
 import com.example.common.util.JsonUtil;
 import com.example.common.util.MatcherFactory;
 import com.example.review.model.Review;
 import com.example.review.model.dto.Rating;
+import com.example.review.model.dto.ReviewDTO;
+import com.example.review.service.ReviewService;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import lombok.AllArgsConstructor;
 import lombok.experimental.UtilityClass;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -46,6 +51,8 @@ public class ReviewTestData {
     public static final Review REVIEW3 = new Review(REVIEW3_ID, REVIEW_INSTANT, null, true, 0, "review #3", "review #3 description", 3, null, MODER_ID, ITEM_1_ID, Set.of());
     public static final Rating ITEM_1_RATING = new Rating(ITEM_1_ID, 3.0, Map.of(1 , 0,2 , 0, 3, 1,4, 0, 5 ,0));
     public static final Rating USER_RATING = new Rating(USER_ID, 4.0, Map.of(1 , 0,2 , 0, 3, 0,4, 1, 5 ,0));
+    public static final AuthorDTO AUTHOR_DTO = new AuthorDTO(MODER_ID, "ModerName", "ModerUserName", "Empty", Instant.now(), Set.of(ADMIN_ID), Set.of(USER_ID), 1L);
+    public static final ReviewDTO REVIEW_DTO = new ReviewDTO(REVIEW3_ID, REVIEW3.getCreatedAt(), REVIEW3.getTitle(), REVIEW3.getDescription(), REVIEW3.getFileNames(), REVIEW3.isActive(), REVIEW3.getRating(), REVIEW3.getLikes(), AUTHOR_DTO);
 
     public static Review getNew() {
         return new Review(null, null, null, true, 0, "New review", "New review description", 2, null, USER_ID, "2", Set.of());
@@ -68,5 +75,10 @@ public class ReviewTestData {
     public static void stubUnAuth() {
         stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
                 .willReturn(unauthorized()));
+    }
+
+    public static void stubAuthorList() {
+        stubFor(WireMock.post(urlMatching("/api/v1/users/authorList"))
+                .willReturn(okForContentType("application/json",JsonUtil.writeValue(List.of(AUTHOR_DTO)))));
     }
 }

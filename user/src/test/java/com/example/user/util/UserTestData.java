@@ -1,10 +1,10 @@
 package com.example.user.util;
 
+import com.example.clients.auth.AuthorDTO;
 import com.example.common.util.MatcherFactory;
 import com.example.common.util.JsonUtil;
 import com.example.user.model.Role;
 import com.example.user.model.User;
-import com.example.user.model.dto.AuthorDTO;
 import com.example.user.model.dto.RegistrationDTO;
 import lombok.experimental.UtilityClass;
 
@@ -34,7 +34,7 @@ public class UserTestData {
     public static final User MODER = new User(MODER_ID, null, null, 0, MODER_MAIL, "Moder", "ModerLast", "moderUserName", "moderPassword", true, null, List.of(Role.MODERATOR, Role.USER));
     public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", USERNAME, "userPassword", true, null, Collections.singleton(Role.USER));
 
-    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getUsername(), USER.getFileName(), USER.getCreatedAt(), Set.of(), Set.of(), 0L);
+    public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getUsername(), "Empty", USER.getCreatedAt(), Set.of(), Set.of(), 0L);
 
     private static String getAuthorName(User user) {
         return user.getFirstName() + " " + user.getLastName();

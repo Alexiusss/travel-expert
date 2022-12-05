@@ -97,7 +97,7 @@ public class ReviewService {
         return reviewPage.map(review -> createReviewDTO(review, authorList));
     }
 
-    private ReviewDTO createReviewDTO (Review review, List<AuthorDTO> authorList) {
+    public ReviewDTO createReviewDTO (Review review, List<AuthorDTO> authorList) {
         return ReviewDTO
                 .builder()
                 .id(review.id())
