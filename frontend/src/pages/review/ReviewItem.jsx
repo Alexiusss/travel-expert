@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     Avatar,
     Box,
@@ -15,7 +15,6 @@ import ItemImages from "../../components/items/ItemImages";
 import {API_URL} from "../../http/http-common";
 import {getFormattedDate, IMAGE_ROUTE} from "../../utils/consts";
 import {Card} from "reactstrap";
-import userService from "../../services/user.service";
 import reviewService from "../../services/ReviewService";
 import ProfilePopover from "../../user/profile/ProfilePopover";
 import './ReviewItem.css';
@@ -24,16 +23,16 @@ const ReviewItem = (props) => {
 
     const {t, i18n} = useTranslation();
     const {authUserId, isAuth, isAdmin, isModerator} = useAuth();
-    const {id, userId, createdAt, title, description, fileNames = [], active, rating, likes = []} = props.item;
+    const {id, createdAt, title, description, fileNames = [], active, rating, likes = []} = props.item;
     const {
         update = Function.prototype,
         removeImage = Function.prototype,
         remove = Function.prototype,
         like = Function.prototype
     } = props;
-    const isAuthor = authUserId === userId;
-    const [author, setAuthor] = useState(props.author || {});
-    const [reviewsCount, setReviewsCount] = useState(props.reviewsCount || 0);
+    const author = props.author || props.item.author;
+    const isAuthor = authUserId === author.authorId;
+    const [reviewsCount, setReviewsCount] = useState(props.reviewsCount || author.reviewsCount);
     const isAuthUserLiked = likes.includes(authUserId);
     const likesCount = likes.length || 0;
 
@@ -51,28 +50,11 @@ const ReviewItem = (props) => {
     }
 
     const openProfilePopover = (e) => {
-        reviewService.getRatingByUserId(userId)
+        reviewService.getRatingByUserId(author.authorId)
             .then(({data}) => setUserRating(data))
         setAnchorEl(e.currentTarget)
     }
 
-    useEffect(() => {
-        if (!props.author) {
-            userService.getAuthor(userId)
-                .then(({data}) => {
-                    setAuthor(data)
-                })
-        }
-    }, [])
-
-    useEffect(() => {
-        if (!props.author) {
-            reviewService.getCountByUserId(userId)
-                .then(({data}) => {
-                    setReviewsCount(data)
-                })
-        }
-    }, [])
     return (
         <div>
             {Boolean(anchorEl) &&

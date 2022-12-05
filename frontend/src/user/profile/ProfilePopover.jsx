@@ -35,7 +35,7 @@ const ProfilePopover = (props) => {
                         pathname: `${PROFILE}${username}`,
                         state: {authorId: authorId}
                     }}
-                    >{authorName}</Link>
+                    >{authorName || username}</Link>
                 </div>
                 <div style={{padding: 7}}>
                     <ItemRating rating={rating} setRatingFilter={null}/>
