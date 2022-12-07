@@ -30,6 +30,7 @@ const ProfilePage = () => {
     const [subModal, setSubModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
     const [reviews, setReviews] = useState([]);
+    const [isSubscribersLoaded, setSubscribersLoaded] = useState(false);
     const [subscribers, setSubscribers] = useState([]);
 
     useEffect(() => {
@@ -169,15 +170,22 @@ const ProfilePage = () => {
     }
 
     const loadSubscribers = (subIds = []) => {
+        setSubModal(true);
         userService.getAuthorList(subIds)
             .then(({data}) => {
                 setSubscribers(data);
-                setSubModal(true);
+                setSubscribersLoaded(true)
             })
     }
 
     const openAlert = (msg, severity) => {
         setAlert({severity: severity, message: msg, open: true})
+    }
+
+    const closeSubModal = () => {
+        setSubModal(false);
+        setSubscribers([])
+        setSubscribersLoaded(false)
     }
 
     return (
@@ -213,7 +221,8 @@ const ProfilePage = () => {
                                      loadSubscribers={loadSubscribers}
                                      subscribe={subscribe}
                                      unsubscribe={unSubscribe}
-                                     close={() => setSubModal(false)}
+                                     close={closeSubModal}
+                                     isLoaded={isSubscribersLoaded}
                             />
                         </MyModal>
                     }

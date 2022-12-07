@@ -43,13 +43,13 @@ const SubItem = (props) => {
                         <span className="bC">
                         {subscribers.length}
                             </span>
-                        followers {t('')}
+                        {t('followers')}
                     </span>
                         <span className="author-subs">
                             <span className="bC">
                         {reviewsCount}
                                 </span>
-                            contributions
+                            {t('contributions')}
                     </span>
                     </div>
                 </div>
