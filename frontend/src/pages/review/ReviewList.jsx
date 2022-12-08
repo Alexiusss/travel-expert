@@ -3,12 +3,14 @@ import {Container} from "@material-ui/core";
 import ReviewItem from "./ReviewItem";
 import reviewService from "../../services/ReviewService";
 import {useAuth} from "../../components/hooks/UseAuth";
+import SkeletonReview from "./SkeletonReview";
 
 const ReviewList = (props) => {
     const {
         author,
         reviewsCount,
         reviews = [],
+        isLoaded = false,
         removeImage = Function.prototype,
         setReviews = Function.prototype,
     } = props;
@@ -38,22 +40,29 @@ const ReviewList = (props) => {
     }
 
     return (
-        <Container style={{padding: 5}}>
-            {reviews.map((review) =>
-                <ReviewItem
-                    item={review}
-                    key={review.id}
-                    update={props.update}
-                    like={like}
-                    remove={props.remove}
-                    promiseInProgress={props.promiseInProgress}
-                    removeImage={removeImage}
-                    author={author}
-                    reviewsCount={reviewsCount}
-                />
-            )
+        <>
+            {!isLoaded
+                ?
+                <SkeletonReview listsToRender={3}/>
+                :
+                <Container style={{padding: 5}}>
+                    {reviews.map((review) =>
+                        <ReviewItem
+                            item={review}
+                            key={review.id}
+                            update={props.update}
+                            like={like}
+                            remove={props.remove}
+                            promiseInProgress={props.promiseInProgress}
+                            removeImage={removeImage}
+                            author={author}
+                            reviewsCount={reviewsCount}
+                        />
+                    )
+                    }
+                </Container>
             }
-        </Container>
+        </>
     );
 };
 

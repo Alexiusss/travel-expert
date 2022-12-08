@@ -185,7 +185,8 @@ const ReviewsSection = (props) => {
                                     update={update}
                                     remove={removeReview}
                                     removeImage={removeImage}
-                                    promiseInProgress={promiseInProgress}/>
+                                    isLoaded={!promiseInProgress}
+                        />
                         {(reviewsCount > 0 || reviews) &&
                             <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"
                                         className="pagination"/>

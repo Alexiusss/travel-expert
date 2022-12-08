@@ -31,6 +31,7 @@ const ProfilePage = () => {
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
     const [reviews, setReviews] = useState([]);
     const [isSubscribersLoaded, setSubscribersLoaded] = useState(false);
+    const [isReviewsLoaded, setReviewsLoaded] = useState(false);
     const [subscribers, setSubscribers] = useState([]);
 
     useEffect(() => {
@@ -70,10 +71,16 @@ const ProfilePage = () => {
         if (authorId) {
             if (isAuthor || isAdmin || isModerator) {
                 reviewService.getAllByUserId(authorId)
-                    .then(({data}) => setReviews(data))
+                    .then(({data}) => {
+                        setReviews(data);
+                        setReviewsLoaded(true);
+                    })
             } else {
                 reviewService.getAllActiveByUserId(authorId)
-                    .then(({data}) => setReviews(data))
+                    .then(({data}) => {
+                        setReviewsLoaded(true);
+                        setReviews(data);
+                    })
             }
         }
     }, [authorId])
@@ -205,7 +212,14 @@ const ProfilePage = () => {
                     >
                         <Intro {...profile}/>
                         <Grid item xs={12} sm={12} md={6} key="introKey">
-                            <ReviewList reviews={reviews} setReviews={setReviews} remove={removeReview}  author={profile} reviewsCount={reviews.length}/>
+                            <ReviewList
+                                reviews={reviews}
+                                setReviews={setReviews}
+                                remove={removeReview}
+                                author={profile}
+                                reviewsCount={reviews.length}
+                                isLoaded={isReviewsLoaded}
+                            />
                         </Grid>
                     </Grid>
                     {modal &&
