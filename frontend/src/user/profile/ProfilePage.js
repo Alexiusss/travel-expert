@@ -16,6 +16,8 @@ import Intro from "../../pages/review/Intro";
 import {NotFound} from "../../pages/NotFound";
 import SubList from "./SubList";
 import ProfileHeader from "./ProfileHeader";
+import SkeletonHeader from "./SkeletonHeader";
+import SkeletonIntro from "../../pages/review/SkeletonIntro";
 
 const ProfilePage = () => {
     const {t} = useTranslation();
@@ -24,6 +26,7 @@ const ProfilePage = () => {
     const {isAdmin, isModerator, authUserId} = useAuth();
     const username = pathname.replace(PROFILE, "");
     const [profile, setProfile] = useState({});
+    const [isProfileLoaded, setProfileLoaded] = useState(false);
     const [authorId, setAuthorId] = useState(state ? state.id : profile.id);
     const isAuthor = authUserId === authorId;
     const [modal, setModal] = useState(false);
@@ -46,8 +49,9 @@ const ProfilePage = () => {
                         registeredAt: data.registeredAt,
                         subscribers: data.subscribers,
                         subscriptions: data.subscriptions,
-                    })
-                    setAuthorId(data.authorId)
+                    });
+                    setAuthorId(data.authorId);
+                    setProfileLoaded(true);
                 })
         } else {
             userService.getAuthor(authUserId)
@@ -60,9 +64,10 @@ const ProfilePage = () => {
                         registeredAt: data.registeredAt,
                         subscribers: data.subscribers,
                         subscriptions: data.subscriptions,
-                    })
-                    setAuthorId(data.authorId)
-                    push(PROFILE + data.username)
+                    });
+                    setAuthorId(data.authorId);
+                    push(PROFILE + data.username);
+                    setProfileLoaded(true);
                 })
         }
     }, []);
@@ -199,18 +204,28 @@ const ProfilePage = () => {
         <>
             {profile.username ?
                 <div className="container justify-content-center align-items-center">
-                    <ProfileHeader {...profile}
-                                   editProfile={editProfile}
-                                   contributionsCount={reviews.length}
-                                   subscribe={subscribe}
-                                   unSubscribe={unSubscribe}
-                                   loadSubscribers={loadSubscribers}
-                    />
+                    {!isProfileLoaded
+                        ?
+                        <SkeletonHeader/>
+                        :
+                        <ProfileHeader {...profile}
+                                       editProfile={editProfile}
+                                       contributionsCount={reviews.length}
+                                       subscribe={subscribe}
+                                       unSubscribe={unSubscribe}
+                                       loadSubscribers={loadSubscribers}
+                        />
+                    }
                     <Grid container
                           spacing={1}
                           direction="row"
                     >
-                        <Intro {...profile}/>
+                        {!isProfileLoaded
+                            ?
+                            <SkeletonIntro/>
+                            :
+                            <Intro {...profile}/>
+                        }
                         <Grid item xs={12} sm={12} md={6} key="introKey">
                             <ReviewList
                                 reviews={reviews}
