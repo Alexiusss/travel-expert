@@ -31,7 +31,7 @@ const ReviewItem = (props) => {
         like = Function.prototype
     } = props;
     const author = props.author || props.item.author;
-    const isAuthor = authUserId === author.authorId || author.id;
+    const isAuthor = authUserId === (author.authorId || author.id);
     const [reviewsCount, setReviewsCount] = useState(props.reviewsCount || author.reviewsCount);
     const isAuthUserLiked = likes.includes(authUserId);
     const likesCount = likes.length || 0;
