@@ -27,6 +27,7 @@ const ProfilePage = () => {
     const username = pathname.replace(PROFILE, "");
     const [profile, setProfile] = useState({});
     const [isProfileLoaded, setProfileLoaded] = useState(false);
+    const [isProfileFound, setProfileFound] = useState(true);
     const [authorId, setAuthorId] = useState(state ? state.id : profile.id);
     const isAuthor = authUserId === authorId;
     const [modal, setModal] = useState(false);
@@ -53,6 +54,7 @@ const ProfilePage = () => {
                     setAuthorId(data.authorId);
                     setProfileLoaded(true);
                 })
+                .catch(handleError)
         } else {
             userService.getAuthor(authUserId)
                 .then(({data}) => {
@@ -69,8 +71,15 @@ const ProfilePage = () => {
                     push(PROFILE + data.username);
                     setProfileLoaded(true);
                 })
+                .catch(handleError)
         }
     }, []);
+
+    const handleError = (err) => {
+        if (err.response.status === 422) {
+            setProfileFound(false);
+        }
+    }
 
     useEffect(() => {
         if (authorId) {
@@ -202,7 +211,9 @@ const ProfilePage = () => {
 
     return (
         <>
-            {profile.username ?
+            {!isProfileFound ?
+                <NotFound/>
+                :
                 <div className="container justify-content-center align-items-center">
                     {!isProfileLoaded
                         ?
@@ -258,8 +269,6 @@ const ProfilePage = () => {
                     <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}
                                     severity={alert.severity}/>
                 </div>
-                :
-                <NotFound/>
             }
         </>
     );

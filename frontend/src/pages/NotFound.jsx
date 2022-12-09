@@ -3,7 +3,11 @@ import {useTranslation} from "react-i18next";
 function NotFound() {
     const {t} = useTranslation();
 
-    return <h4>{t('page doesn\'t exist')}</h4>;
+    return (
+        <div className="container">
+        <h4>{t('page doesn\'t exist')}</h4>
+        </div>
+    );
 }
 
 export { NotFound };
