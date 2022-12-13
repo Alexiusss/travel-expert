@@ -15,6 +15,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: user
       PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - db
     restart: always
 
   backend:
@@ -46,6 +48,8 @@ services:
     container_name: zipkin
     ports:
       - "9411:9411"
+    networks:
+      - spring
 
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine
@@ -53,3 +57,34 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  eureka-server:
+    image: alexius1905/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+
+  apigw:
+    image: alexius1905/apigw:latest
+    container_name: apigw
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+      - eureka-server
+
+networks:
+  db:
+    driver: bridge
+  spring:
+    driver: bridge
