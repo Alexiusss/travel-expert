@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: user
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://postgres/user
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
+  security:
+    filter:
+      order: 10
+  zipkin:
+    base-url: http://zipkin:9411
+  rabbitmq:
+    addresses: rabbitmq:5672
+
+logging:
+  level:
+    root: WARN
+    com.example.user: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+
+clients:
+  notification:
+    url: http://notification:8081
+  review:
+    url: http://review:8084
+
+myhostname: localhost:8080
+
+access.token.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
+refresh.token.secret: uigyugt87TGFB*&t76V!YHHBbugy870909nby8998u0u0ohibg9yh9hy9yh9hhGv87
+
+access.token.expiration: 60
+refresh.token.expiration: 30
+
+cookies.domain: localhost
+
+application-version: 1.0.0

@@ -19,19 +19,6 @@ services:
       - db
     restart: always
 
-  backend:
-    build:
-      context: services/back-end
-      dockerfile: Dockerfile.backend
-    image: restaurant-advisor-react-backend
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/user
-    ports:
-      - "8080:8080"
-    restart: always
-    depends_on:
-      - db
-
   frontend:
     build:
       context: ../frontend
@@ -41,7 +28,11 @@ services:
       - "3000:3000"
     restart: always
     depends_on:
-      - backend
+      - restaurant
+      - review
+      - user
+      - image
+      - notification
 
   zipkin:
     image: openzipkin/zipkin
@@ -57,6 +48,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - spring
 
   eureka-server:
     image: alexius1905/eureka-server:latest
@@ -82,6 +75,85 @@ services:
     depends_on:
       - zipkin
       - eureka-server
+
+  restaurant:
+    image: alexius1905/restaurant:latest
+    container_name: restaurant
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - eureka-server
+      - rabbitmq
+
+  user:
+    image: alexius1905/user:latest
+    container_name: user
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - eureka-server
+      - rabbitmq
+  review:
+    image: alexius1905/review:latest
+    container_name: review
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - eureka-server
+      - rabbitmq
+
+  image:
+    image: alexius1905/image:latest
+    container_name: image
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - eureka-server
+      - rabbitmq
+
+  notification:
+    image: alexius1905/notification:latest
+    container_name: notification
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - eureka-server
+      - rabbitmq
 
 networks:
   db:
