@@ -104,7 +104,6 @@ services:
     depends_on:
       - db
       - zipkin
-      - eureka-server
       - rabbitmq
 
   user:
@@ -120,7 +119,6 @@ services:
     depends_on:
       - db
       - zipkin
-      - eureka-server
       - rabbitmq
   review:
     image: alexius1905/review:latest
@@ -135,7 +133,6 @@ services:
     depends_on:
       - db
       - zipkin
-      - eureka-server
       - rabbitmq
 
   image:
@@ -151,7 +148,6 @@ services:
     depends_on:
       - db
       - zipkin
-      - eureka-server
       - rabbitmq
 
   notification:
@@ -167,7 +163,6 @@ services:
     depends_on:
       - db
       - zipkin
-      - eureka-server
       - rabbitmq
 
 networks:

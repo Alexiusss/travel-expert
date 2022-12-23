@@ -1,0 +1,44 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: review
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://postgres/review
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
+  zipkin:
+    base-url: http://zipkin:9411
+
+
+logging:
+  level:
+    root: WARN
+    com.example.review: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: false
+
+clients:
+  auth:
+    url: http://user:8080
+
+application-version: 1.0.0
