@@ -14,7 +14,7 @@ spring:
           lob:
             non-contextual-creation: true
   datasource:
-    url: jdbc:postgresql://postgres/user
+    url: jdbc:postgresql://postgres:5432/user
     username: postgres
     password: 1234
   data:
