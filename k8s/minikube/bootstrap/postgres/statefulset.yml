@@ -16,13 +16,13 @@ spec:
       volumes:
         - name: postgres
           persistentVolumeClaim:
-            claimName: postgres-pc-volume
+            claimName: postgres-pc-volume-claim
       containers:
         - name: postgres
-          image: postgres
+          image: postgres:12-alpine
           imagePullPolicy: IfNotPresent
           volumeMounts:
-            - mountPath: /var/lib/postgresql
+            - mountPath: "/var/lib/postgresql/data/pgdata"
               name: postgres
           envFrom:
             - configMapRef:
@@ -32,8 +32,12 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: 100m
+              cpu: 500m
               memory: 512Mi
+          ports:
+            - containerPort: 5432
+              name: postgres
+              protocol: TCP
       restartPolicy: Always
   selector:
     matchLabels:

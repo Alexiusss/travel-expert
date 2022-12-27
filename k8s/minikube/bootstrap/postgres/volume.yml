@@ -12,14 +12,14 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: /mnt/data
+    path: "/mnt/data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pc-volume
+  name: postgres-pc-volume-claim
   labels:
-    type: local
+#    type: local
     app: postgres
 spec:
   storageClassName: manual

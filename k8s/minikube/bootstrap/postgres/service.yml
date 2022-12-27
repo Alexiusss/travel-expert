@@ -5,7 +5,14 @@ metadata:
 spec:
   selector:
     app: postgres
+#     https://stackoverflow.com/questions/53663954/trouble-connecting-to-postgres-from-outside-kubernetes-cluster
   ports:
-    - port: 5432
+    - name: postgres
+      port: 5432
       targetPort: 5432
-  type: ClusterIP
+      protocol: TCP
+  type: NodePort
+#  ports:
+#    - port: 5432
+#      targetPort: 5432
+#  type: ClusterIP
