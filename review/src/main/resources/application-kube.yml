@@ -13,7 +13,7 @@ spring:
           lob:
             non-contextual-creation: true
   datasource:
-    url: jdbc:postgresql://postgres/review
+    url: jdbc:postgresql://postgres:5432/review
     username: postgres
     password: 1234
   data:

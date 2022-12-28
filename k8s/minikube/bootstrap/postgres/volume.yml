@@ -19,7 +19,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgres-pc-volume-claim
   labels:
-#    type: local
     app: postgres
 spec:
   storageClassName: manual
