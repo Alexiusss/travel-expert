@@ -22,7 +22,7 @@ spec:
           image: postgres:12-alpine
           imagePullPolicy: IfNotPresent
           volumeMounts:
-            - mountPath: "/var/lib/postgresql/data/pgdata"
+            - mountPath: "/var/lib/postgresql/data"
               name: postgres
           envFrom:
             - configMapRef:
