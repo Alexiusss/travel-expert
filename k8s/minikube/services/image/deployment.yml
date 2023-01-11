@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image
+  labels:
+    app: image
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: image
+      labels:
+        app: image
+    spec:
+      containers:
+        - name: image
+          image: alexius1905/image:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: image
