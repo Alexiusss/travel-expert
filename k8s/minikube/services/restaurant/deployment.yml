@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant
+  labels:
+    app: restaurant
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: restaurant
+      labels:
+        app: restaurant
+    spec:
+      containers:
+        - name: restaurant
+          image: alexius1905/restaurant:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: restaurant
