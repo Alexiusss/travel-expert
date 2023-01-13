@@ -15,6 +15,7 @@
         <module>amqp</module>
         <module>review</module>
         <module>image</module>
+        <module>hotel</module>
     </modules>
 
     <parent>
