@@ -16,6 +16,10 @@ public class HotelService {
 
     private final HotelRepository hotelRepository;
 
+    public Hotel get(String id) {
+        return hotelRepository.getExisted(id);
+    }
+
     public List<Hotel> findAll(){
         return hotelRepository.findAll();
     }
@@ -24,5 +28,9 @@ public class HotelService {
         Assert.notNull(hotel, "restaurant must not be null");
         checkNew(hotel);
         return hotelRepository.save(hotel);
+    }
+
+    public void delete(String id) {
+        hotelRepository.deleteExisted(id);
     }
 }
