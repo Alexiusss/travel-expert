@@ -16,8 +16,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static com.example.hotel.util.HotelTestData.getNew;
+import static com.example.hotel.util.HotelTestData.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -38,9 +39,17 @@ class HotelControllerTest {
     }
 
     @Test
+    void get() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "1"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(HOTEL_MATCHER.contentJson(HOTEL_1));
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
-                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -52,5 +61,11 @@ class HotelControllerTest {
                 .content(JsonUtil.writeValue(newHotel)))
                 .andDo(print())
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + "3"))
+                .andExpect(status().isNoContent());
     }
 }
