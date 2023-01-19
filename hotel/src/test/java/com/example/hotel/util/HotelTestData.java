@@ -16,7 +16,7 @@ public class HotelTestData {
         hotel.setName("New hotel");
         hotel.setAddress("New hotel address");
         hotel.setEmail("newHotelEmail@gmail.com");
-        hotel.setPhoneNumber("+1234567890");
+        hotel.setPhoneNumber("+1 (234) 567-89-10");
         hotel.setWebsite("new-hotel.com");
         hotel.setHotelClass(5);
         hotel.setDescription("New hotel description");

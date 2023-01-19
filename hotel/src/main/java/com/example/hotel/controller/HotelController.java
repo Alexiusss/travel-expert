@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -32,7 +33,7 @@ public class HotelController {
     }
 
     @PostMapping
-    public ResponseEntity<Hotel> create(@RequestBody Hotel hotel) {
+    public ResponseEntity<Hotel> create(@Valid @RequestBody Hotel hotel) {
 
         Hotel created = hotelService.create(hotel);
 
