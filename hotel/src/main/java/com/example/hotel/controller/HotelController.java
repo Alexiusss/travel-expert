@@ -33,10 +33,11 @@ public class HotelController {
     }
 
     @PostMapping
-    public ResponseEntity<Hotel> create(@Valid @RequestBody Hotel hotel) {
+    public ResponseEntity<Hotel> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Hotel hotel) {
+        ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
+        if (isUnauthorized != null) return isUnauthorized;
 
         Hotel created = hotelService.create(hotel);
-
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -45,7 +46,10 @@ public class HotelController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Hotel> delete( @PathVariable String id) {
+    public ResponseEntity<Hotel> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
+        ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
+        if (isUnauthorized != null) return isUnauthorized;
+
         hotelService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
