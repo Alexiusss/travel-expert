@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.example.hotel.util.HotelTestData.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @Testcontainers
@@ -40,10 +40,17 @@ class HotelControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "1"))
+        perform(MockMvcRequestBuilders.get(REST_URL + HOTEL_1_ID))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(HOTEL_MATCHER.contentJson(HOTEL_1));
+    }
+
+    @Test
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
     }
 
     @Test
@@ -59,13 +66,31 @@ class HotelControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newHotel)))
-                .andDo(print())
                 .andExpect(status().isCreated());
     }
 
     @Test
+    void createInvalid() throws Exception {
+        Hotel newHotel = getNew();
+        newHotel.setEmail("");
+        newHotel.setName("");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newHotel)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + "3"))
+        perform(MockMvcRequestBuilders.delete(REST_URL + HOTEL_3_ID))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)))
+                .andDo(print());
     }
 }

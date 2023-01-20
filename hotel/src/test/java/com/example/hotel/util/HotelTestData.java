@@ -9,7 +9,13 @@ public class HotelTestData {
 
     public static final MatcherFactory.Matcher<Hotel> HOTEL_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Hotel.class, "createdAt", "modifiedAt");
 
-    public static final Hotel HOTEL_1 = new Hotel( "1", null, null, 0, "Hotel1 name", "Hotel1 address", "hotel1@gmail.com", "+1111111111", "hotel1.com", 5, "Hotel1 description", List.of("Sea view", "Kitchen"), List.of("single", "double"), List.of(), List.of("English", "Russian"),  List.of(), List.of("hotel1.jpg"));
+    public static final String HOTEL_1_ID ="1";
+    public static final String HOTEL_2_ID ="2";
+    public static final String HOTEL_3_ID ="3";
+    public static final String NOT_FOUND_ID ="1111";
+    public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);
+
+    public static final Hotel HOTEL_1 = new Hotel(HOTEL_1_ID , null, null, 0, "Hotel1 name", "Hotel1 address", "hotel1@gmail.com", "+1111111111", "hotel1.com", 5, "Hotel1 description", List.of("Sea view", "Kitchen"), List.of("single", "double"), List.of(), List.of("English", "Russian"),  List.of(), List.of("hotel1.jpg"));
 
     public static Hotel getNew() {
         Hotel hotel = new Hotel();
