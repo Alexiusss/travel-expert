@@ -94,6 +94,32 @@ class HotelControllerTest {
     }
 
     @Test
+    void update() throws Exception {
+        stubAuth();
+        Hotel updatedHotel = HOTEL_2;
+        updatedHotel.setName("Updated name");
+        updatedHotel.setAddress("Updated address");
+        updatedHotel.setPhoneNumber("+1 (234) 567-89-10");
+        perform(MockMvcRequestBuilders.put(REST_URL + HOTEL_2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedHotel)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        stubAuth();
+        Hotel updatedHotel = HOTEL_2;
+        updatedHotel.setName("");
+        updatedHotel.setEmail("");
+        perform(MockMvcRequestBuilders.put(REST_URL + HOTEL_2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedHotel)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+
+    @Test
     void delete() throws Exception {
         stubAuth();
         perform(MockMvcRequestBuilders.delete(REST_URL + HOTEL_3_ID))
