@@ -45,6 +45,15 @@ public class HotelController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Hotel> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,@Valid @RequestBody Hotel hotel, @PathVariable String id) {
+        ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
+        if (isUnauthorized != null) return isUnauthorized;
+
+        hotelService.update(hotel, id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Hotel> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
         ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
