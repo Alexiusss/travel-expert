@@ -17,3 +17,7 @@ eureka:
     enabled: false
     service-url:
       registerWithEureka: false
+
+clients:
+  auth:
+    url: http://localhost:7070
