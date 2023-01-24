@@ -32,7 +32,7 @@ public class HotelService {
     }
 
     public Hotel create(Hotel hotel) {
-        Assert.notNull(hotel, "restaurant must not be null");
+        Assert.notNull(hotel, "hotel must not be null");
         checkNew(hotel);
         return hotelRepository.save(hotel);
     }
