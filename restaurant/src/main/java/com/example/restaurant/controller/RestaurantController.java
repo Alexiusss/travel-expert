@@ -75,7 +75,7 @@ public class RestaurantController {
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
     public ResponseEntity<Restaurant> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
-        log.info("delete restaurant{}", id);
+        log.info("delete restaurant {}", id);
 
         ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
         if (isUnauthorized != null) return isUnauthorized;
