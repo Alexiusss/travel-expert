@@ -17,10 +17,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static com.example.hotel.controller.HotelExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
 import static com.example.hotel.util.HotelTestData.*;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -94,6 +97,31 @@ class HotelControllerTest {
     }
 
     @Test
+    void createWithInvalidEmailFormat() throws Exception {
+        stubAuth();
+        Hotel newHotel = getNew();
+        newHotel.setEmail("invalid_email");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newHotel)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(INVALID_EMAIL_FORMAT)));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void createWithDuplicateEmail() throws Exception {
+        Hotel duplicateHotel = getNew();
+        duplicateHotel.setEmail(HOTEL_1_EMAIL);
+        stubAuth();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(duplicateHotel)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", containsStringIgnoringCase(EXCEPTION_DUPLICATE_EMAIL)));
+    }
+
+    @Test
     void update() throws Exception {
         stubAuth();
         Hotel updatedHotel = HOTEL_2;
@@ -116,6 +144,30 @@ class HotelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedHotel)))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void updateWithInvalidEmailFormat() throws Exception {
+        stubAuth();
+        Hotel updatedHotel = HOTEL_3;
+        updatedHotel.setEmail("invalid_email");
+        perform(MockMvcRequestBuilders.put(REST_URL + HOTEL_3_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedHotel)))
+                .andExpect(jsonPath("message", containsStringIgnoringCase(INVALID_EMAIL_FORMAT)));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void updateWithDuplicateEmail() throws Exception {
+        stubAuth();
+        Hotel updatedHotel = HOTEL_3;
+        updatedHotel.setEmail(HOTEL_1_EMAIL);
+        updatedHotel.setPhoneNumber("+1 (234) 567-89-10");
+        perform(MockMvcRequestBuilders.put(REST_URL + HOTEL_3_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedHotel)))
+                .andExpect(jsonPath("message", containsStringIgnoringCase(EXCEPTION_DUPLICATE_EMAIL)));
     }
 
 
