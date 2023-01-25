@@ -20,7 +20,9 @@ public class HotelTestData {
     public static final String HOTEL_1_EMAIL = "hotel1@gmail.com";
     public static final String INVALID_EMAIL_FORMAT = "[email] must be a well-formed email address";
     public static final String NOT_FOUND_ID ="1111";
-    public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
+    public static final String NOT_FOUND_MESSAGE = String.format("Entity with id=%s not found", NOT_FOUND_ID);
+    public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
+    public static final AuthCheckResponse UN_AUTH_RESPONSE = new AuthCheckResponse("", List.of());
 
     public static final Hotel HOTEL_1 = new Hotel(HOTEL_1_ID , null, null, 0, "Hotel1 name", "Hotel1 address",HOTEL_1_EMAIL , "+1111111111", "hotel1.com", 5, "Hotel1 description", List.of("Sea view", "Kitchen"), List.of("single", "double"), List.of(), List.of("English", "Russian"),  List.of(), List.of("hotel1.jpg"));
     public static final Hotel HOTEL_2 = new Hotel(HOTEL_2_ID , null, null, 0, "Hotel2 name", "Hotel2 address", "hotel2@gmail.com", "+2222222222", "hotel2.com", 5, "Hotel2 description", List.of("Sea view", "Kitchen"), List.of("single", "double"), List.of(), List.of("English", "Russian"),  List.of(), List.of("hotel2.jpg"));
@@ -44,5 +46,10 @@ public class HotelTestData {
     public static void stubAuth() {
         stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
                 .willReturn(okForContentType("application/json", JsonUtil.writeValue(AUTH_ADMIN_RESPONSE))));
+    }
+
+    public static void stubUnAuth() {
+        stubFor(WireMock.get(urlMatching("/api/v1/auth/validate"))
+                .willReturn(okForContentType("application/json",JsonUtil.writeValue(UN_AUTH_RESPONSE))));
     }
 }

@@ -109,6 +109,16 @@ class HotelControllerTest {
     }
 
     @Test
+    public void createForbidden() throws Exception {
+        stubUnAuth();
+        Hotel newHotel = getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newHotel)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     void createWithDuplicateEmail() throws Exception {
         Hotel duplicateHotel = getNew();
@@ -158,6 +168,19 @@ class HotelControllerTest {
     }
 
     @Test
+    public void updateForbidden() throws Exception {
+        stubUnAuth();
+        Hotel updatedHotel = HOTEL_2;
+        updatedHotel.setName("Updated name");
+        updatedHotel.setAddress("Updated address");
+        updatedHotel.setPhoneNumber("+1 (234) 567-89-10");
+        perform(MockMvcRequestBuilders.put(REST_URL + HOTEL_2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedHotel)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     void updateWithDuplicateEmail() throws Exception {
         stubAuth();
@@ -185,5 +208,12 @@ class HotelControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)))
                 .andDo(print());
+    }
+
+    @Test
+    public void deleteForbidden() throws Exception {
+        stubUnAuth();
+        perform(MockMvcRequestBuilders.delete(REST_URL  + HOTEL_3_ID))
+                .andExpect(status().isForbidden());
     }
 }
