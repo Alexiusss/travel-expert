@@ -10,6 +10,7 @@ import RestaurantList from "../restaurant/RestaurantList";
 import RestaurantPage from "../restaurant/RestaurantPage";
 import ReviewsSection from "../pages/review/ReviewsSection";
 import {NotFound} from "../pages/NotFound";
+import HotelList from "../hotel/HotelList";
 
 const AppRouter = () => {
     const {isAdmin, isModerator, isAuth} = useAuth();
@@ -21,6 +22,7 @@ const AppRouter = () => {
                 <Route exact path={"/login"} component={LoginForm}/>
                 <Route exact path={"/register"} component={RegisterForm}/>
                 <Route exact path={"/restaurants/"} component={RestaurantList}/>
+                <Route exact path={"/hotels/"} component={HotelList}/>
                 <Route exact path={"/restaurants/:name"} component={RestaurantPage}/>
                 <Route path={["/profile/", "/profile/:authorName"]} component={ProfilePage}/>
                 {(isAdmin || isModerator) &&

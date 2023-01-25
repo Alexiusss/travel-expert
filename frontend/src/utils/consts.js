@@ -3,6 +3,7 @@ import store from "../store";
 
 export const USERS_ROUTE = '/users/'
 export const RESTAURANTS_ROUTE = '/restaurants/'
+export const HOTELS_ROUTE = '/hotels/'
 export const IMAGE_ROUTE = '/images/'
 export const REVIEWS_ROUTE = '/reviews/'
 export const PROFILE = '/profile/'
