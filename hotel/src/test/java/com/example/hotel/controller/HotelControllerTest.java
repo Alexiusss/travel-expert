@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static com.example.common.util.JsonUtil.asParsedJson;
 import static com.example.hotel.controller.HotelExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
 import static com.example.hotel.util.HotelTestData.*;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -68,10 +69,14 @@ class HotelControllerTest {
     }
 
     @Test
-    void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+    void getAllPaginated() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .param("page", "0")
+                .param("size","1")
+                .param("filter",""))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(HOTEL_1))));
     }
 
     @Test
