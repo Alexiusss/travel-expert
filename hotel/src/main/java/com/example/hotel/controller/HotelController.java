@@ -4,6 +4,7 @@ import com.example.hotel.model.Hotel;
 import com.example.hotel.service.HotelService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,9 +32,13 @@ public class HotelController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "") String filter
+    ) {
         log.info("get all hotels");
-        return ResponseEntity.ok().body(hotelService.findAll());
+        return ResponseEntity.ok().body(hotelService.findAllPaginated(PageRequest.of(page, size), filter));
     }
 
     @PostMapping

@@ -5,13 +5,13 @@ import com.example.clients.auth.AuthClient;
 import com.example.hotel.model.Hotel;
 import com.example.hotel.repository.HotelRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -27,8 +27,11 @@ public class HotelService {
         return hotelRepository.getExisted(id);
     }
 
-    public List<Hotel> findAll() {
-        return hotelRepository.findAll();
+    public Page<Hotel> findAllPaginated(Pageable pageable, String filter) {
+        if (filter.isEmpty()) {
+            return hotelRepository.findAll(pageable);
+        }
+        return hotelRepository.findAllByName(pageable, filter);
     }
 
     public Hotel create(Hotel hotel) {
