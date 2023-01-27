@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HotelRepository extends BaseRepository<Hotel> {
     @Query("SELECT h from Hotel h " +
-            "WHERE (h.name) LIKE lower(concat('%', :name,'%'))")
+            "WHERE lower(h.name) LIKE lower(concat('%', :name,'%'))")
     Page<Hotel> findAllByName(Pageable pageable, String name);
 }
