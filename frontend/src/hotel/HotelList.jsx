@@ -51,12 +51,14 @@ const HotelList = () => {
     return (
         <Container>
             <ItemFilter filter={filter} setFilter={setFilter}/>
-            <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/>
+            {(hotels.length > pageSizes[0]) ?
+                <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/> : null
+            }
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
                 : <>
                     <ItemGrid items={hotels} route={HOTELS_ROUTE}/>
-                    {totalPages > 0 ?
+                    {totalPages > 1 ?
                         <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"
                                     className="pagination"/>
                         : null

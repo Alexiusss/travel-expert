@@ -11,4 +11,8 @@ const getAll = (size = 20, page = 1, filter = "") => {
         });
 };
 
-export default {getAll}
+const get = (id) => {
+    return $api.get(HOTELS_ROUTE + `${id}`).then(({data}) => data);
+}
+
+export default {getAll, get}
