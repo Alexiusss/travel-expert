@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Container} from "@material-ui/core";
 import ItemGrid from "../components/items/ItemGrid";
-import {HOTELS_ROUTE} from "../utils/consts";
+import {getLocalizedErrorMessages, HOTELS_ROUTE} from "../utils/consts";
 import hotelService from "../services/HotelService"
 import SkeletonGrid from "../components/SkeletonGrid";
 import {trackPromise, usePromiseTracker} from "react-promise-tracker";
@@ -9,6 +9,10 @@ import Pagination from "@material-ui/lab/Pagination";
 import MySelect from "../components/UI/select/MySelect";
 import ItemFilter from "../components/items/ItemFilter";
 import {useHistory, useLocation} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import reviewService from "../services/ReviewService";
+import imageService from "../services/ImageService";
+import MyNotification from "../components/UI/notification/MyNotification";
 
 const HotelList = () => {
     const area = 'hotels';
@@ -22,6 +26,8 @@ const HotelList = () => {
     const [size, setSize] = useState(+params.get('size') || 12);
     const pageSizes = [12, 36, 96];
     const [filter, setFilter] = useState({config: null, query: params.get('query') || ''})
+    const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
+    const {t} = useTranslation();
 
     useEffect(() => {
         trackPromise(
@@ -48,6 +54,28 @@ const HotelList = () => {
         setPage(1);
     }
 
+    const removeHotel = ({id, fileNames}) => {
+        Promise.all([
+            imageService.removeAllByFileNames(fileNames),
+            reviewService.deleteAllByItemId(id),
+            hotelService.remove(id),
+        ])
+            .then(() => {
+                setHotels(hotels.filter(hotel => hotel.id !== id));
+                openAlert([t('record deleted')], "success");
+            })
+            .catch(
+            error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            });
+    }
+
+    const openAlert = (msg, severity) => {
+        setAlert({severity: severity, message: msg, open: true})
+    }
+
+
+
     return (
         <Container>
             <ItemFilter filter={filter} setFilter={setFilter}/>
@@ -57,7 +85,7 @@ const HotelList = () => {
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
                 : <>
-                    <ItemGrid items={hotels} route={HOTELS_ROUTE}/>
+                    <ItemGrid items={hotels} remove={removeHotel} route={HOTELS_ROUTE} />
                     {totalPages > 1 ?
                         <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"
                                     className="pagination"/>
@@ -65,6 +93,7 @@ const HotelList = () => {
                     }
                 </>
             }
+            <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </Container>
 
     );
