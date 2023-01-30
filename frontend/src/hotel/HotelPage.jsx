@@ -9,6 +9,7 @@ import ItemContact from "../components/items/ItemContact";
 import ItemImages from "../components/items/ItemImages";
 import ReviewsSection from "../pages/review/ReviewsSection";
 import {NotFound} from "../pages/NotFound";
+import imageService from "../services/ImageService";
 
 const HotelPage = () => {
     const {pathname} = useLocation();
@@ -23,12 +24,21 @@ const HotelPage = () => {
         trackPromise(Promise.all([hotelService.get(id), reviewService.getRating(id)]), area)
             .then((values) => {
                 const [hotel, rating] = values;
-                console.log(hotel)
                 setHotel(hotel);
                 setImages(hotel.fileNames);
                 setRating(rating);
             })
     }, [])
+
+    const removeImage = (fileName) => {
+        const filteredImages = images.filter(imageName => imageName !== fileName);
+        const updatedHotel = {
+            ...hotel,
+            fileNames: filteredImages,
+        }
+        Promise.all([hotelService.update(updatedHotel, id), imageService.remove(fileName)])
+            .then(() => setImages(filteredImages))
+    }
 
     return (
         <Container>
@@ -49,6 +59,7 @@ const HotelPage = () => {
                                 <ItemContact item={hotel}/>
                                 <br/>
                                 <ItemImages images={images}
+                                            removeImage={removeImage}
                                             promiseInProgress={promiseInProgress}
                                 />
                                 <br/>
