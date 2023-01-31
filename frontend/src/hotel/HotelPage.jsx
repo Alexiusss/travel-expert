@@ -10,6 +10,7 @@ import ItemImages from "../components/items/ItemImages";
 import ReviewsSection from "../pages/review/ReviewsSection";
 import {NotFound} from "../pages/NotFound";
 import imageService from "../services/ImageService";
+import About from "./About";
 
 const HotelPage = () => {
     const {pathname} = useLocation();
@@ -62,6 +63,8 @@ const HotelPage = () => {
                                             removeImage={removeImage}
                                             promiseInProgress={promiseInProgress}
                                 />
+                                <br/>
+                                <About item={hotel}/>
                                 <br/>
                                 {id.length ?
                                     <ReviewsSection itemId={id} rating={rating}/> : null
