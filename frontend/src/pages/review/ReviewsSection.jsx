@@ -143,7 +143,7 @@ const ReviewsSection = (props) => {
                 {props.itemId && (
                     <>
                         <div style={{display: "flex", justifyContent: 'space-between'}}>
-                            <h4>Reviews <span>({reviews.length})</span></h4>
+                            <h4>{t('reviews')} <span>({reviews.length})</span></h4>
                             {!isAuth ?
                                 <Tooltip title={t('only registered users can leave a review')}>
                                    <span>
