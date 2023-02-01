@@ -3,7 +3,7 @@ import {useLocation} from "react-router-dom";
 import {trackPromise, usePromiseTracker} from "react-promise-tracker";
 import reviewService from "../services/ReviewService";
 import hotelService from "../services/HotelService";
-import {Container} from "@material-ui/core";
+import {Container, Grid} from "@material-ui/core";
 import ItemPageHeader from "../components/items/ItemPageHeader";
 import ItemContact from "../components/items/ItemContact";
 import ItemImages from "../components/items/ItemImages";
@@ -57,14 +57,22 @@ const HotelPage = () => {
                                                 rating={rating}
                                 />
                                 <br/>
-                                <ItemContact item={hotel}/>
-                                <br/>
                                 <ItemImages images={images}
                                             removeImage={removeImage}
                                             promiseInProgress={promiseInProgress}
                                 />
                                 <br/>
-                                <About item={hotel}/>
+                                <Grid container
+                                      spacing={3}
+                                      direction="row"
+                                >
+                                    <Grid xs sm md item>
+                                        <About item={hotel}/>
+                                    </Grid>
+                                    <Grid xs={12} sm={6} md={4} item>
+                                        <ItemContact item={hotel}/>
+                                    </Grid>
+                                </Grid>
                                 <br/>
                                 {id.length ?
                                     <ReviewsSection itemId={id} rating={rating}/> : null

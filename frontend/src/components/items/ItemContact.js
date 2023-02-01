@@ -1,19 +1,19 @@
 import React from 'react';
-import {Card, CardContent, Typography} from "@material-ui/core";
+import {Card, CardContent, Grid, Typography} from "@material-ui/core";
 
-const ItemContact = (props) => {
+const ItemContact = ({item}) => {
     return (
-        <Card>
-            <CardContent>
-                <Typography variant="h5" component="div">
-                    <h5>Location and contact</h5>
-                </Typography>
-                <div>Address: {props.item.address}</div>
-                <div>Email: {props.item.email}</div>
-                <div>Phone number: {props.item.phoneNumber}</div>
-                <div>Website: {props.item.website}</div>
-            </CardContent>
-        </Card>
+            <Card>
+                <CardContent>
+                    <Typography variant="h5" component="div">
+                        <h5>Location and contact</h5>
+                    </Typography>
+                    <div>Address: {item.address}</div>
+                    <div>Email: {item.email}</div>
+                    <div>Phone number: {item.phoneNumber}</div>
+                    <div>Website: {item.website}</div>
+                </CardContent>
+            </Card>
     );
 };
 
