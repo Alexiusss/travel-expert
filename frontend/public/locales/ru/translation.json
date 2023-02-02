@@ -54,12 +54,14 @@
   "enter website": "Введите адрес сайта",
 
   "hotels": "Отели",
+  "hotel editor": "Редактор отеля",
   "about": "О нас",
   "services and facilitates": "Услуги и удобства",
   "room features": "Оснащенность номера",
   "room types": "Типы номеров",
   "hotel style": "Стиль отеля",
   "languages used": "Языки, используемые в общении",
+  "enter hotel class": "Введите класс отеля",
 
   "location and contact": "Местоположение и контактные данные",
   "address": "Адрес",

@@ -15,6 +15,10 @@ const get = (id) => {
     return $api.get(HOTELS_ROUTE + `${id}`).then(({data}) => data);
 }
 
+const create = (data) => {
+    return $api.post(HOTELS_ROUTE, data);
+}
+
 const update = (data, id) => {
     return $api.put(HOTELS_ROUTE+ `${id}`, data);
 }
@@ -23,4 +27,4 @@ const remove = (id) => {
     return $api.delete(HOTELS_ROUTE+ `${id}`);
 }
 
-export default {getAll, get, remove, update}
+export default {getAll, get, create, update, remove}

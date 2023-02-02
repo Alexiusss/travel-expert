@@ -3,7 +3,7 @@ import {useTranslation} from "react-i18next";
 
 const ButtonSection = (props) => {
     const {t} = useTranslation();
-    const {save, close} = props
+    const {save = Function.prototype, close = Function.prototype} = props
 
     return (
         <div style={{marginTop: 10}}>

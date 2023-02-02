@@ -13,6 +13,10 @@ import {useTranslation} from "react-i18next";
 import reviewService from "../services/ReviewService";
 import imageService from "../services/ImageService";
 import MyNotification from "../components/UI/notification/MyNotification";
+import MyButton from "../components/UI/button/MyButton";
+import {useAuth} from "../components/hooks/UseAuth";
+import MyModal from "../components/UI/modal/MyModal";
+import HotelEditor from "./HotelEditor";
 
 const HotelList = () => {
     const area = 'hotels';
@@ -21,30 +25,21 @@ const HotelList = () => {
     const {push} = useHistory();
     const params = new URLSearchParams(search);
     const [hotels, setHotels] = useState([]);
+    const {isAdmin} = useAuth();
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(+params.get('page') || 1);
     const [size, setSize] = useState(+params.get('size') || 12);
     const pageSizes = [12, 36, 96];
     const [filter, setFilter] = useState({config: null, query: params.get('query') || ''})
+    const [modal, setModal] = useState(false);
     const [alert, setAlert] = useState({open: false, message: '', severity: 'info'});
     const {t} = useTranslation();
 
-    useEffect(() => {
-        trackPromise(
-            hotelService.getAll(size, page, filter.query), area).then(({data}) => {
-            setHotels(data.content);
-            setTotalPages(data.totalPages)
-        });
-        if (filter.query.length) {
-            push({
-                pathname,
-                search: `?query=${filter.query}&size=${size}&page=${page}`,
-            });
-        } else {
-            push(pathname)
-        }
-    }, [setHotels, page, size, filter]);
 
+    const createHotel = (newHotel) => {
+        setHotels([...hotels, newHotel])
+        setModal(false)
+    }
     const changePage = (e, value) => {
         setPage(value);
     }
@@ -74,10 +69,33 @@ const HotelList = () => {
         setAlert({severity: severity, message: msg, open: true})
     }
 
-
+    useEffect(() => {
+        trackPromise(
+            hotelService.getAll(size, page, filter.query), area).then(({data}) => {
+            setHotels(data.content);
+            setTotalPages(data.totalPages)
+        });
+        if (filter.query.length) {
+            push({
+                pathname,
+                search: `?query=${filter.query}&size=${size}&page=${page}`,
+            });
+        } else {
+            push(pathname)
+        }
+    }, [setHotels, page, size, filter]);
 
     return (
         <Container>
+            {isAdmin ?
+                <>
+                    <MyButton style={{marginTop: 10}} className={"btn btn-outline-primary ml-2 btn-sm"}
+                              onClick={() => setModal(true)}>
+                        {t("add")}
+                    </MyButton>
+                    <hr style={{margin: '15px 0'}}/>
+                </> : null
+            }
             <ItemFilter filter={filter} setFilter={setFilter}/>
             {(hotels.length > pageSizes[0]) ?
                 <MySelect size={size} changeSize={changeSize} pageSizes={pageSizes}/> : null
@@ -93,6 +111,12 @@ const HotelList = () => {
                     }
                 </>
             }
+            <MyModal visible={modal} setVisible={setModal}>
+                <HotelEditor
+                     create={createHotel} setAlert={setAlert}
+                                   modal={modal} setModal={setModal}
+                />
+            </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
         </Container>
 
