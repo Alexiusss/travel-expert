@@ -61,7 +61,8 @@
   "room types": "Типы номеров",
   "hotel style": "Стиль отеля",
   "languages used": "Языки, используемые в общении",
-  "enter hotel class": "Введите класс отеля",
+  "select hotel class": "Выберите класс отеля:",
+  "stars": "звезд(а)",
 
   "location and contact": "Местоположение и контактные данные",
   "address": "Адрес",

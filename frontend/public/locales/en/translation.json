@@ -62,7 +62,8 @@
   "room types": "Room types",
   "hotel style": "Hotel style",
   "languages used": "Languages used",
-  "enter hotel class": "Enter hotel class",
+  "select hotel class": "Select hotel class:",
+  "stars": "star(s)",
 
   "location and contact": "Location and contact",
   "address": "Address",

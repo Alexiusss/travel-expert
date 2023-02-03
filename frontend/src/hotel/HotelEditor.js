@@ -5,6 +5,8 @@ import {getLocalizedErrorMessages} from "../utils/consts";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css'
 import ButtonSection from "../components/UI/button/ButtonSection";
+import {Button} from "@material-ui/core";
+import imageService from "../services/ImageService";
 
 const HotelEditor = (props) => {
     const {t} = useTranslation();
@@ -16,11 +18,12 @@ const HotelEditor = (props) => {
     const [description, setDescription] = useState('');
     const [hotelClass, setHotelClass] = useState('');
     const [id, setId] = useState(null);
-
+    const [images, setImages] = useState([]);
+    const [fileNames, setFileNames] = useState([]);
 
     const saveRestaurant = (e) => {
         e.preventDefault()
-        const hotel = {name, email, address, phoneNumber, website, description, hotelClass, id}
+        const hotel = {name, email, address, phoneNumber, website, description, hotelClass, fileNames, id}
         hotelService.create(hotel)
             .then(response => {
                 props.create(response.data);
@@ -33,9 +36,20 @@ const HotelEditor = (props) => {
 
     }
 
+    const uploadImages = (images) => {
+        imageService.post(images)
+            .then(response => {
+                setFileNames(prevFileNames => prevFileNames.concat(response.data))
+            })
+            .catch(error => {
+                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+            })
+    }
+
     const openAlert = (msg, severity) => {
         props.setAlert({severity: severity, message: msg, open: true})
     }
+
     const close = (e) => {
         e.preventDefault();
         props.setModal(false)
@@ -57,6 +71,12 @@ const HotelEditor = (props) => {
             cleanForm()
         }
     }, [props.modal]);
+
+    useEffect(() => {
+        if (props.modal && images.length > 0) {
+            uploadImages(images);
+        }
+    }, [images])
 
     return (
         <div className='container' style={{padding: 25}}>
@@ -118,7 +138,7 @@ const HotelEditor = (props) => {
                     />
                 </div>
                 <div className="form-group" style={{marginTop: 5}}>
-                    <label> Select hotel class:
+                    <label>  {t("select hotel class")}
                         <select
                             style={{marginLeft: 10, marginRight: 10}}
                             value={hotelClass}
@@ -131,8 +151,16 @@ const HotelEditor = (props) => {
                             <option value="4">4</option>
                             <option value="5">5</option>
                         </select>
-                        star(s)
+                        {t("stars")}
                     </label>
+                </div>
+                <div className="form-group" style={{marginTop: 5}}>
+                    <Button variant="contained" component="label">
+                        {t('upload image')}
+                        <input hidden accept="image/*" multiple type="file"
+                               onChange={e => setImages(Array.from(e.target.files))}/>
+                    </Button>
+                    <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                 </div>
                 <ButtonSection
                     save={saveRestaurant}
