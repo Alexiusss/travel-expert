@@ -20,19 +20,49 @@ const HotelEditor = (props) => {
     const [id, setId] = useState(null);
     const [images, setImages] = useState([]);
     const [fileNames, setFileNames] = useState([]);
+    const [servicesAndFacilitates, setServicesAndFacilitates] = useState([]);
+    const [roomTypes, setRoomTypes] = useState([]);
+    const [roomFeatures, setRoomFeatures] = useState([]);
+    const [languagesUsed, setLanguagesUsed] = useState([]);
 
-    const saveRestaurant = (e) => {
+    const saveHotel = (e) => {
         e.preventDefault()
-        const hotel = {name, email, address, phoneNumber, website, description, hotelClass, fileNames, id}
-        hotelService.create(hotel)
-            .then(response => {
-                props.create(response.data);
-                cleanForm()
-                openAlert([t('record saved')], "success");
-            })
-            .catch(error => {
-                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
-            })
+
+        const hotel = {
+            name,
+            email,
+            address,
+            phoneNumber,
+            website,
+            description,
+            hotelClass,
+            fileNames,
+            servicesAndFacilitates,
+            roomTypes,
+            roomFeatures,
+            languagesUsed,
+            id
+        }
+        if (id) {
+            hotelService.update(hotel, id)
+                .then(() => {
+                    props.update(hotel);
+                    cleanForm();
+                })
+                .catch(error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                })
+        } else {
+            hotelService.create(hotel)
+                .then(response => {
+                    props.create(response.data);
+                    cleanForm()
+                    openAlert([t('record saved')], "success");
+                })
+                .catch(error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                })
+        }
 
     }
 
@@ -63,8 +93,32 @@ const HotelEditor = (props) => {
         setWebsite('');
         setDescription('');
         setHotelClass('')
+        setImages([]);
+        setFileNames([]);
+        setServicesAndFacilitates([]);
+        setRoomTypes([]);
+        setRoomFeatures([]);
+        setLanguagesUsed([]);
         setId(null);
     };
+
+    useEffect(() => {
+        if (props.hotelFromDB.id) {
+            setName('' + props.hotelFromDB.name);
+            setEmail('' + props.hotelFromDB.email);
+            setAddress('' + props.hotelFromDB.address);
+            setPhoneNumber('' + props.hotelFromDB.phoneNumber);
+            setWebsite('' + props.hotelFromDB.website);
+            setFileNames(props.hotelFromDB.fileNames || [])
+            setDescription(props.hotelFromDB.description || '')
+            setHotelClass(props.hotelFromDB.hotelClass || '')
+            setServicesAndFacilitates(props.hotelFromDB.servicesAndFacilitates || [])
+            setRoomTypes(props.hotelFromDB.roomTypes || [])
+            setRoomFeatures(props.hotelFromDB.roomFeatures || [])
+            setLanguagesUsed(props.hotelFromDB.languagesUsed || [])
+            setId('' + props.hotelFromDB.id);
+        }
+    }, [props.hotelFromDB]);
 
     useEffect(() => {
         if (!props.modal) {
@@ -163,7 +217,7 @@ const HotelEditor = (props) => {
                     <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                 </div>
                 <ButtonSection
-                    save={saveRestaurant}
+                    save={saveHotel}
                     close={close}
                 />
             </form>

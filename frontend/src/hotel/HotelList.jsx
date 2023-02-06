@@ -25,6 +25,7 @@ const HotelList = () => {
     const {push} = useHistory();
     const params = new URLSearchParams(search);
     const [hotels, setHotels] = useState([]);
+    const [hotelFromDB, setHotelFromDB] = useState({})
     const {isAdmin} = useAuth();
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(+params.get('page') || 1);
@@ -40,6 +41,37 @@ const HotelList = () => {
         setHotels([...hotels, newHotel])
         setModal(false)
     }
+
+    const update = (hotel) => {
+        hotelService.get(hotel.id)
+            .then(response => {
+                setHotelFromDB(response);
+                setModal(true);
+            })
+            .catch(
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
+    }
+
+    const updateHotel = (updatedHotel) => {
+        setModal(false);
+        setHotels(hotels => {
+                return hotels.map(hotel => {
+                    return hotel.id === updatedHotel.id
+                        ?
+                        {
+                            ...hotel,
+                            name: updatedHotel.name,
+                        }
+                        :
+                        hotel
+                })
+            }
+        )
+        openAlert([t('record saved')], "success")
+    }
+
     const changePage = (e, value) => {
         setPage(value);
     }
@@ -60,9 +92,9 @@ const HotelList = () => {
                 openAlert([t('record deleted')], "success");
             })
             .catch(
-            error => {
-                openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
-            });
+                error => {
+                    openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
+                });
     }
 
     const openAlert = (msg, severity) => {
@@ -103,7 +135,7 @@ const HotelList = () => {
             {promiseInProgress
                 ? <SkeletonGrid listsToRender={16}/>
                 : <>
-                    <ItemGrid items={hotels} remove={removeHotel} route={HOTELS_ROUTE} />
+                    <ItemGrid items={hotels} update={update} remove={removeHotel} route={HOTELS_ROUTE}/>
                     {totalPages > 1 ?
                         <Pagination count={totalPages} page={page} onChange={changePage} shape="rounded"
                                     className="pagination"/>
@@ -113,8 +145,12 @@ const HotelList = () => {
             }
             <MyModal visible={modal} setVisible={setModal}>
                 <HotelEditor
-                     create={createHotel} setAlert={setAlert}
-                                   modal={modal} setModal={setModal}
+                    create={createHotel}
+                    hotelFromDB={hotelFromDB}
+                    update={updateHotel}
+                    setAlert={setAlert}
+                    modal={modal}
+                    setModal={setModal}
                 />
             </MyModal>
             <MyNotification open={alert.open} setOpen={setAlert} message={alert.message} severity={alert.severity}/>
