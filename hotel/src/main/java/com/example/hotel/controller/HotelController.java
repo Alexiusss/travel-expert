@@ -2,12 +2,13 @@ package com.example.hotel.controller;
 
 import com.example.hotel.model.Hotel;
 import com.example.hotel.service.HotelService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,12 +26,14 @@ public class HotelController {
 
     private final HotelService hotelService;
 
+    @Operation(summary = "Get a hotel by its id")
     @GetMapping("/{id}")
     public ResponseEntity<Hotel> get(@PathVariable String id) {
         log.info("get hotel {}", id);
         return ResponseEntity.ok(hotelService.get(id));
     }
 
+    @Operation(summary = "Return a list of hotels and filtered according the query parameters")
     @GetMapping
     public ResponseEntity<?> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -41,6 +44,8 @@ public class HotelController {
         return ResponseEntity.ok().body(hotelService.findAllPaginated(PageRequest.of(page, size), filter));
     }
 
+    @Operation(summary = "Create a new hotel", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<Hotel> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Hotel hotel) {
         ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
@@ -55,6 +60,8 @@ public class HotelController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @Operation(summary = "Update a hotel by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
     public ResponseEntity<Hotel> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Hotel hotel, @PathVariable String id) {
         ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
@@ -64,6 +71,8 @@ public class HotelController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(summary = "Delete a hotel by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
     public ResponseEntity<Hotel> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
         ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
