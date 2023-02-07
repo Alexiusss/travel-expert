@@ -16,7 +16,7 @@ import java.net.URI;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Controller
+@RestController
 @RequestMapping(path = HotelController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
@@ -56,7 +56,7 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Hotel> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,@Valid @RequestBody Hotel hotel, @PathVariable String id) {
+    public ResponseEntity<Hotel> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Hotel hotel, @PathVariable String id) {
         ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
         if (isUnauthorized != null) return isUnauthorized;
 

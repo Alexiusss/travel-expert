@@ -16,13 +16,14 @@ const HotelEditor = (props) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [website, setWebsite] = useState('');
     const [description, setDescription] = useState('');
-    const [hotelClass, setHotelClass] = useState('');
+    const [hotelClass, setHotelClass] = useState(0);
     const [id, setId] = useState(null);
     const [images, setImages] = useState([]);
     const [fileNames, setFileNames] = useState([]);
     const [servicesAndFacilitates, setServicesAndFacilitates] = useState([]);
     const [roomTypes, setRoomTypes] = useState([]);
     const [roomFeatures, setRoomFeatures] = useState([]);
+    const [hotelStyle, setHotelStyle] = useState([]);
     const [languagesUsed, setLanguagesUsed] = useState([]);
 
     const saveHotel = (e) => {
@@ -40,6 +41,7 @@ const HotelEditor = (props) => {
             servicesAndFacilitates,
             roomTypes,
             roomFeatures,
+            hotelStyle,
             languagesUsed,
             id
         }
@@ -92,12 +94,13 @@ const HotelEditor = (props) => {
         setPhoneNumber('');
         setWebsite('');
         setDescription('');
-        setHotelClass('')
+        setHotelClass(0)
         setImages([]);
         setFileNames([]);
         setServicesAndFacilitates([]);
         setRoomTypes([]);
         setRoomFeatures([]);
+        setHotelStyle([]);
         setLanguagesUsed([]);
         setId(null);
     };
@@ -111,7 +114,7 @@ const HotelEditor = (props) => {
             setWebsite('' + props.hotelFromDB.website);
             setFileNames(props.hotelFromDB.fileNames || [])
             setDescription(props.hotelFromDB.description || '')
-            setHotelClass(props.hotelFromDB.hotelClass || '')
+            setHotelClass(props.hotelFromDB.hotelClass || 0)
             setServicesAndFacilitates(props.hotelFromDB.servicesAndFacilitates || [])
             setRoomTypes(props.hotelFromDB.roomTypes || [])
             setRoomFeatures(props.hotelFromDB.roomFeatures || [])

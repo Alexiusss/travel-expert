@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.*;
@@ -19,12 +20,13 @@ import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.List;
 
-@Data
+@Entity
+@Access(AccessType.FIELD)
+//@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @ToString
 @Table(name = "hotels")
