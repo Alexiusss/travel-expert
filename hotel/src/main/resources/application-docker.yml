@@ -1,0 +1,41 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: hotel
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://postgres/hotel
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
+  zipkin:
+    base-url: http://zipkin:9411
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+
+logging:
+  level:
+    root: WARN
+    com.example.hotel: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+clients:
+  auth:
+    url: http://localhost:8080
+
+application-version: 1.0.0
