@@ -11,6 +11,8 @@ import ReviewsSection from "../pages/review/ReviewsSection";
 import {NotFound} from "../pages/NotFound";
 import imageService from "../services/ImageService";
 import About from "./About";
+import MyModal from "../components/UI/modal/MyModal";
+import AboutEditor from "./AboutEditor";
 
 const HotelPage = () => {
     const {pathname} = useLocation();
@@ -20,6 +22,7 @@ const HotelPage = () => {
     const [hotel, setHotel] = useState({});
     const [images, setImages] = useState([]);
     const [rating, setRating] = useState({});
+    const [modal, setModal] = useState(false);
 
     useEffect(() => {
         trackPromise(Promise.all([hotelService.get(id), reviewService.getRating(id)]), area)
@@ -67,7 +70,7 @@ const HotelPage = () => {
                                       direction="row"
                                 >
                                     <Grid xs sm md item>
-                                        <About item={hotel}/>
+                                        <About item={hotel} setModal={setModal}/>
                                     </Grid>
                                     <Grid xs={12} sm={6} md={4} item>
                                         <ItemContact item={hotel}/>
@@ -76,6 +79,11 @@ const HotelPage = () => {
                                 <br/>
                                 {id.length ?
                                     <ReviewsSection itemId={id} rating={rating}/> : null
+                                }
+                                {modal ?
+                                    <MyModal visible={modal} setVisible={setModal}>
+                                        <AboutEditor setModal={setModal} hotel={hotel}/>
+                                    </MyModal> : null
                                 }
                             </>
                             :
