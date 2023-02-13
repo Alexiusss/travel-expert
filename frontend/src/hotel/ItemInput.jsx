@@ -10,7 +10,7 @@ const ItemInput = ({items = [], setItems = Function.prototype, name = ''}) => {
                 limitTags={2}
                 options={testItems}
                 //getOptionLabel={(option) => option}
-                onChange={() => setItems}
+                onChange={(e, value) => setItems(value)}
                 defaultValue={items}
                 renderInput={(params) => (
                     <TextField {...params} label={name} style={{width: 400}}/>

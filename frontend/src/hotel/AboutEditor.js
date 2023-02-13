@@ -5,15 +5,18 @@ import ItemInput from "./ItemInput";
 
 const AboutEditor = (props) => {
     const {t} = useTranslation();
-    const {setModal = Function.prototype} = props;
+    const {setModal = Function.prototype, save = Function.prototype} = props;
     const {hotel = {}} = props;
-    const [services, setServices] = useState(hotel.servicesAndFacilitates || [])
-    const [roomFeatures, setRoomFeatures] = useState(hotel.roomFeatures || [])
-    const [roomTypes, setRoomTypes] = useState(hotel.roomTypes || [])
-    const [hotelStyle, setHotelStyle] = useState(hotel.hotelStyle || [])
-    const [languagesUsed, setLanguagesUsed] = useState(hotel.languagesUsed || [])
+    const [services, setServices] = useState(hotel.servicesAndFacilitates || []);
+    const [roomFeatures, setRoomFeatures] = useState(hotel.roomFeatures || []);
+    const [roomTypes, setRoomTypes] = useState(hotel.roomTypes || []);
+    const [hotelStyle, setHotelStyle] = useState(hotel.hotelStyle || []);
+    const [languagesUsed, setLanguagesUsed] = useState(hotel.languagesUsed || []);
 
-    const save = () => {}
+    const prepareAndSave = () => {
+        const updatedHotel = {...hotel, services, roomFeatures, roomTypes, hotelStyle, languagesUsed}
+        save(updatedHotel);
+    }
 
     return (
         <div className='container' style={{padding: 25}}>
@@ -30,7 +33,7 @@ const AboutEditor = (props) => {
             <br/>
             <ItemInput items={languagesUsed} setItems={setLanguagesUsed} name={t('languages used')}/>
             <br/>
-            <ButtonSection save={save} close={() => setModal(false)} name={t('services and facilitates')}/>
+            <ButtonSection save={prepareAndSave} close={() => setModal(false)} name={t('services and facilitates')}/>
         </div>
     );
 };
