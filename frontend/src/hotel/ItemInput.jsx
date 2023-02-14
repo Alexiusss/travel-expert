@@ -6,6 +6,8 @@ const ItemInput = ({items = [], setItems = Function.prototype, name = ''}) => {
     return (
         <div style={{marginTop: 5}}>
             <Autocomplete
+                //  https://stackoverflow.com/a/72136454
+                value={items || null}
                 multiple
                 limitTags={2}
                 options={testItems}

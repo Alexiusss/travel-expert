@@ -40,7 +40,6 @@ const HotelPage = () => {
     }, [])
 
     const updateHotel = (updatedHotel) => {
-
         hotelService.update(updatedHotel, id)
             .then(() => {
                 setModal(false);
