@@ -11,7 +11,7 @@ const About = ({item = {}, setModal = Function.prototype}) => {
     const types = item.roomTypes || [];
     const styles = item.hotelStyle || [];
     const languages = item.languagesUsed || [];
-    const {t} = useTranslation();
+    const {t} = useTranslation(['translation', 'hotel']);
     const {isAdmin} = useAuth();
 
     return (
@@ -19,7 +19,8 @@ const About = ({item = {}, setModal = Function.prototype}) => {
             <CardContent>
                 <div style={{display: "flex", justifyContent: 'space-between'}}>
                     <Typography variant="h5" component="div">
-                        <h5>{t('about')}</h5>
+                        {/*https://github.com/i18next/react-i18next-gitbook/blob/master/latest/usetranslation-hook.md*/}
+                        <h5>{t('about', {ns: 'hotel'})}</h5>
                     </Typography>
                     {
                         isAdmin ?
@@ -34,19 +35,19 @@ const About = ({item = {}, setModal = Function.prototype}) => {
                 </div>
                 <hr/>
                 {
-                    services.length > 0 ? <FeatureList name={t('services and facilitates')} items={services}/> : null
+                    services.length > 0 ? <FeatureList name={t('services and facilitates', {ns: 'hotel'})} items={services}/> : null
                 }
                 {
-                    features.length > 0 ? <FeatureList name={t('room features')} items={features}/> : null
+                    features.length > 0 ? <FeatureList name={t('room features', {ns: 'hotel'})} items={features}/> : null
                 }
                 {
-                    types.length > 0 ? <FeatureList name={t('room types')} items={types}/> : null
+                    types.length > 0 ? <FeatureList name={t('room types', {ns: 'hotel'})} items={types}/> : null
                 }
                 {
-                    styles.length > 0 ? <FeatureList name={t('hotel style')} items={styles}/> : null
+                    styles.length > 0 ? <FeatureList name={t('hotel style', {ns: 'hotel'})} items={styles}/> : null
                 }
                 {
-                    languages.length > 0 ? <FeatureList name={t('languages used')} items={languages}/> : null
+                    languages.length > 0 ? <FeatureList name={t('languages used', {ns: 'hotel'})} items={languages}/> : null
                 }
             </CardContent>
         </Card>

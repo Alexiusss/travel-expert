@@ -1,8 +1,11 @@
 import React from 'react';
 import {Autocomplete} from "@material-ui/lab";
 import {TextField} from "@material-ui/core";
+import {useTranslation} from "react-i18next";
 
-const ItemInput = ({items = [], setItems = Function.prototype, name = ''}) => {
+const ItemInput = ({items = [], setItems = Function.prototype, name = '', options = []}) => {
+    const {t} = useTranslation(['translation', 'hotel']);
+
     return (
         <div style={{marginTop: 5}}>
             <Autocomplete
@@ -10,8 +13,8 @@ const ItemInput = ({items = [], setItems = Function.prototype, name = ''}) => {
                 value={items || null}
                 multiple
                 limitTags={2}
-                options={testItems}
-                //getOptionLabel={(option) => option}
+                options={options}
+                getOptionLabel={(option) => t(option, {ns: 'hotel'})}
                 onChange={(e, value) => setItems(value)}
                 defaultValue={items}
                 renderInput={(params) => (
@@ -23,5 +26,3 @@ const ItemInput = ({items = [], setItems = Function.prototype, name = ''}) => {
 };
 
 export default ItemInput;
-
-const testItems = ['item1', 'item2', 'item3', 'item4', 'item4']

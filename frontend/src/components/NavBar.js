@@ -12,7 +12,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 const NavBar = () => {
-    const {t} = useTranslation();
+    const {t} = useTranslation(['translation', 'hotel']);
     const {isAuth, isAdmin, isModerator, authUserId} = useAuth();
     const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ const NavBar = () => {
                         </Nav.Item>
                         <Nav.Item>
                             <Link to={HOTELS_ROUTE} className="nav-link">
-                                {t("hotels")}
+                                {t("hotels", {ns: 'hotel'})}
                             </Link>
                         </Nav.Item>
                         {isAdmin || isModerator ?
