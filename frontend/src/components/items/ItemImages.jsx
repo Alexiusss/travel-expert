@@ -10,7 +10,7 @@ const ItemImages = (props) => {
     const {images = [], itemId, removeImage = Function.prototype} = props;
 
     return (
-        <Box sx={{height: 190, overflowY: 'scroll' }}>
+        <Box sx={{height: 190, overflow: 'scroll' }}>
         <ImageList
              cols={3}
         >

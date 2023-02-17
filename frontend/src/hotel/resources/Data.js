@@ -1,0 +1,9 @@
+export const SERVICES_AND_FACILITATES_LIST = ["free parking", "free WiFi", "fitness center with gym / workout room", "bar / lounge", "game room", "hiking", "electric vehicle charging station", "parking", "wifi", "yoga classes", "coffee shop", "restaurant", "breakfast available", "complimentary tea", "outdoor dining area", "wine / champagne", "billiards", "table tennis", "walking tours", "board games / puzzles", "pets allowed ( dog / pet friendly )", "car hire", "taxi service", "banquet room", "meeting rooms", "photo copier / fax in business center", "baggage storage", "gift shop", "newspaper", "non-smoking hotel", "outdoor fireplace", "outdoor furniture", "picnic area", "shared lounge / TV area", "sun terrace", "first aid kit", "umbrella", "24-hour check-in", "24-hour front desk", "express check-in / check-out", "private check-in / check-out", "clothes dryer", "laundry service", "washing machine", "ironing service"];
+
+export const ROOM_FEATURES_LIST = ["allergy-free room", "blackout curtains", "desk", "dining area", "coffee / tea maker", "cable / satellite tv", "extra long beds", "walk-in shower", "soundproof rooms", "air purifier", "bathrobes", "fireplace", "housekeeping", "interconnected rooms available", "private balcony", "safe", "seating area", "sofa", "telephone", "wardrobe / closet", "bottled water", "clothes rack", "iron", "laptop safe", "private bathrooms", "tile / marble floor", "wake-up service / alarm clock", "minibar", "refrigerator", "electric kettle", "kitchenware", "flat screen tv", "sofa bed", "bath / shower", "complimentary toiletries", "hair dryer"];
+
+export const ROOM_TYPES_LIST = ["city view", "ocean view", "landmark view", "bridal suite", "non-smoking rooms", "suites", "family rooms"];
+
+export const HOTEL_STYLES_LIST = ["modern", "green", "ocean view", "charming", "historic hotel", "classic", "romantic"];
+
+export const LANGUAGES_LIST = ["english", "russian", "french", "italian", "spanish", "german", "farsi"]

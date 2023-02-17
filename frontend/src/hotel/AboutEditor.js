@@ -2,6 +2,13 @@ import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import ButtonSection from "../components/UI/button/ButtonSection";
 import ItemInput from "./ItemInput";
+import {
+    HOTEL_STYLES_LIST,
+    LANGUAGES_LIST,
+    ROOM_FEATURES_LIST,
+    ROOM_TYPES_LIST,
+    SERVICES_AND_FACILITATES_LIST
+} from "./resources/Data";
 
 const AboutEditor = (props) => {
     const {t} = useTranslation(['translation', 'hotel']);
@@ -27,31 +34,31 @@ const AboutEditor = (props) => {
             <ItemInput
                 items={servicesAndFacilitates} setItems={setServicesAndFacilitates}
                 name={t('services and facilitates', {ns: 'hotel'})}
-                options={OPTION_LIST}
+                options={SERVICES_AND_FACILITATES_LIST}
             />
             <br/>
             <ItemInput
                 items={roomFeatures} setItems={setRoomFeatures}
                 name={t('room features', {ns: 'hotel'})}
-                options={OPTION_LIST}
+                options={ROOM_FEATURES_LIST}
             />
             <br/>
             <ItemInput
                 items={roomTypes} setItems={setRoomTypes}
                 name={t('room types', {ns: 'hotel'})}
-                options={OPTION_LIST}
+                options={ROOM_TYPES_LIST}
             />
             <br/>
             <ItemInput
                 items={hotelStyle} setItems={setHotelStyle}
                 name={t('hotel style', {ns: 'hotel'})}
-                options={OPTION_LIST}
+                options={HOTEL_STYLES_LIST}
             />
             <br/>
             <ItemInput
                 items={languagesUsed} setItems={setLanguagesUsed}
                 name={t('languages used', {ns: 'hotel'})}
-                options={OPTION_LIST}
+                options={LANGUAGES_LIST}
             />
             <br/>
             <ButtonSection save={prepareAndSave} close={() => setModal(false)}
@@ -61,5 +68,3 @@ const AboutEditor = (props) => {
 };
 
 export default AboutEditor;
-
-const OPTION_LIST = ['option1', 'option2', 'option3', 'option4', 'option5'];

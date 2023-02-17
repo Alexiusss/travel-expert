@@ -12,7 +12,7 @@ const ItemContact = ({item}) => {
                     </Typography>
                     <div>{t('address')}: {item.address}</div>
                     <div>{t('email')}: {item.email}</div>
-                    <div>{t('phone number')} {item.phoneNumber}</div>
+                    <div>{t('phone number')}: {item.phoneNumber}</div>
                     <div>{t('website')}: {item.website}</div>
                 </CardContent>
             </Card>
