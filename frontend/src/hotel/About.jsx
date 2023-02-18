@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Card, CardContent, Grid, Typography} from "@material-ui/core";
 import FeatureList from "./FeatureList";
 import {useTranslation} from "react-i18next";
 import {useAuth} from "../components/hooks/UseAuth";
 import MyButton from "../components/UI/button/MyButton";
+import MyModal from "../components/UI/modal/MyModal";
+import AmenitiesList from "./AmenitiesList";
 
 const About = ({item = {}, setModal = Function.prototype}) => {
     const services = item.servicesAndFacilitates || [];
@@ -13,6 +15,7 @@ const About = ({item = {}, setModal = Function.prototype}) => {
     const languages = item.languagesUsed || [];
     const {t} = useTranslation(['translation', 'hotel']);
     const {isAdmin} = useAuth();
+    const [amenitiesModal, setAmenitiesModal] = useState(false);
 
     return (
         <Card>
@@ -25,8 +28,8 @@ const About = ({item = {}, setModal = Function.prototype}) => {
                     {
                         isAdmin ?
                             <div>
-                                <MyButton  className={"btn btn-outline-primary ml-2 btn-sm"}
-                                      onClick={() => setModal(true)}
+                                <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
+                                          onClick={() => setModal(true)}
                                 >
                                     {t("edit")}
                                 </MyButton>
@@ -35,21 +38,34 @@ const About = ({item = {}, setModal = Function.prototype}) => {
                 </div>
                 <hr/>
                 {
-                    services.length > 0 ? <FeatureList name={t('services and facilitates', {ns: 'hotel'})} items={services}/> : null
+                    services.length > 0 ?
+                        <FeatureList name={t('services and facilitates', {ns: 'hotel'})} items={services.slice(0, 4)}
+                                     showMore={services.length > 4} setModal={setAmenitiesModal}/> : null
                 }
                 {
-                    features.length > 0 ? <FeatureList name={t('room features', {ns: 'hotel'})} items={features}/> : null
+                    features.length > 0 ?
+                        <FeatureList name={t('room features', {ns: 'hotel'})} items={features.slice(0, 4)}
+                                     showMore={features.length > 4} setModal={setAmenitiesModal}/> : null
                 }
                 {
-                    types.length > 0 ? <FeatureList name={t('room types', {ns: 'hotel'})} items={types}/> : null
+                    types.length > 0 ? <FeatureList name={t('room types', {ns: 'hotel'})} items={types.slice(0, 4)}
+                                                    showMore={types.length > 4} setModal={setAmenitiesModal}/> : null
                 }
                 {
-                    styles.length > 0 ? <FeatureList name={t('hotel style', {ns: 'hotel'})} items={styles}/> : null
+                    styles.length > 0 ?
+                        <FeatureList style={{padding: 0}} name={t('hotel style', {ns: 'hotel'})} items={styles}/> : null
                 }
                 {
-                    languages.length > 0 ? <FeatureList name={t('languages used', {ns: 'hotel'})} items={languages}/> : null
+                    languages.length > 0 ?
+                        <FeatureList name={t('languages used', {ns: 'hotel'})} items={languages}/> : null
                 }
             </CardContent>
+            {amenitiesModal ?
+                <MyModal visible={amenitiesModal} setVisible={() => setAmenitiesModal(true)}>
+                    <AmenitiesList services={services} features={features} types={types}
+                                   setAmenitiesModal={setAmenitiesModal}/>
+                </MyModal> : null
+            }
         </Card>
     );
 };
