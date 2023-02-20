@@ -9,7 +9,7 @@ import {Button} from "@material-ui/core";
 import imageService from "../services/ImageService";
 
 const HotelEditor = (props) => {
-    const {t} = useTranslation();
+    const {t} = useTranslation(['translation', 'hotel']);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
@@ -137,7 +137,7 @@ const HotelEditor = (props) => {
 
     return (
         <div className='container' style={{padding: 25}}>
-            <h4>{t("hotel editor")}</h4>
+            <h4>{t("hotel editor", {ns: 'hotel'})}</h4>
             <hr/>
             <form>
                 <div className="form-group">
@@ -195,7 +195,7 @@ const HotelEditor = (props) => {
                     />
                 </div>
                 <div className="form-group" style={{marginTop: 5}}>
-                    <label>  {t("select hotel class")}
+                    <label>  {t("select hotel class", {ns: 'hotel'})}
                         <select
                             style={{marginLeft: 10, marginRight: 10}}
                             value={hotelClass}

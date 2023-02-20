@@ -14,6 +14,7 @@ const AboutEditor = (props) => {
     const {t} = useTranslation(['translation', 'hotel']);
     const {setModal = Function.prototype, save = Function.prototype} = props;
     const {hotel = {}} = props;
+    const [description, setDescription] = useState(hotel.description || '');
     const [servicesAndFacilitates, setServicesAndFacilitates] = useState(hotel.servicesAndFacilitates || []);
     const [roomFeatures, setRoomFeatures] = useState(hotel.roomFeatures || []);
     const [roomTypes, setRoomTypes] = useState(hotel.roomTypes || []);
@@ -21,7 +22,7 @@ const AboutEditor = (props) => {
     const [languagesUsed, setLanguagesUsed] = useState(hotel.languagesUsed || []);
 
     const prepareAndSave = () => {
-        const updatedHotel = {...hotel, servicesAndFacilitates, roomFeatures, roomTypes, hotelStyle, languagesUsed}
+        const updatedHotel = {...hotel, description, servicesAndFacilitates, roomFeatures, roomTypes, hotelStyle, languagesUsed}
         save(updatedHotel);
     }
 
@@ -30,31 +31,37 @@ const AboutEditor = (props) => {
             <h4>{t("hotel editor", {ns: 'hotel'})}</h4>
             <hr/>
             <br/>
+            <div className="form-group" style={{marginTop: 5}}>
+                    <textarea
+                        className="form-control col-4"
+                        id="description"
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                        placeholder={t("enter description")}
+                    />
+            </div>
+            <br/>
             {/*https://www.i18next.com/translation-function/objects-and-arrays#arrays*/}
             <ItemInput
                 items={servicesAndFacilitates} setItems={setServicesAndFacilitates}
                 name={t('services and facilitates', {ns: 'hotel'})}
                 options={SERVICES_AND_FACILITATES_LIST}
             />
-            <br/>
             <ItemInput
                 items={roomFeatures} setItems={setRoomFeatures}
                 name={t('room features', {ns: 'hotel'})}
                 options={ROOM_FEATURES_LIST}
             />
-            <br/>
             <ItemInput
                 items={roomTypes} setItems={setRoomTypes}
                 name={t('room types', {ns: 'hotel'})}
                 options={ROOM_TYPES_LIST}
             />
-            <br/>
             <ItemInput
                 items={hotelStyle} setItems={setHotelStyle}
                 name={t('hotel style', {ns: 'hotel'})}
                 options={HOTEL_STYLES_LIST}
             />
-            <br/>
             <ItemInput
                 items={languagesUsed} setItems={setLanguagesUsed}
                 name={t('languages used', {ns: 'hotel'})}
