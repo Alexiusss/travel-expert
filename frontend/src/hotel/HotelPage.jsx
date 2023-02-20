@@ -77,7 +77,6 @@ const HotelPage = () => {
                             <>
                                 <br/>
                                 <ItemPageHeader name={hotel.name}
-                                                description={hotel.description}
                                                 rating={rating}
                                 />
                                 <br/>

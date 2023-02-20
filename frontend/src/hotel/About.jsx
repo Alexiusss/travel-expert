@@ -6,6 +6,7 @@ import {useAuth} from "../components/hooks/UseAuth";
 import MyButton from "../components/UI/button/MyButton";
 import MyModal from "../components/UI/modal/MyModal";
 import AmenitiesList from "./AmenitiesList";
+import TextSection from "./TextSection";
 
 const About = ({item = {}, setModal = Function.prototype}) => {
     const services = item.servicesAndFacilitates || [];
@@ -13,6 +14,7 @@ const About = ({item = {}, setModal = Function.prototype}) => {
     const types = item.roomTypes || [];
     const styles = item.hotelStyle || [];
     const languages = item.languagesUsed || [];
+    const description = item.description || [];
     const {t} = useTranslation(['translation', 'hotel']);
     const {isAdmin} = useAuth();
     const [amenitiesModal, setAmenitiesModal] = useState(false);
@@ -37,6 +39,10 @@ const About = ({item = {}, setModal = Function.prototype}) => {
                     }
                 </div>
                 <hr/>
+                {
+                    description.length > 0 ?
+                       <TextSection text={description}/>: null
+                }
                 {
                     services.length > 0 ?
                         <FeatureList name={t('services and facilitates', {ns: 'hotel'})} items={services.slice(0, 4)}
