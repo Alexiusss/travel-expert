@@ -12,9 +12,9 @@ import org.springframework.context.annotation.PropertySources;
 @EnableFeignClients(
         basePackages = "com.example.clients"
 )
-//@PropertySources({
-//        @PropertySource("classpath:clients-${spring.profiles.active}.properties")
-//})
+@PropertySources({
+        @PropertySource("classpath:clients-${spring.profiles.active}.properties")
+})
 public class HotelApplication {
     public static void main(String[] args) {
         SpringApplication.run(HotelApplication.class, args);

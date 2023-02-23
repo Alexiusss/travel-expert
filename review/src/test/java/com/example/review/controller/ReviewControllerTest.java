@@ -1,5 +1,6 @@
 package com.example.review.controller;
 
+import com.example.common.util.TestProfileResolver;
 import com.example.review.model.Review;
 import com.example.review.repository.ReviewRepository;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @Transactional
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles(resolver = TestProfileResolver.class)
 @Sql(value = {"/data.sql"})
 public class ReviewControllerTest {
 

@@ -23,3 +23,5 @@ eureka:
 clients:
   auth:
     url: http://localhost:7077
+
+application-version: 1.0.0

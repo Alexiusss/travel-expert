@@ -1,6 +1,7 @@
 package com.example.hotel.controller;
 
 import com.example.common.util.JsonUtil;
+import com.example.common.util.TestProfileResolver;
 import com.example.hotel.model.Hotel;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @Transactional
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles(resolver = TestProfileResolver.class)
 @Sql(value = {"/data.sql"})
 class HotelControllerTest {
 
