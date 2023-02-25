@@ -10,6 +10,7 @@ export const PROFILE = '/profile/'
 export const LOGIN = '/auth/login/'
 export const REGISTER = '/auth/register/'
 export const LOGOUT = '/auth/logout/'
+export const TRANSLATION_URL = 'https://api.reverso.net/translate/v1/translation'
 
 export const getLocalizedErrorMessages = (messages) => {
     return messages.split('\n').map(message => {

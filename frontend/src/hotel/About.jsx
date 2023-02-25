@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, CardContent, Grid, Typography} from "@material-ui/core";
 import FeatureList from "./FeatureList";
 import {useTranslation} from "react-i18next";
@@ -7,17 +7,37 @@ import MyButton from "../components/UI/button/MyButton";
 import MyModal from "../components/UI/modal/MyModal";
 import AmenitiesList from "./AmenitiesList";
 import TextSection from "./TextSection";
+import translateService from "../services/TranslateService"
 
 const About = ({item = {}, setModal = Function.prototype}) => {
+
+    const {t, i18n} = useTranslation(['translation', 'hotel']);
     const services = item.servicesAndFacilitates || [];
     const features = item.roomFeatures || [];
     const types = item.roomTypes || [];
     const styles = item.hotelStyle || [];
     const languages = item.languagesUsed || [];
-    const description = item.description || [];
-    const {t} = useTranslation(['translation', 'hotel']);
+    const description = item.description || '';
+    const [detectedLanguage, setDetectedLanguage] = useState('')
+    const [translatedDescription, setTranslatedDescription] = useState('');
     const {isAdmin} = useAuth();
     const [amenitiesModal, setAmenitiesModal] = useState(false);
+
+    useEffect(() => {
+        const currentLanguage = i18n.language;
+        if (item.description.length > 0 && detectedLanguage !== currentLanguage) {
+            translateService.translate(item.description, 'eng', 'rus')
+                .then(({data}) => {
+                    const detectedLanguage = data.languageDetection.detectedLanguage.toString().slice(0, 2);
+                    setDetectedLanguage(detectedLanguage)
+                    if (detectedLanguage !== currentLanguage) {
+                        setTranslatedDescription(data.translation)
+                    }
+                })
+        } else {
+            setTranslatedDescription(description);
+        }
+    }, [i18n.language])
 
     return (
         <Card>
@@ -41,7 +61,8 @@ const About = ({item = {}, setModal = Function.prototype}) => {
                 <hr/>
                 {
                     description.length > 0 ?
-                       <TextSection text={description}/>: null
+                        <TextSection
+                            text={translatedDescription.length > 0 ? translatedDescription : description}/> : null
                 }
                 {
                     services.length > 0 ?
