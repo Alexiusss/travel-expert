@@ -40,13 +40,13 @@ management:
       probes:
         enabled: true
       show-details: always
-#      group:
-#        readiness:
-#          include: *
-#          show-details: always
-#        liveness:
-#          include: ping
-#          show-details: always
+      group:
+        readiness:
+          include: "*"
+          show-details: always
+        liveness:
+          include: ping
+          show-details: always
 
 clients:
   auth:
