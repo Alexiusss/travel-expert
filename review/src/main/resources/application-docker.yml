@@ -22,12 +22,25 @@ spring:
   zipkin:
     base-url: http://zipkin:9411
 
-
 logging:
   level:
     root: WARN
     com.example.review: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        readiness:
+          include: "*"
+          show-details: always
+        liveness:
+          include: ping
+          show-details: always
 
 eureka:
   client:
