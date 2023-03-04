@@ -21,6 +21,20 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kube
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8085
+            initialDelaySeconds: 50
+            periodSeconds: 10
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8085
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 10
       restartPolicy: Always
   selector:
     matchLabels:
