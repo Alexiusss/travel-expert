@@ -37,7 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(path = AuthController.AUTH_URL, produces = APPLICATION_JSON_VALUE)
 public class AuthController {
 
-    static final String AUTH_URL = "/api/v1/auth";
+    public static final String AUTH_URL = "/api/v1/auth";
 
     @Value("${cookies.domain}")
     private String domain;

@@ -23,10 +23,9 @@ import static com.example.user.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WithUserDetails(ADMIN_MAIL)
 public class UserControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = UserController.REST_URL + "/";
@@ -35,6 +34,7 @@ public class UserControllerTest extends AbstractControllerTest {
     private UserRepository userRepository;
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void getAllPaginated() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .param("size", "2")
@@ -43,6 +43,7 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID))
                 .andExpect(status().isOk())
@@ -59,6 +60,7 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void getAuthorList() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + "authorList")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -77,6 +79,7 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void getNotFound() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
                 .andExpect(status().isUnprocessableEntity())
@@ -84,18 +87,22 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID)
+                .with(csrf()))
                 .andExpect(status().isNoContent());
         assertFalse(userRepository.findById(USER_ID).isPresent());
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void create() throws Exception {
         User newUser = getNewUser();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .content(jsonWithPassword(newUser, newUser.getPassword()))
+                .with(csrf()))
                 .andExpect(status().isCreated());
 
         User created = USER_MATCHER.readFromJson(action);
@@ -110,78 +117,93 @@ public class UserControllerTest extends AbstractControllerTest {
     // https://github.com/spring-projects/spring-boot/issues/5993#issuecomment-221550622
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @WithUserDetails(ADMIN_MAIL)
     void createWithDuplicateEmail() throws Exception {
         User newUser = getNewUser();
         newUser.setEmail(USER_MAIL);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .content(jsonWithPassword(newUser, newUser.getPassword()))
+                .with(csrf()))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_DUPLICATE_EMAIL)));
     }
 
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @WithUserDetails(ADMIN_MAIL)
     void createWithDuplicateUsername() throws Exception {
         User newUser = getNewUser();
         newUser.setUsername(USERNAME);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andDo(print())
+                .content(jsonWithPassword(newUser, newUser.getPassword()))
+                .with(csrf()))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_DUPLICATE_USERNAME)));
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void createInvalid() throws Exception {
         User invalidUser = getNewUser();
         invalidUser.setEmail("");
         invalidUser.setFirstName("");
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(invalidUser, invalidUser.getPassword())))
+                .content(jsonWithPassword(invalidUser, invalidUser.getPassword()))
+                .with(csrf()))
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void updateInvalid() throws Exception {
         User invalidUser = USER;
         invalidUser.setFirstName("");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(invalidUser, invalidUser.getPassword())))
+                .content(jsonWithPassword(invalidUser, invalidUser.getPassword()))
+                .with(csrf()))
                 .andExpect(status().isUnprocessableEntity());
 
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void updateForbidden() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + ADMIN_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(ADMIN, "newAminPassword")))
+                .content(jsonWithPassword(ADMIN, "newAminPassword"))
+                .with(csrf()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void deleteForbidden() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + ADMIN_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL + ADMIN_ID)
+                .with(csrf()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void disableForbidden() throws Exception{
         perform(MockMvcRequestBuilders.patch(REST_URL + ADMIN_ID)
+                .with(csrf())
                 .param("enable", "false"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("message", equalTo(EXCEPTION_MODIFICATION_RESTRICTION)));
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void enable() throws Exception {
         perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
+                .with(csrf())
                 .param("enable", "false"))
                 .andExpect(status().isNoContent());
 
@@ -189,9 +211,11 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
     void update() throws Exception {
         User updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(updated, updated.getPassword())))
                 .andExpect(status().isOk());
