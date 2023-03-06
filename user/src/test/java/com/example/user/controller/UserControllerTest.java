@@ -43,12 +43,24 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getAllUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @WithUserDetails(ADMIN_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(USER_MATCHER.contentJson(ADMIN));
+    }
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -60,7 +72,6 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(ADMIN_MAIL)
     void getAuthorList() throws Exception {
         stubReviewResponse();
         perform(MockMvcRequestBuilders.post(REST_URL + "authorList")
@@ -113,6 +124,16 @@ public class UserControllerTest extends AbstractControllerTest {
         newUser.setVersion(newVersion);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userRepository.getById(newId), newUser);
+    }
+
+    @Test
+    void createUnAuth() throws Exception {
+        User newUser = getNewUser();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(newUser, newUser.getPassword()))
+                .with(csrf()))
+                .andExpect(status().isUnauthorized());
     }
 
     // https://github.com/spring-projects/spring-boot/issues/5993#issuecomment-221550622
