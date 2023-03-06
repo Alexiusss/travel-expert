@@ -3,7 +3,12 @@ package com.example.user.controller;
 import com.example.common.util.TestProfileResolver;
 import com.example.user.filter.JwtFilter;
 import com.example.user.model.dto.AuthRequest;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +28,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.user.controller.AuthController.AUTH_URL;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +47,20 @@ class AbstractControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    private static WireMockServer wireMockServer;
+
+    @BeforeAll
+    static void init() {
+        wireMockServer = new WireMockServer(new WireMockConfiguration().port(7070));
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 7070);
+    }
+
+    @AfterAll
+    static void destroy() {
+        wireMockServer.stop();
+    }
 
     // https://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#test-mockmvc
     @Before

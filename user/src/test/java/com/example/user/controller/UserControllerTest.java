@@ -62,6 +62,7 @@ public class UserControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void getAuthorList() throws Exception {
+        stubReviewResponse();
         perform(MockMvcRequestBuilders.post(REST_URL + "authorList")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Arrays.toString(new String[]{USER_ID})))

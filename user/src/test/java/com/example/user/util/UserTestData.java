@@ -1,11 +1,13 @@
 package com.example.user.util;
 
 import com.example.clients.auth.AuthorDTO;
+import com.example.clients.review.ReviewResponse;
 import com.example.common.util.MatcherFactory;
 import com.example.common.util.JsonUtil;
 import com.example.user.model.Role;
 import com.example.user.model.User;
 import com.example.user.model.dto.RegistrationDTO;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.experimental.UtilityClass;
 
 import java.sql.Timestamp;
@@ -13,6 +15,8 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @UtilityClass
 public class UserTestData {
@@ -35,6 +39,7 @@ public class UserTestData {
     public static final User USER = new User(USER_ID, USER_INSTANT, USER_INSTANT, 0, USER_MAIL, "User", "UserLast", USERNAME, "userPassword", true, null, Collections.singleton(Role.USER));
 
     public static final AuthorDTO AUTHOR = new AuthorDTO(USER_ID, getAuthorName(USER), USER.getUsername(), "Empty", USER.getCreatedAt(), Set.of(), Set.of(), 0L);
+    private static final ReviewResponse AUTHOR_REVIEW_RESPONSE = new ReviewResponse(AUTHOR.getAuthorId(), 0L);
 
     private static String getAuthorName(User user) {
         return user.getFirstName() + " " + user.getLastName();
@@ -58,5 +63,10 @@ public class UserTestData {
 
     public static String jsonWithPassword(RegistrationDTO registration, String passw) {
         return JsonUtil.writeAdditionProps(registration, "password", passw);
+    }
+
+    public void  stubReviewResponse() {
+        stubFor(WireMock.post(WireMock.urlMatching("/api/v1/reviews/user/reviewCountActive"))
+                .willReturn(okForContentType("application/json",JsonUtil.writeValue(List.of(AUTHOR_REVIEW_RESPONSE)))));
     }
 }

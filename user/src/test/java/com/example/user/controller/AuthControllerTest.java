@@ -1,5 +1,6 @@
 package com.example.user.controller;
 
+import com.example.amqp.RabbitMQMessageProducer;
 import com.example.user.model.User;
 import com.example.user.model.dto.AuthRequest;
 import com.example.user.model.dto.RegistrationDTO;
@@ -7,6 +8,7 @@ import com.example.user.repository.UserRepository;
 import com.example.common.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -18,12 +20,18 @@ import static com.example.user.controller.UserExceptionHandler.EXCEPTION_DUPLICA
 import static com.example.user.util.UserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AuthControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AuthController.AUTH_URL + "/";
+
+    // https://stackoverflow.com/a/47907861
+    @Autowired
+    @MockBean
+    private RabbitMQMessageProducer rabbitMQMessageProducer;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,6 +48,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     void invalidLogin() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + "login")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(new AuthRequest("", ""))))
                 .andExpect(status().isUnprocessableEntity())
@@ -49,6 +58,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     void failLogin() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + "login")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(new AuthRequest(ADMIN_MAIL, "InvalidPassword"))))
                 .andExpect(status().isUnprocessableEntity())
