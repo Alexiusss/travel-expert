@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +27,16 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.common.util.ValidationUtil.getRootCause;
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
+import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.STACK_TRACE;
 
 @RestControllerAdvice
 @AllArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final ErrorAttributes errorAttributes;
+    private final Map<String, String> constraintsMap;
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
@@ -55,6 +59,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleFeignStatusException(WebRequest request, FeignException ex) {
         log.error("FeignException: {}", ex.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(), null, HttpStatus.valueOf(ex.status()));
+    }
+
+    // https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> conflict(WebRequest request, DataIntegrityViolationException ex) {
+        String rootMsg = getRootCause(ex).getMessage();
+        for (Map.Entry<String, String> entry: constraintsMap.entrySet()) {
+            if (rootMsg.toLowerCase().contains(entry.getKey().toLowerCase())){
+                log.warn("Conflict at request  {}: {}", request, rootMsg);
+                return createResponseEntity(request, ErrorAttributeOptions.of(), entry.getValue(), HttpStatus.CONFLICT);
+            }
+        }
+        log.error("Conflict at request " + request, getRootCause(ex));
+        return createResponseEntity(request, ErrorAttributeOptions.of(STACK_TRACE), rootMsg, HttpStatus.CONFLICT);
     }
 
     @NonNull
