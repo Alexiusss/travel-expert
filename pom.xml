@@ -25,10 +25,10 @@
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>restaurant_advisor_react</artifactId>
+    <artifactId>travel_expert</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>restaurant_advisor_react</name>
-    <description>Restaurant advisor service</description>
+    <name>travel_expert</name>
+    <description>Travel expert</description>
     <properties>
         <java.version>11</java.version>
         <image>alexius1905/${project.artifactId}:${project.version}</image>

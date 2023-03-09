@@ -28,7 +28,7 @@ const NavBar = () => {
         <Navbar bg="light" expand="lg" className="px-3">
             <Container>
                 <Link to="/" className="navbar-brand">
-                    Restaurant advisor
+                    Travel expert
                 </Link>
                 <Navbar.Toggle aria-controls="navbar-nav" />
                 <Navbar.Collapse id="navbar-nav">
