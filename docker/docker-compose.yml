@@ -34,20 +34,20 @@ services:
       - db
     restart: always
 
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile.frontend
-    image: restaurant-advisor-react-frontend
-    ports:
-      - "3000:3000"
-    restart: always
-    depends_on:
-      - restaurant
-      - review
-      - user
-      - image
-      - notification
+#  frontend:
+#    build:
+#      context: ../frontend
+#      dockerfile: Dockerfile.frontend
+#    image: restaurant-advisor-react-frontend
+#    ports:
+#      - "3000:3000"
+#    restart: always
+#    depends_on:
+#      - restaurant
+#      - review
+#      - user
+#      - image
+#      - notification
 
   zipkin:
     image: openzipkin/zipkin
@@ -106,6 +106,21 @@ services:
       - zipkin
       - rabbitmq
 
+  hotel:
+    image: alexius1905/hotel:latest
+    container_name: restaurant
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
   user:
     image: alexius1905/user:latest
     container_name: user
@@ -120,6 +135,7 @@ services:
       - db
       - zipkin
       - rabbitmq
+
   review:
     image: alexius1905/review:latest
     container_name: review
