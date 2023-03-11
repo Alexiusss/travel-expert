@@ -1,0 +1,201 @@
+version: '3.8'
+services:
+
+  db:
+    build:
+      dockerfile: Dockerfile.db
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/pg_data:/var/lib/postgresql/data/pgdata
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+#  https://stackoverflow.com/a/46668342
+      POSTGRES_MULTIPLE_DATABASES: restaurant, hotel, review, notification, image, user
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - db
+    restart: always
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - ~/pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - db
+    restart: always
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - spring
+
+  rabbitmq:
+    image: rabbitmq:3.9.11-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - spring
+
+  eureka-server:
+    image: alexius1905/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+
+  apigw:
+    image: alexius1905/apigw:latest
+    container_name: apigw
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+      - eureka-server
+
+  restaurant:
+    image: alexius1905/restaurant:latest
+    container_name: restaurant
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
+  hotel:
+    image: alexius1905/hotel:latest
+    container_name: hotel
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
+  user:
+    image: alexius1905/user:latest
+    container_name: user
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
+  review:
+    image: alexius1905/review:latest
+    container_name: review
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
+  image:
+    image: alexius1905/image:latest
+    container_name: image
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
+  notification:
+    image: alexius1905/notification:latest
+    container_name: notification
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - db
+    depends_on:
+      - db
+      - zipkin
+      - rabbitmq
+
+  nginx:
+    image: nginx:1.23-alpine
+    container_name: nginx
+    volumes:
+      - ~/deploy/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - db
+      - apigw
+      - pgadmin
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  db:
+    driver: bridge
+  spring:
+    driver: bridge

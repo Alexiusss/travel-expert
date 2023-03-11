@@ -14,8 +14,8 @@ spring:
             non-contextual-creation: true
   datasource:
     url: jdbc:postgresql://postgres/hotel
-    username: postgres
-    password: 1234
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   data:
     rest:
       base-path: /api
@@ -50,6 +50,6 @@ management:
 
 clients:
   auth:
-    url: http://localhost:8080
+    url: http://user:8080
 
 application-version: 1.0.0

@@ -14,8 +14,8 @@ spring:
             non-contextual-creation: true
   datasource:
     url: jdbc:postgresql://postgres/image
-    username: postgres
-    password: 1234
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   data:
     rest:
       base-path: /api

@@ -15,8 +15,8 @@ spring:
             non-contextual-creation: true
   datasource:
     url: jdbc:postgresql://postgres/user
-    username: postgres
-    password: 1234
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   data:
     rest:
       base-path: /api
@@ -60,10 +60,10 @@ clients:
   review:
     url: http://review:8084
 
-myhostname: localhost:8080
+myhostname: ${MY_HOST_NAME}
 
-access.token.secret: 987ghgfyf*Yt87tFF089uyHgf9TfgF!&909u79ygUVLJH987y89yguyfgr&YHG*0fS
-refresh.token.secret: uigyugt87TGFB*&t76V!YHHBbugy870909nby8998u0u0ohibg9yh9hy9yh9hhGv87
+access.token.secret: ${ACCESS_TOKEN_SECRET}
+refresh.token.secret: ${REFRESH_TOKEN_SECRET}
 
 access.token.expiration: 60
 refresh.token.expiration: 30
