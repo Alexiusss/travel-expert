@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/travel-expert">
             <NavBar/>
             <AppRouter/>
             <Footer/>

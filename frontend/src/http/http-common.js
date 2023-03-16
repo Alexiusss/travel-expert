@@ -2,7 +2,7 @@ import axios from "axios";
 import {getAccessToken, updateLocalAccessToken} from "../utils/consts";
 import store from "../store";
 import Cookies from "js-cookie";
-export const API_URL = "http://localhost:8083/api/v1";
+export const API_URL = "https://107060.web.hosting-russia.ru:8083/api/v1";
 
 const $api = axios.create({
     withCredentials: true,
