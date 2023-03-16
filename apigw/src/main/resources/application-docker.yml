@@ -1,5 +1,12 @@
 server:
   port: 8083
+#  https://www.baeldung.com/spring-boot-https-self-signed-certificate
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:keystore/travel_expert.p12
+    key-store-password: ${KEY_STORE_PASSWORD}
+    key-alias: ${KEY_STORE_ALIAS}
+#    enabled: true
 spring:
   application:
     name: api-gateway
