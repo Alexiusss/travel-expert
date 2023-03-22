@@ -23,4 +23,4 @@ target/
 /.mvn/**/
 
 /docker/deploy/.env
-/apigw/src/main/resources/keystore/*
+/docker/deploy/nginx/ssl/*
