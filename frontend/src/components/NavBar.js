@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch} from 'react-redux'
 import {HOTELS_ROUTE, PROFILE, RESTAURANTS_ROUTE, REVIEWS_ROUTE, USERS_ROUTE} from "../utils/consts";
 import {Link} from "react-router-dom";
@@ -15,43 +15,48 @@ const NavBar = () => {
     const {t} = useTranslation(['translation', 'hotel']);
     const {isAuth, isAdmin, isModerator, authUserId} = useAuth();
     const dispatch = useDispatch();
+    // https://stackoverflow.com/a/58530447
+    const [expanded, setExpanded] = useState(false);
 
     const logout = () => {
         authService.logout()
             .then(
-                () => dispatch(removeUser())
+                () => {
+                    dispatch(removeUser());
+                    setExpanded(false);
+                }
             )
             .catch(error =>
                 console.error(error))
     }
     return (
-        <Navbar bg="light" expand="lg" className="px-3">
+        <Navbar  bg="light" expand="lg" className="px-3" expanded={expanded}>
             <Container>
                 <Link to="/" className="navbar-brand">
                     Travel expert
                 </Link>
-                <Navbar.Toggle aria-controls="navbar-nav" />
-                <Navbar.Collapse id="navbar-nav">
+                <Navbar.Toggle aria-controls="navbar-nav" onClick={() => setExpanded(!expanded)}/>
+                <Navbar.Collapse id="navbar-nav" >
                     <Nav className="container-fluid">
                         <Nav.Item>
-                            <Link to={RESTAURANTS_ROUTE} className="nav-link">
+                            <Link to={RESTAURANTS_ROUTE} className="nav-link" onClick={() => setTimeout(() => {setExpanded(false)}, 150)}>
                                 {t("restaurants")}
                             </Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Link to={HOTELS_ROUTE} className="nav-link">
+                            <Link to={HOTELS_ROUTE} className="nav-link" onClick={() => setExpanded(false)}>
                                 {t("hotels", {ns: 'hotel'})}
                             </Link>
                         </Nav.Item>
                         {isAdmin || isModerator ?
                             <>
                                 <Nav.Item>
-                                    <Link to={USERS_ROUTE} className="nav-link">
+                                    <Link to={USERS_ROUTE} className="nav-link" onClick={() => setExpanded(false)}>
                                         {t("users")}
                                     </Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Link to={REVIEWS_ROUTE} className="nav-link">
+                                    <Link to={REVIEWS_ROUTE} className="nav-link" onClick={() => setExpanded(false)}>
                                         {t("reviews")}
                                     </Link>
                                 </Nav.Item>
@@ -63,6 +68,7 @@ const NavBar = () => {
                             ?
                             <Nav.Item>
                                 <Link className="nav-link"
+                                      onClick={() => setExpanded(false)}
                                       to={{
                                           pathname: PROFILE,
                                           state: {authorId: authUserId}
@@ -80,14 +86,13 @@ const NavBar = () => {
                                     Logout
                                 </MyButton>
                                 :
-                                <Link to="/login" className="nav-link">
+                                <Link to="/login" className="nav-link" onClick={() => setExpanded(false)}>
                                     Login
                                 </Link>
                             }
                         </Nav.Item>
                     </Nav>
                 </Navbar.Collapse>
-
             </Container>
         </Navbar>
     );
