@@ -31,7 +31,7 @@ const ReviewsSection = (props) => {
     const pageSizes = [20, 50, 100];
     const [filter, setFilter] = useState({ratingFilters: [], query: ''})
     const {t} = useTranslation();
-    const {isAuth, authUserId} = useAuth();
+    const {isAuth} = useAuth();
 
     useEffect(() => {
         if (props.itemId == null) {

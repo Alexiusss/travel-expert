@@ -20,7 +20,7 @@ import MyNotification from "../components/UI/notification/MyNotification";
 const HotelPage = () => {
     const {t} = useTranslation();
     const {pathname} = useLocation();
-    const [id, setId] = useState(pathname.replace(/.+-/, ""));
+    const [id] = useState(pathname.replace(/.+-/, ""));
     const area = 'hotels';
     const {promiseInProgress} = usePromiseTracker({area});
     const [hotel, setHotel] = useState({});

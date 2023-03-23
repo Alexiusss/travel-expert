@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, CardContent, Grid, Typography} from "@material-ui/core";
+import {Card, CardContent, Typography} from "@material-ui/core";
 import FeatureList from "./FeatureList";
 import {useTranslation} from "react-i18next";
 import {useAuth} from "../components/hooks/UseAuth";

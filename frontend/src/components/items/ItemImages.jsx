@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, ImageList, ImageListItem, ImageListItemBar, makeStyles} from "@material-ui/core";
+import {Button, ImageList, ImageListItem, ImageListItemBar} from "@material-ui/core";
 import {API_URL} from "../../http/http-common";
 import {IMAGE_ROUTE} from "../../utils/consts";
 import {useAuth} from "../hooks/UseAuth";

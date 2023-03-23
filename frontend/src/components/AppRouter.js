@@ -14,7 +14,7 @@ import HotelList from "../hotel/HotelList";
 import HotelPage from "../hotel/HotelPage";
 
 const AppRouter = () => {
-    const {isAdmin, isModerator, isAuth} = useAuth();
+    const {isAdmin, isModerator} = useAuth();
 
     return (
         <main className="content">
