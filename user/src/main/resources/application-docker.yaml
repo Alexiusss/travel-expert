@@ -68,6 +68,6 @@ refresh.token.secret: ${REFRESH_TOKEN_SECRET}
 access.token.expiration: 60
 refresh.token.expiration: 30
 
-cookies.domain: localhost
+cookies.domain: ${MY_HOST_NAME}
 
 application-version: 1.0.0

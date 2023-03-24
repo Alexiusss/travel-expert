@@ -15,8 +15,8 @@ spring:
             non-contextual-creation: true
   datasource:
     url: jdbc:postgresql://localhost/restaurant
-    username: postgres
-    password: 1234
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   data:
     rest:
       base-path: /api

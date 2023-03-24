@@ -14,8 +14,8 @@ spring:
             non-contextual-creation: true
   datasource:
     url: jdbc:postgresql://postgres:5432/review
-    username: postgres
-    password: 1234
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   data:
     rest:
       base-path: /api
