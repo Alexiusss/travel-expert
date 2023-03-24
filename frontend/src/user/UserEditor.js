@@ -100,7 +100,7 @@ const UserEditor = (props) => {
 
     const close = (e) => {
         e.preventDefault();
-        props.setModal(false)
+        props.setModal(false);
     }
 
     const openAlert = (msg, severity) => {
@@ -193,7 +193,7 @@ const UserEditor = (props) => {
 
                 <div className="form-group" style={{marginTop: 5}}>
                     <Button variant="contained" component="label">
-                        {t('upload images')}
+                        {t('upload image')}
                         <input hidden accept="image/*" multiple type="file"
                                onChange={e => setImages(Array.from(e.target.files))}
                         />
