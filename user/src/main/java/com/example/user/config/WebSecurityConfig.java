@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http = http.cors().and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRepository(getCsrfRepository())
                 .ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
 
         http = http.sessionManagement()
@@ -65,10 +65,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         );
     }
 
+    private static CookieCsrfTokenRepository getCsrfRepository() {
+        CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfTokenRepository.setSecure(false);
+        return csrfTokenRepository;
+    }
+
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 }

@@ -117,10 +117,12 @@ public class JwtUtil {
                 .compact();
     }
 
+// https://stackoverflow.com/a/70292828
     public static ResponseCookie generateCookie(String refreshToken, String domain) {
         return ResponseCookie.from("refresh-token", refreshToken)
                 .domain(domain)
                 .httpOnly(true)
+                .sameSite("None")
                 .path("/api/v1/auth")
                 .maxAge(Duration.buildByDays(30).getMilliseconds() / 1000)
                 .secure(true)
@@ -131,8 +133,10 @@ public class JwtUtil {
         return ResponseCookie.from("refresh-token", "")
                 .domain(domain)
                 .httpOnly(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(0)
+                .secure(true)
                 .build();
     }
 }
