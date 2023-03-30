@@ -38,7 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // https://www.toptal.com/spring/spring-security-tutorial
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http = http.cors().and().csrf()
+        http = http.csrf()
+        // https://stackoverflow.com/a/55312420
                 .csrfTokenRepository(getCsrfRepository())
                 .ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
 
@@ -65,10 +66,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         );
     }
 
-    private static CookieCsrfTokenRepository getCsrfRepository() {
-        CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        csrfTokenRepository.setSecure(false);
-        return csrfTokenRepository;
+    private static CookieCsrfTokenRepository  getCsrfRepository() {
+        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
+        repository.setCookieHttpOnly(false);
+        repository.setSecure(true);
+        return repository;
     }
 
     @Override
