@@ -38,10 +38,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // https://www.toptal.com/spring/spring-security-tutorial
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http = http.csrf()
-        // https://stackoverflow.com/a/55312420
-                .csrfTokenRepository(getCsrfRepository())
-                .ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
+        http = http.csrf().disable();
+               // https://stackoverflow.com/a/55312420
+               // .csrfTokenRepository(getCsrfRepository())
+                //.ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
 
         http = http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
