@@ -84,7 +84,7 @@ public class AuthService {
         if (!ObjectUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Restaurant Advisor. Please, visit next link: http://%s/api/v1/auth/activate/%s",
+                            "Welcome to Restaurant Advisor. Please, visit next link: https://%s/api/v1/auth/activate/%s",
                     user.getFirstName(),
                     myHostName,
                     user.getActivationCode()
