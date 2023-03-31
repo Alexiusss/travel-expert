@@ -2,6 +2,7 @@ import axios from "axios";
 import {getAccessToken, updateLocalAccessToken} from "../utils/consts";
 import store from "../store";
 import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 export const API_URL = "https://travelexpert.sytes.net/api/v1";
 
 const $api = axios.create({
@@ -13,9 +14,15 @@ const $api = axios.create({
     },
 });
 
-$api.interceptors.request.use((config) => {
+$api.interceptors.request.use( async (config) => {
     if (!!store.getState().user.token) {
-        config.headers.Authorization = `Bearer ${getAccessToken()}`;
+        const decoded = jwt_decode(store.getState().user.token);
+        if (decoded.exp && decoded.exp - Math.floor(Date.now() / 1000) < 60) {
+            const response = await axios.get(`${API_URL}/auth/refresh`, {withCredentials: true}) || "";
+            updateLocalAccessToken(response.data.accessToken)
+        } else {
+            config.headers.Authorization = `Bearer ${getAccessToken()}`;
+        }
     }
     return config;
 });
