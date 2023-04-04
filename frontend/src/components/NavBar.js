@@ -87,7 +87,7 @@ const NavBar = () => {
                                 </MyButton>
                                 :
                                 <Link to="/login" className="nav-link" onClick={() => setExpanded(false)}>
-                                    Login
+                                    {t("sign in")}
                                 </Link>
                             }
                         </Nav.Item>
