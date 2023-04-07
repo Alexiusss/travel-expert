@@ -11,23 +11,23 @@ spring:
         - id: restaurant
           uri: lb://RESTAURANT
           predicates:
-            - Path=/api/v1/restaurants/**
+            - Path=/api/v1/restaurants/**, /restaurant/**
         - id: user
           uri: lb://USER
           predicates:
-            - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/auth/**
+            - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/auth/**, /user/**
         - id: review
           uri: lb://REVIEW
           predicates:
-            - Path=/api/v1/reviews/**
+            - Path=/api/v1/reviews/**, /review/**
         - id: image
           uri: lb://IMAGE
           predicates:
-            - Path=/api/v1/images/**
+            - Path=/api/v1/images/**, /image/**
         - id: hotel
           uri: lb://HOTEL
           predicates:
-            - Path=/api/v1/hotels/**
+            - Path=/api/v1/hotels/**, /hotel/**
 eureka:
   client:
     service-url:

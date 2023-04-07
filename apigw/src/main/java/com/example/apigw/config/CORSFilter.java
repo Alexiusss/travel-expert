@@ -19,6 +19,7 @@ public class CORSFilter implements WebFluxConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("https://localhost:3000")
                 .allowedOrigins("https://alexiusss.github.io/")
                 .allowedHeaders("*")
                 .allowedMethods("*");
@@ -31,6 +32,7 @@ public class CORSFilter implements WebFluxConfigurer {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.addAllowedOrigin("https://localhost:3000");
         corsConfiguration.addAllowedOrigin("https://alexiusss.github.io/");
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);

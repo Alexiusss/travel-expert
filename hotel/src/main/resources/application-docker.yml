@@ -48,6 +48,12 @@ management:
           include: ping
           show-details: always
 
+springdoc:
+  api-docs:
+    path: /hotel/v3/api-docs
+  swagger-ui:
+    path: /hotel/swagger-ui
+
 clients:
   auth:
     url: http://user:8080

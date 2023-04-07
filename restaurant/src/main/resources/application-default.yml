@@ -42,6 +42,11 @@ management:
         liveness:
           include: ping
           show-details: always
+springdoc:
+  api-docs:
+    path: /restaurant/v3/api-docs
+  swagger-ui:
+    path: /restaurant/swagger-ui
 
 eureka:
   client:
