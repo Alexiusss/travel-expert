@@ -12,6 +12,7 @@ import ReviewsSection from "../pages/review/ReviewsSection";
 import {NotFound} from "../pages/NotFound";
 import HotelList from "../hotel/HotelList";
 import HotelPage from "../hotel/HotelPage";
+import APIDocs from "../pages/ApiDocs";
 
 const AppRouter = () => {
     const {isAdmin, isModerator} = useAuth();
@@ -20,6 +21,7 @@ const AppRouter = () => {
         <main className="content">
             <Switch>
                 <Route exact path={"/"} component={HomePage}/>
+                <Route exact path={"/apiDocs"} component={APIDocs}/>
                 <Route exact path={"/login"} component={LoginForm}/>
                 <Route exact path={"/register"} component={RegisterForm}/>
                 <Route exact path={"/restaurants/"} component={RestaurantList}/>

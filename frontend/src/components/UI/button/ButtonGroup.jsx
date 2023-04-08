@@ -11,7 +11,7 @@ const ButtonGroup = (props) => {
     } = props;
     return (
         <div className="container">
-            <Link to="/login">
+            <Link to="/register">
                 <MyButton className={"btn btn-outline-success ml-2 btn-sm"}>
                     {t("sign up")} >>
                 </MyButton>
