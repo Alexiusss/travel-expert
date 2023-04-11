@@ -90,7 +90,7 @@ const ReviewItem = (props) => {
                                     readOnly/>
                             <Box
                                 sx={{ml: 1}}><small>{t("published")} {getFormattedDate(createdAt, i18n)}</small></Box>
-                            {(isAuth && props.item.active) ?
+                            {(props.item.active) ?
                                 <div className="row-cols-2 like">
                                     <IconButton onClick={() => like(id, isAuthUserLiked)}>
                                         {isAuthUserLiked ?
