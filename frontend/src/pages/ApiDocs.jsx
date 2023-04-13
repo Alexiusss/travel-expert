@@ -10,7 +10,8 @@ import {
 
 const ApiDocs = () => {
     return (
-            <main className="container">
+        <main className="container">
+            <div className="text-center">
                 <div className="btn-group-vertical gap-5">
                     <MyButton className={"btn btn-outline-success ml-2 btn-lg"}
                               onClick={() => window.open(HOTEL_API_DOCS_URL)}
@@ -38,6 +39,7 @@ const ApiDocs = () => {
                         User API Documentation
                     </MyButton>
                 </div>
+            </div>
         </main>
     );
 };

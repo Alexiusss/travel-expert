@@ -1,33 +1,37 @@
 import React from 'react';
-import {Link} from "react-router-dom";
 import MyButton from "./MyButton";
 import {useTranslation} from "react-i18next";
+import {useHistory} from "react-router-dom";
 
 const ButtonGroup = (props) => {
     const {t} = useTranslation();
+    const {push} = useHistory();
     const {
         signInAsAdmin = Function.prototype,
         signInAsUser = Function.prototype
     } = props;
     return (
         <div className="container">
-            <Link to="/register">
-                <MyButton className={"btn btn-outline-success ml-2 btn-sm"}>
+            {/*https://stackoverflow.com/a/67375149*/}
+            <div className="d-grid gap-3 d-md-flex">
+                <MyButton className={"btn btn-outline-success w-100"}
+                          onClick={() => push("/register")}
+                >
                     {t("sign up")} >>
                 </MyButton>
-            </Link>
-            {' '}
-            <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
-                      onClick={(e) => signInAsAdmin(e)}
-            >
-                {t("sign in")} {t('as')} Admin
-            </MyButton>
-            {' '}
-            <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
-                      onClick={(e) => signInAsUser(e)}
-            >
-                {t("sign in")} {t('as')} User
-            </MyButton>
+                {' '}
+                <MyButton className={"btn btn-outline-primary w-100"}
+                          onClick={(e) => signInAsAdmin(e)}
+                >
+                    {t("sign in")} {t('as')} Admin
+                </MyButton>
+                {' '}
+                <MyButton className={"btn btn-outline-primary w-100"}
+                          onClick={(e) => signInAsUser(e)}
+                >
+                    {t("sign in")} {t('as')} User
+                </MyButton>
+            </div>
         </div>
     );
 };
