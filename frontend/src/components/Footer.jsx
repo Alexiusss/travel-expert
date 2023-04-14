@@ -12,11 +12,11 @@ const Footer = () => {
     }
 
     return (
-        <footer className="text-center text-lg-start bg-light text-muted">
-            <div className="text-center p-2" >
+        <footer className="text-center text-lg-start bg-light text-muted fixed-bottom">
+            <div className="text-center " >
                 <div className="container centered" >
                     © {new Date().getFullYear()} Copyright Text
-                    <a href="#!" style={{padding: "15px"}}>
+                    <a  target="_blank" href="https://github.com/Alexiusss/travel-expert" style={{padding: "15px"}}>
                          GitHub
                     </a>
                     <FormControl sx={{ m: 1, minWidth: 80}}>

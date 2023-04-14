@@ -49,7 +49,7 @@ const HomePage = () => {
     }
 
     return (
-        <>
+        <div className="container">
             {!isAuth &&
                 <>
                     <ButtonGroup signInAsAdmin={signInAsAdmin} signInAsUser={signInAsUser}/>

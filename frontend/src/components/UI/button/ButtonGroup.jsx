@@ -11,7 +11,7 @@ const ButtonGroup = (props) => {
         signInAsUser = Function.prototype
     } = props;
     return (
-        <div className="container">
+        <div className="lead py-1">
             {/*https://stackoverflow.com/a/67375149*/}
             <div className="d-grid gap-3 d-md-flex">
                 <MyButton className={"btn btn-outline-success w-100"}

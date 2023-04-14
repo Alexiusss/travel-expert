@@ -10,7 +10,7 @@ import {
 
 const ApiDocs = () => {
     return (
-        <main className="container">
+        <main className="container py-5">
             <div className="text-center">
                 <div className="btn-group-vertical gap-5">
                     <MyButton className={"btn btn-outline-success ml-2 btn-lg"}

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux'
 import {HOTELS_ROUTE, PROFILE, RESTAURANTS_ROUTE, REVIEWS_ROUTE, USERS_ROUTE} from "../utils/consts";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useAuth} from "./hooks/UseAuth";
 import MyButton from "./UI/button/MyButton";
@@ -15,6 +15,7 @@ const NavBar = () => {
     const {t} = useTranslation(['translation', 'hotel']);
     const {isAuth, isAdmin, isModerator, authUserId} = useAuth();
     const dispatch = useDispatch();
+    const {push} = useHistory();
     // https://stackoverflow.com/a/58530447
     const [expanded, setExpanded] = useState(false);
 
@@ -24,13 +25,14 @@ const NavBar = () => {
                 () => {
                     dispatch(removeUser());
                     setExpanded(false);
+                    push("/");
                 }
             )
             .catch(error =>
                 console.error(error))
     }
     return (
-        <Navbar  bg="light" expand="lg" className="px-3" expanded={expanded}>
+        <Navbar bg="light" expand="lg" className="fixed-top px-3" expanded={expanded} >
             <Container>
                 <Link to="/" className="navbar-brand">
                     Travel expert
