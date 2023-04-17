@@ -1,6 +1,8 @@
 {
-  "lang": "Lang",
+  "application stack": "Application stack",
+  "application description": "Complete application whose main purpose is to help active tourists with a selection of places to settle down and where to go. Currently, services are available to select hotels and restaurants, with the ability to add new kinds of activities (services) in the future.\n<1/>Backend built based on Spring Boot using microservice architecture. Frontend built based on React JS.\n<1/>The application implements registration and subsequent authorization with JWT tokens. The new user receives an account confirmation link. User rights (ADMIN, MODERATOR, USER) delimit access rights. Administrator can create/edit/delete users, restaurants, hotels, reviews. The moderator can only edit the same data. Users can manage their profile and data (reviews), but after confirming(activating) their account. Users also can subscribe to other users and  put likes. The administrator or moderator publishes reviews only after verification and activation.\n<1/>Support for internationalization implemented on the frontend side. ",
 
+  "lang": "Lang",
   "add": "Add",
   "save": "Save",
   "edit": "Edit",

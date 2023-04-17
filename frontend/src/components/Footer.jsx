@@ -16,7 +16,7 @@ const Footer = () => {
             <div className="text-center " >
                 <div className="container centered" >
                     © {new Date().getFullYear()} Copyright Text
-                    <a  target="_blank" href="https://github.com/Alexiusss/travel-expert" style={{padding: "15px"}}>
+                    <a href="https://github.com/Alexiusss/travel-expert"  target="_blank" rel="noreferrer" style={{padding: "15px"}}>
                          GitHub
                     </a>
                     <FormControl sx={{ m: 1, minWidth: 80}}>

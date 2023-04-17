@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import ButtonGroup from "../components/UI/button/ButtonGroup";
 import {useAuth} from "../components/hooks/UseAuth";
 import authService from 'services/AuthService.js'
@@ -7,6 +7,7 @@ import {setUser} from "../store/slices/userSlice";
 import {getLocalizedErrorMessages} from "../utils/consts";
 import {useDispatch} from "react-redux";
 import MyNotification from "../components/UI/notification/MyNotification";
+import MyButton from "../components/UI/button/MyButton";
 
 const HomePage = () => {
     const {t} = useTranslation();
@@ -57,7 +58,25 @@ const HomePage = () => {
                                     severity={alert.severity}/>
                 </>
             }
-        </>
+            <div className="lead py-2">
+                {t('application stack')}:
+                <br/>
+                JDK 11, Spring Boot(Data, MVC, Security, Cloud), React, Redux, Docker, Maven, Hibernate ORM, PostgreSQL,
+                FlyWay, JUnit 5, Testcontainers, WireMock, RabbitMQ, Swagger/Open API 3.0, Lombok, Caffeine Cache.
+            </div>
+            <hr/>
+            <div className="lead py-1">
+                {/*https://stackoverflow.com/a/75143145*/}
+                <Trans i18nKey="application description" components={{ 1: <br /> }} />
+            </div>
+            <div className="lead py-3">
+                    <MyButton className={"btn btn-outline-success"}
+                              onClick={() => window.open("/apiDocs", "_blank")}
+                    >
+                        Api Documentation
+                    </MyButton>
+            </div>
+        </div>
     )
 }
 export default HomePage;
