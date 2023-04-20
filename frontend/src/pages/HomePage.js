@@ -71,7 +71,7 @@ const HomePage = () => {
             </div>
             <div className="lead py-3">
                     <MyButton className={"btn btn-outline-success"}
-                              onClick={() => window.open("/apiDocs", "_blank")}
+                              onClick={() => window.open("/travel-expert/apiDocs", "_blank")}
                     >
                         Api Documentation
                     </MyButton>
