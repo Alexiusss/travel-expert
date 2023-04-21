@@ -4,7 +4,6 @@ import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewClient;
 import com.example.clients.review.ReviewResponse;
 import com.example.user.AuthUser;
-import com.example.user.model.Role;
 import com.example.user.model.User;
 import com.example.user.repository.UserRepository;
 import com.example.user.util.UserUtil;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -39,7 +37,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User saveUser(User user) {
         checkNew(user);
-        user.setRoles(Set.of(Role.USER));
+        user.setRoles(user.getRoles());
         return userRepository.save(prepareToSave(user));
     }
 
@@ -52,6 +50,7 @@ public class UserService implements UserDetailsService {
         userFromDB.setLastName(user.getLastName());
         userFromDB.setFileName(user.getFileName());
         userFromDB.setUsername(user.getUsername());
+        userFromDB.setRoles(user.getRoles());
         if (!ObjectUtils.isEmpty(user.getPassword())) {
             userFromDB.setPassword(user.getPassword());
             prepareToSave(userFromDB);
