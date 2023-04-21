@@ -1,5 +1,6 @@
 package com.example.user.controller;
 
+import com.example.user.model.Role;
 import com.example.user.model.User;
 import com.example.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -244,6 +245,21 @@ public class UserControllerTest extends AbstractControllerTest {
 
         USER_MATCHER.assertMatch(userRepository.getById(USER_ID), getUpdated());
     }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void updateRoles() throws Exception {
+        User updated = getUpdated();
+        updated.setRoles(List.of(Role.MODERATOR, Role.USER));
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(updated, updated.getPassword())))
+                .andExpect(status().isOk());
+
+        USER_MATCHER.assertMatch(userRepository.getById(USER_ID), updated);
+    }
+
 
     @Test
     @WithUserDetails(USER_MAIL)
