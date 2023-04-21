@@ -64,7 +64,8 @@ const UsersList = () => {
                         lastName: updatedUser.lastName,
                         username: updatedUser.username,
                         password: updatedUser.password,
-                        enabled: updatedUser.enabled
+                        enabled: updatedUser.enabled,
+                        roles: updatedUser.roles
                     }
                     :
                     user

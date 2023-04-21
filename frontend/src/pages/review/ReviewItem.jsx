@@ -118,7 +118,7 @@ const ReviewItem = (props) => {
                                     promiseInProgress={props.promiseInProgress} removeImage={removeImage}/>
                     </CardMedia>
                 }
-                {(isAdmin || isAuthor || isAuthor) &&
+                {(isAdmin || isModerator || isAuthor || isAuthor) &&
                     <CardActions>
                         {isModerator &&
                             <Button size="small" color="primary"

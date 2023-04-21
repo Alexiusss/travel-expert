@@ -14,9 +14,11 @@ const UserEditor = (props) => {
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [roles, setRoles] = useState(['USER']);
     const [id, setId] = useState(null)
     const {t} = useTranslation();
     const currentUserId = useAuth().authUserId;
+    const {isAdmin} = useAuth();
     const [fileNames, setFileNames] = useState([]);
     const [images, setImages] = useState([]);
 
@@ -26,6 +28,7 @@ const UserEditor = (props) => {
         setLastName('');
         setUsername('');
         setPassword('');
+        setRoles([]);
         setId(null);
         setImages([]);
         setFileNames([]);
@@ -33,7 +36,7 @@ const UserEditor = (props) => {
 
     const saveUser = (e) => {
         e.preventDefault()
-        const user = {email, firstName, lastName, username, password, fileName: fileNames[0], id}
+        const user = {email, firstName, lastName, username, password, roles, fileName: fileNames[0], id}
         if (id) {
             if (currentUserId === id) {
                 authService.updateProfile(user)
@@ -68,6 +71,15 @@ const UserEditor = (props) => {
                     openAlert(getLocalizedErrorMessages(error.response.data.message), "error");
                 })
         }
+    }
+
+    const editRoles = (editedRole) => {
+        if (roles.some(role => role === editedRole)) {
+            setRoles(roles.filter(role => role !== editedRole))
+        } else {
+            setRoles([...roles, editedRole])
+        }
+
     }
 
     const uploadImages = (images) => {
@@ -119,6 +131,7 @@ const UserEditor = (props) => {
             setFirstName('' + props.userFromDB.firstName)
             setLastName('' + props.userFromDB.lastName)
             setUsername('' + props.userFromDB.username)
+            setRoles(props.userFromDB.roles || [])
             setId('' + props.userFromDB.id)
             setFileNames([props.userFromDB.fileName] || [])
         }
@@ -200,6 +213,40 @@ const UserEditor = (props) => {
                     </Button>
                     <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                 </div>
+
+                {isAdmin && (
+                    <div className="form-group" style={{marginTop: 10}}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                id="adminRole"
+                                checked={roles.some(role => role === 'ADMIN')}
+                                onChange={() => editRoles('ADMIN')}
+                            />
+                            ADMIN
+                        </label>
+                        {' '}
+                        <label>
+                            <input
+                                type="checkbox"
+                                id="moderRole"
+                                checked={roles.some(role => role === 'MODERATOR')}
+                                onChange={() => editRoles('MODERATOR')}
+                            />
+                            MODER
+                        </label>
+                        {' '}
+                        <label>
+                            <input
+                                type="checkbox"
+                                id="userRole"
+                                checked={roles.some(role => role === 'USER')}
+                                onChange={() => editRoles('USER')}
+                            />
+                            USER
+                        </label>
+                    </div>
+                )}
 
                 <ButtonSection save={saveUser} close={close}/>
             </form>
