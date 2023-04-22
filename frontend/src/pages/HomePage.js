@@ -17,12 +17,18 @@ const HomePage = () => {
     const {
         REACT_APP_ADMIN_EMAIL: adminEmail,
         REACT_APP_ADMIN_PASSWORD: adminPassword,
+        REACT_APP_MODER_EMAIL: moderEmail,
+        REACT_APP_MODER_PASSWORD: moderPassword,
         REACT_APP_USER_EMAIL: userEmail,
         REACT_APP_USER_PASSWORD: userPassword,
     } = process.env;
 
     const signInAsAdmin = (e) => {
         signIn(e, adminEmail, adminPassword);
+    }
+
+    const signInAsModerator = (e) => {
+        signIn(e, moderEmail, moderPassword);
     }
 
     const signInAsUser = (e) => {
@@ -53,7 +59,7 @@ const HomePage = () => {
         <div className="container">
             {!isAuth &&
                 <>
-                    <ButtonGroup signInAsAdmin={signInAsAdmin} signInAsUser={signInAsUser}/>
+                    <ButtonGroup signInAsAdmin={signInAsAdmin} signInAsModerator={signInAsModerator} signInAsUser={signInAsUser}/>
                     <MyNotification open={alert.open} setOpen={setAlert} message={alert.message}
                                     severity={alert.severity}/>
                 </>

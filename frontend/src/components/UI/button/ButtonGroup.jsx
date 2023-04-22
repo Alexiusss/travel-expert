@@ -8,7 +8,8 @@ const ButtonGroup = (props) => {
     const {push} = useHistory();
     const {
         signInAsAdmin = Function.prototype,
-        signInAsUser = Function.prototype
+        signInAsModerator = Function.prototype,
+        signInAsUser = Function.prototype,
     } = props;
     return (
         <div className="lead py-1">
@@ -24,6 +25,11 @@ const ButtonGroup = (props) => {
                           onClick={(e) => signInAsAdmin(e)}
                 >
                     {t("sign in")} {t('as')} Admin
+                </MyButton>
+                <MyButton className={"btn btn-outline-primary w-100"}
+                          onClick={(e) => signInAsModerator(e)}
+                >
+                    {t("sign in")} {t('as')} Moderator
                 </MyButton>
                 {' '}
                 <MyButton className={"btn btn-outline-primary w-100"}
