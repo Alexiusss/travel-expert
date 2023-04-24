@@ -48,6 +48,12 @@ management:
           include: ping
           show-details: always
 
+springdoc:
+  api-docs:
+    path: /user/v3/api-docs
+  swagger-ui:
+    path: /user/swagger-ui
+
 eureka:
   client:
     service-url:
