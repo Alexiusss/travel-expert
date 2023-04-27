@@ -24,3 +24,5 @@ target/
 
 /docker/deploy/.env
 /docker/deploy/nginx/ssl/*
+
+k8s/minikube/env-vars.yaml

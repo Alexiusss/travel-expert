@@ -18,9 +18,9 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: kube
+          envFrom:
+            - configMapRef:
+                name: env-vars
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
