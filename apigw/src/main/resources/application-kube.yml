@@ -1,0 +1,52 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: api-gateway
+  zipkin:
+    base-url: http://zipkin:9411
+  cloud:
+    gateway:
+      routes:
+        - id: restaurant
+          uri: lb://RESTAURANT
+          predicates:
+            - Path=/api/v1/restaurants/**, /restaurant/**
+        - id: user
+          uri: lb://USER
+          predicates:
+            - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/auth/**, /user/**
+        - id: review
+          uri: lb://REVIEW
+          predicates:
+            - Path=/api/v1/reviews/**, /review/**
+        - id: image
+          uri: lb://IMAGE
+          predicates:
+            - Path=/api/v1/images/**, /image/**
+        - id: hotel
+          uri: lb://HOTEL
+          predicates:
+            - Path=/api/v1/hotels/**, /hotel/**
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        readiness:
+          include: "*"
+          show-details: always
+        liveness:
+          include: ping
+          show-details: always
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: false
