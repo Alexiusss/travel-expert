@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigw
+  labels:
+    app: apigw
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: apigw
+      labels:
+        app: apigw
+    spec:
+      containers:
+        - name: apigw
+          image: alexius1905/apigw:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: env-vars
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8083
+            initialDelaySeconds: 50
+            periodSeconds: 10
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8083
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 10
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: apigw
