@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +52,7 @@ public class ImageController {
     @SecurityRequirement(name = "Bearer Authentication")
     // https://docs.oracle.com/en/cloud/saas/marketing/responsys-develop/API/REST/api-v1.3-lists-listName-members-post-actionDelete.htm
     @PostMapping("/fileNames")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAllByFileNames(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
                                      @RequestBody String[] fileNames,
                                      @RequestParam("action") String action) throws Exception {
