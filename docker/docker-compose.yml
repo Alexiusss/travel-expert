@@ -80,14 +80,12 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
       KC_HOSTNAME_STRICT: false
       KC_EDGE: proxy
-    ports:
-      - "8484:8080"
     image: keycloak/keycloak:18.0
     network_mode: host
     depends_on:
       - db
-    command:
-      - start-dev --auto-build
+#   https://stackoverflow.com/a/73690220
+    command: ["start-dev", "--http-port=8180"]
 
 #  eureka-server:
 #    image: alexius1905/eureka-server:latest
