@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import static com.example.user.util.JwtUtil.validateAccessToken;
 
-@Component
+//@Component
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 

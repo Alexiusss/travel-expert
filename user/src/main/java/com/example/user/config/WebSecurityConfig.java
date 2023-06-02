@@ -1,6 +1,6 @@
 package com.example.user.config;
 
-import com.example.user.filter.JwtFilter;
+import com.example.common.util.KCRoleConverter;
 import com.example.user.servise.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ import static com.example.user.util.UserUtil.PASSWORD_ENCODER;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
-    private final JwtFilter jwtFilter;
+   // private final JwtFilter jwtFilter;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -38,10 +38,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // https://www.toptal.com/spring/spring-security-tutorial
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KCRoleConverter());
+
         http = http.csrf().disable();
-               // https://stackoverflow.com/a/55312420
-               // .csrfTokenRepository(getCsrfRepository())
-                //.ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
+        // https://stackoverflow.com/a/55312420
+        // .csrfTokenRepository(getCsrfRepository())
+        //.ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
 
         http = http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -58,15 +62,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/api/v1/users/**/author*").permitAll()
                 .antMatchers("/**/swagger-ui/**", "/**/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
 
-        http.addFilterBefore(
-                jwtFilter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+                .and()
+
+                .oauth2ResourceServer()
+                .jwt()
+                .jwtAuthenticationConverter(jwtAuthenticationConverter);
+
+//        http.addFilterBefore(
+//                jwtFilter,
+//                UsernamePasswordAuthenticationFilter.class
+//        );
     }
 
-    private static CookieCsrfTokenRepository  getCsrfRepository() {
+    private static CookieCsrfTokenRepository getCsrfRepository() {
         CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
         repository.setCookieHttpOnly(false);
         repository.setSecure(true);
