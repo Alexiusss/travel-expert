@@ -29,6 +29,7 @@ import static com.example.user.util.UserUtil.prepareToSave;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Profile("!kc")
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;

@@ -15,7 +15,7 @@ spring:
         - id: user
           uri: lb://USER
           predicates:
-            - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/auth/**, /user/**
+            - Path=/api/v1/users/**, /api/v1/kc-users/**, /api/v1/profile/**, /api/v1/auth/**, /user/**
         - id: review
           uri: lb://REVIEW
           predicates:

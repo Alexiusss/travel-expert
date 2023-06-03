@@ -21,6 +21,10 @@ spring:
     rest:
       base-path: /api
   security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect/certs
     filter:
       order: 10
   zipkin:
@@ -67,11 +71,12 @@ clients:
 
 myhostname: localhost:8080
 
-access.token.secret: ${ACCESS_TOKEN_SECRET}
-refresh.token.secret: ${REFRESH_TOKEN_SECRET}
-
-access.token.expiration: 60
-refresh.token.expiration: 30
+keycloak.auth-server-url: http://localhost:8180/
+keycloak.resource: user-manage-client
+keycloak.realm: travel-expert-realm
+keycloak.ssl: external
+keycloak.credentials.secret: ptaoj2kXdeZcjMUtUzx4fkEaa5Jib2Yq
+keycloak.use-resource-role-mapping: true
 
 cookies.domain: localhost
 

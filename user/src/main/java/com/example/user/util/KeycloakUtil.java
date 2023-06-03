@@ -11,6 +11,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Profile("kc")
 public class KeycloakUtil {
 
     @Value("${keycloak.auth-server-url}")

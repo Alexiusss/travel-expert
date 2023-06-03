@@ -2,12 +2,14 @@ package com.example.user.repository;
 
 import com.example.common.BaseRepository;
 import com.example.user.model.User;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
+@Profile("!kc")
 public interface UserRepository extends BaseRepository<User> {
 
     @Override
