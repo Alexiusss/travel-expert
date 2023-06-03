@@ -1,11 +1,12 @@
 package com.example.user.config;
 
-import com.example.common.util.KCRoleConverter;
+import com.example.user.filter.JwtFilter;
 import com.example.user.servise.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,7 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,10 +25,11 @@ import static com.example.user.util.UserUtil.PASSWORD_ENCODER;
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Profile("!kc")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
-   // private final JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -38,9 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // https://www.toptal.com/spring/spring-security-tutorial
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KCRoleConverter());
 
         http = http.csrf().disable();
         // https://stackoverflow.com/a/55312420
@@ -62,18 +61,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/api/v1/users/**/author*").permitAll()
                 .antMatchers("/**/swagger-ui/**", "/**/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().authenticated();
 
-                .and()
-
-                .oauth2ResourceServer()
-                .jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter);
-
-//        http.addFilterBefore(
-//                jwtFilter,
-//                UsernamePasswordAuthenticationFilter.class
-//        );
+        http.addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+        );
     }
 
     private static CookieCsrfTokenRepository getCsrfRepository() {
