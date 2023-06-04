@@ -78,6 +78,8 @@ keycloak.ssl: external
 keycloak.credentials.secret: ptaoj2kXdeZcjMUtUzx4fkEaa5Jib2Yq
 keycloak.use-resource-role-mapping: true
 
+client.url: http://localhost:9191/
+
 cookies.domain: localhost
 
 application-version: 1.0.0
