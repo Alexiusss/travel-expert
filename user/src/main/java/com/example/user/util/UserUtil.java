@@ -3,7 +3,9 @@ package com.example.user.util;
 import com.example.clients.auth.AuthorDTO;
 import com.example.common.error.ModificationRestrictionException;
 import com.example.user.model.User;
+import com.example.user.model.dto.UserDTO;
 import lombok.experimental.UtilityClass;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -14,7 +16,7 @@ import java.util.Set;
 @UtilityClass
 public class UserUtil {
     //https://docs.spring.io/spring-security/site/docs/current/reference/html5/#authentication-password-storage-dpe
-    public static final PasswordEncoder PASSWORD_ENCODER =  PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     public static User prepareToSave(User user) {
         String password = user.getPassword();
@@ -22,6 +24,7 @@ public class UserUtil {
         user.setEmail(user.getEmail().toLowerCase());
         return user;
     }
+
     public static void checkModificationAllowed(String id) {
         if (id.equals("1")) {
             throw new ModificationRestrictionException();
@@ -36,5 +39,16 @@ public class UserUtil {
         Set<String> subscribers = user.getSubscribers();
         Set<String> subscriptions = user.getSubscriptions();
         return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions, 0L);
+    }
+
+    public static UserDTO convertUserRepresentationToUserDTO(UserRepresentation userRepresentation) {
+        return UserDTO.builder()
+                .id(userRepresentation.getId())
+                .email(userRepresentation.getEmail())
+                .firstName(userRepresentation.getFirstName())
+                .lastName(userRepresentation.getLastName())
+                .username(userRepresentation.getUsername())
+                .enabled(userRepresentation.isEnabled())
+                .build();
     }
 }

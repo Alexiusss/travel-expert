@@ -3,6 +3,7 @@ package com.example.user.model.dto;
 import com.example.common.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class UserDTO implements HasIdAndEmail {
 
     private String id;
