@@ -79,6 +79,9 @@ public class KeycloakUtil {
     public List<UserRepresentation> searchKeycloakUsers(String text) {
         return usersResource.searchByAttributes(text);
     }
+    public List<UserRepresentation> findAll() {
+        return usersResource.list();
+    }
 
     public void deleteKeycloakUser(String userId) {
         usersResource.get(userId).remove();

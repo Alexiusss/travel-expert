@@ -29,6 +29,29 @@ public class KeycloakUserController {
     public static final String REST_URL = "/api/v1/kc-users/";
     private final KeycloakUserService userService;
 
+    @Operation(summary = "Get a user by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable String id) {
+        log.info("get {}", id);
+        UserDTO user = userService.get(id);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAll(
+            @RequestParam(defaultValue = "", required = false) String filter
+
+    ) {
+        log.info("getAll");
+        List<UserDTO> users = userService.getAll(filter);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ADMIN')")
