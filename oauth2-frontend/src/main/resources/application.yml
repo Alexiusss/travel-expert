@@ -1,0 +1,6 @@
+server:
+  port: 9191
+
+#logging:
+#  pattern:
+#    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"

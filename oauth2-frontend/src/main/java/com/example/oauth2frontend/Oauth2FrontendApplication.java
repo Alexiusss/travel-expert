@@ -1,13 +1,13 @@
-package com.example.jsoauth2frontend;
+package com.example.oauth2frontend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JsOauth2FrontendApplication {
+public class Oauth2FrontendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JsOauth2FrontendApplication.class, args);
+        SpringApplication.run(Oauth2FrontendApplication.class, args);
     }
 
 }

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>js-oauth2-frontend</artifactId>
+    <artifactId>oauth2-frontend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>js-oauth2-frontend</name>
-    <description>js-oauth2-frontend</description>
+    <name>oauth2-frontend</name>
+    <description>oauth2-frontend</description>
     <properties>
         <java.version>11</java.version>
     </properties>
