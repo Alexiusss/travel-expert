@@ -1,7 +1,7 @@
 package com.example.user.config.kc;
 
 import com.example.common.util.KCRoleConverter;
-import lombok.AllArgsConstructor;
+import com.example.user.controller.exception.OAuth2ExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Configuration
@@ -41,12 +40,6 @@ public class KeycloakWebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and();
 
-        http = http
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, ex) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                }).and();
-
         http.authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()
@@ -60,7 +53,11 @@ public class KeycloakWebSecurityConfig {
 
                 .oauth2ResourceServer()
                 .jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter);
+                .jwtAuthenticationConverter(jwtAuthenticationConverter)
+
+                .and()
+
+                .authenticationEntryPoint(new OAuth2ExceptionHandler());
 
         return http.build();
     }

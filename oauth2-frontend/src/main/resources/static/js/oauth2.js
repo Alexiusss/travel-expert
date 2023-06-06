@@ -9,8 +9,9 @@ const SCOPE = "openid";
 const S256 = "S256";
 const AUTH_CODE_REDIRECT_URI = "http://localhost:9191/redirect";
 const RESOURCE_SERVER_URI = "http://localhost:8080";
+let accessToken = "";
 
-function initValues() {
+function initAccessToken() {
     let state = generateState(30);
     document.getElementById("originalState").innerHTML = state;
 
@@ -97,11 +98,10 @@ function requestTokens(stateFromAuthServer, authCode) {
 }
 
 function accessTokenResponse(data, status, jqXHR) {
-    let accessToken  = data["access_token"];
-    getDataFromResourceServer(accessToken);
+    accessToken = data["access_token"];
 }
 
-function getDataFromResourceServer(accessToken) {
+function getDataFromResourceServer() {
     $.ajax({
         beforeSend: function (request) {
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded: charset=UTF8");
@@ -110,10 +110,24 @@ function getDataFromResourceServer(accessToken) {
         type: "GET",
         url: RESOURCE_SERVER_URI + "/api/v1/kc-users/",
         success: resourceServerResponse,
+        error: resourceServerError,
         dataType: "json"
     })
 }
 
 function resourceServerResponse(data, status, jqXHR) {
     document.getElementById("userData").innerHTML = data;
+}
+
+function resourceServerError(request, status, error) {
+    let json = JSON.parse(request.responseText);
+    let errorType = json["type"];
+
+    console.log(errorType)
+
+    if(errorType && (errorType === 'Oauth2AuthenticationException'|| errorType === 'InvalidBearerTokenException')) {
+        initAccessToken();
+    } else {
+        console.log("unknown error");
+    }
 }
