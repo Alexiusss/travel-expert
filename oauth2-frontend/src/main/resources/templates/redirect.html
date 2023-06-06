@@ -6,5 +6,21 @@
 </head>
 <body>
 Redirect page
+<script>
+    let urlSearchParams = new URLSearchParams(window.location.search);
+    let authCode = urlSearchParams.get("code"),
+        state = urlSearchParams.get("state"),
+        error = urlSearchParams.get("error"),
+        errorDescription = urlSearchParams.get("errorDescription");
+
+    if (error) {
+        window.alert("error " + error + ", description " + errorDescription)
+    } else {
+        console.log("auth code = " + authCode);
+        window.opener.requestTokens(state, authCode);
+    }
+
+    window.close();
+</script>
 </body>
 </html>

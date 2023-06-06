@@ -3,10 +3,12 @@
 const SHA_256 = "SHA-256";
 const KEYCLOAK_URI = "http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect";
 const RESPONSE_TYPE_CODE = "code";
+const GRANT_TYPE_AUTH_CODE = "authorization_code";
 const CLIENT_ID = "travel-expert-client";
 const SCOPE = "openid";
 const S256 = "S256";
 const AUTH_CODE_REDIRECT_URI = "http://localhost:9191/redirect";
+const RESOURCE_SERVER_URI = "http://localhost:8080";
 
 function initValues() {
     let state = generateState(30);
@@ -62,4 +64,56 @@ function requestAuthCode(state, codeChallenge) {
     authUrl += "&redirect_uri=" + AUTH_CODE_REDIRECT_URI;
 
     window.open(authUrl, 'auth window', 'width=800,height=600,left=350,top=200')
+}
+
+function requestTokens(stateFromAuthServer, authCode) {
+     let originalState = document.getElementById("originalState").innerText;
+
+    if (stateFromAuthServer === originalState) {
+        let codeVerifier = document.getElementById("codeVerifier").innerText;
+
+        let data = {
+            "grant_type": GRANT_TYPE_AUTH_CODE,
+            "client_id": CLIENT_ID,
+            "code": authCode,
+            "code_verifier": codeVerifier,
+            "redirect_uri": AUTH_CODE_REDIRECT_URI
+        };
+
+        $.ajax({
+            function (request) {
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded: charset=UTF8")
+            },
+            type: "POST",
+            url: KEYCLOAK_URI + "/token",
+            data: data,
+            success: accessTokenResponse,
+            dataType: "json"
+        })
+
+    } else {
+        alert("Error state value");
+    }
+}
+
+function accessTokenResponse(data, status, jqXHR) {
+    let accessToken  = data["access_token"];
+    getDataFromResourceServer(accessToken);
+}
+
+function getDataFromResourceServer(accessToken) {
+    $.ajax({
+        beforeSend: function (request) {
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded: charset=UTF8");
+            request.setRequestHeader("Authorization", "Bearer " + accessToken);
+        },
+        type: "GET",
+        url: RESOURCE_SERVER_URI + "/api/v1/kc-users/",
+        success: resourceServerResponse,
+        dataType: "json"
+    })
+}
+
+function resourceServerResponse(data, status, jqXHR) {
+    document.getElementById("userData").innerHTML = data;
 }
