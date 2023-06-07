@@ -1,25 +1,64 @@
 // https://www.rfc-editor.org/rfc/rfc7636
 
-const SHA_256 = "SHA-256";
-const KEYCLOAK_URI = "http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect";
 const RESPONSE_TYPE_CODE = "code";
 const GRANT_TYPE_AUTH_CODE = "authorization_code";
 const GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
-const CLIENT_ID = "travel-expert-client";
-const SCOPE = "openid";
+
+const SHA_256 = "SHA-256";
 const S256 = "S256";
-const AUTH_CODE_REDIRECT_URI = "http://localhost:9191/redirect";
+
+const KEYCLOAK_URI = "http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect";
+const CLIENT_ROOT_URL = "http://localhost:9191";
 const RESOURCE_SERVER_URI = "http://localhost:8080";
-const REFRESH_TOKEN_KEY = "RT";
+
 let accessToken = "";
 let refreshToken = "";
+let idToken = "";
+
+const ID_TOKEN_KEY = "IT";
+const REFRESH_TOKEN_KEY = "RT";
+const STATE_KEY = "SK";
+const CODE_VERIFIER_KEY = "CV";
+
+const CLIENT_ID = "travel-expert-client";
+const SCOPE = "openid";
+
+
+function initPage() {
+
+    refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+
+    if (refreshToken) {
+        exchangeRefreshTokenToAccessToken();
+    } else {
+        if (!checkAuthCode()) {
+            initAccessToken();
+        }
+    }
+}
+
+function checkAuthCode() {
+    let urlSearchParams = new URLSearchParams(window.location.search);
+    let authCode = urlSearchParams.get("code"),
+        state = urlSearchParams.get("state"),
+        error = urlSearchParams.get("error"),
+        errorDescription = urlSearchParams.get("errorDescription");
+
+    if (!authCode) {
+        return false;
+    }
+
+    requestTokens(state, authCode);
+
+    return true;
+}
 
 function initAccessToken() {
     let state = generateState(30);
-    document.getElementById("originalState").innerHTML = state;
+    localStorage.setItem(STATE_KEY, state);
 
     let codeVerifier = generateCodeVerifier();
-    document.getElementById("codeVerifier").innerHTML = codeVerifier;
+    localStorage.setItem(CODE_VERIFIER_KEY, codeVerifier)
 
     generateCodeChallenge(codeVerifier).then(codeChallenge => {
         requestAuthCode(state, codeChallenge);
@@ -65,23 +104,23 @@ function requestAuthCode(state, codeChallenge) {
     authUrl += "&scope=" + SCOPE;
     authUrl += "&code_challenge=" + codeChallenge;
     authUrl += "&code_challenge_method=" + S256;
-    authUrl += "&redirect_uri=" + AUTH_CODE_REDIRECT_URI;
+    authUrl += "&redirect_uri=" + CLIENT_ROOT_URL;
 
-    window.open(authUrl, 'auth window', 'width=800,height=600,left=350,top=200')
+    window.open(authUrl, "_self");
 }
 
 function requestTokens(stateFromAuthServer, authCode) {
-    let originalState = document.getElementById("originalState").innerText;
+    let originalState = localStorage.getItem(STATE_KEY);
 
     if (stateFromAuthServer === originalState) {
-        let codeVerifier = document.getElementById("codeVerifier").innerText;
+        let codeVerifier = localStorage.getItem(CODE_VERIFIER_KEY);
 
         let data = {
             "grant_type": GRANT_TYPE_AUTH_CODE,
             "client_id": CLIENT_ID,
             "code": authCode,
             "code_verifier": codeVerifier,
-            "redirect_uri": AUTH_CODE_REDIRECT_URI
+            "redirect_uri": CLIENT_ROOT_URL
         };
 
         $.ajax({
@@ -96,15 +135,26 @@ function requestTokens(stateFromAuthServer, authCode) {
         })
 
     } else {
-        alert("Error state value");
+        initAccessToken();
     }
 }
 
 function accessTokenResponse(data, status, jqXHR) {
+    localStorage.removeItem(STATE_KEY);
+    localStorage.removeItem(CODE_VERIFIER_KEY);
+
     accessToken = data["access_token"];
     refreshToken = data["refresh_token"];
+    idToken = data["id_token"];
+
+    console.log("access_token = " + accessToken);
+    console.log("refresh_token = " + refreshToken);
+    console.log("id_token = " + idToken);
 
     localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    localStorage.setItem(ID_TOKEN_KEY, idToken);
+
+    getDataFromResourceServer();
 }
 
 function getDataFromResourceServer() {
@@ -137,25 +187,45 @@ function resourceServerError(request, status, error) {
     } else {
         initAccessToken();
     }
+}
 
-    function exchangeRefreshTokenToAccessToken() {
-        console.log("new access token initiated");
+function exchangeRefreshTokenToAccessToken() {
+    console.log("new access token initiated");
 
-        let data = {
-            "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-            "client_id": CLIENT_ID,
-            "refresh_token": refreshToken
-        }
-
-        $.ajax({
-            beforeSend: function (request) {
-                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-            },
-            type: "POST",
-            url: KEYCLOAK_URI + "/token",
-            data: data,
-            success: accessTokenResponse,
-            dataType: "json"
-        });
+    let data = {
+        "grant_type": GRANT_TYPE_REFRESH_TOKEN,
+        "client_id": CLIENT_ID,
+        "refresh_token": refreshToken
     }
+
+    $.ajax({
+        beforeSend: function (request) {
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+        },
+        type: "POST",
+        url: KEYCLOAK_URI + "/token",
+        data: data,
+        success: accessTokenResponse,
+        dataType: "json"
+    });
+}
+
+function logout() {
+    let idToken = localStorage.getItem(ID_TOKEN_KEY);
+
+    console.log("logout")
+
+    let authUrl = KEYCLOAK_URI + "/logout";
+
+    authUrl += "?post_logout_redirect_uri=" + CLIENT_ROOT_URL;
+    authUrl += "&id_token_hint=" + idToken;
+    authUrl += "&client_id=" + CLIENT_ID;
+
+    window.open(authUrl, '_self');
+
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem(ID_TOKEN_KEY);
+
+    accessToken = "";
+    refreshToken = ""
 }
