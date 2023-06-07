@@ -4,12 +4,15 @@ const SHA_256 = "SHA-256";
 const KEYCLOAK_URI = "http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect";
 const RESPONSE_TYPE_CODE = "code";
 const GRANT_TYPE_AUTH_CODE = "authorization_code";
+const GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 const CLIENT_ID = "travel-expert-client";
 const SCOPE = "openid";
 const S256 = "S256";
 const AUTH_CODE_REDIRECT_URI = "http://localhost:9191/redirect";
 const RESOURCE_SERVER_URI = "http://localhost:8080";
+const REFRESH_TOKEN_KEY = "RT";
 let accessToken = "";
+let refreshToken = "";
 
 function initAccessToken() {
     let state = generateState(30);
@@ -68,7 +71,7 @@ function requestAuthCode(state, codeChallenge) {
 }
 
 function requestTokens(stateFromAuthServer, authCode) {
-     let originalState = document.getElementById("originalState").innerText;
+    let originalState = document.getElementById("originalState").innerText;
 
     if (stateFromAuthServer === originalState) {
         let codeVerifier = document.getElementById("codeVerifier").innerText;
@@ -82,7 +85,7 @@ function requestTokens(stateFromAuthServer, authCode) {
         };
 
         $.ajax({
-            function (request) {
+            function(request) {
                 request.setRequestHeader("Content-type", "application/x-www-form-urlencoded: charset=UTF8")
             },
             type: "POST",
@@ -99,12 +102,15 @@ function requestTokens(stateFromAuthServer, authCode) {
 
 function accessTokenResponse(data, status, jqXHR) {
     accessToken = data["access_token"];
+    refreshToken = data["refresh_token"];
+
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 }
 
 function getDataFromResourceServer() {
     $.ajax({
         beforeSend: function (request) {
-            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded: charset=UTF8");
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF8");
             request.setRequestHeader("Authorization", "Bearer " + accessToken);
         },
         type: "GET",
@@ -125,9 +131,31 @@ function resourceServerError(request, status, error) {
 
     console.log(errorType)
 
-    if(errorType && (errorType === 'Oauth2AuthenticationException'|| errorType === 'InvalidBearerTokenException')) {
-        initAccessToken();
+    let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+    if (refreshToken) {
+        exchangeRefreshTokenToAccessToken();
     } else {
-        console.log("unknown error");
+        initAccessToken();
+    }
+
+    function exchangeRefreshTokenToAccessToken() {
+        console.log("new access token initiated");
+
+        let data = {
+            "grant_type": GRANT_TYPE_REFRESH_TOKEN,
+            "client_id": CLIENT_ID,
+            "refresh_token": refreshToken
+        }
+
+        $.ajax({
+            beforeSend: function (request) {
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+            },
+            type: "POST",
+            url: KEYCLOAK_URI + "/token",
+            data: data,
+            success: accessTokenResponse,
+            dataType: "json"
+        });
     }
 }
