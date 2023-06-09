@@ -1,1 +1,11 @@
+server:
+  port: 8902
 
+client.url: http://localhost:9191
+
+keycloak.secret: wuMwx3GXsgHCEhse1bAB8Rwk1u17tjHs
+keycloak.clientid: travel-expert-client
+keycloak.granttype.code: authorization_code
+keycloak.granttype.refresh: refresh_token
+
+cookie.domain: localhost
