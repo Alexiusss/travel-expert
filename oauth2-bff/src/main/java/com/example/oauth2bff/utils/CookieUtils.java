@@ -23,4 +23,16 @@ public class CookieUtils {
                 .path("/")
                 .build();
     }
+
+    public HttpCookie deleteCookie(String name){
+        return ResponseCookie
+                .from(name, "")
+                .maxAge(0)
+                .sameSite(SameSiteCookies.STRICT.getValue())
+                .httpOnly(true)
+                .secure(true)
+                .domain(cookieDomain)
+                .path("/")
+                .build();
+    }
 }
