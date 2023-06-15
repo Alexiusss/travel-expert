@@ -96,8 +96,7 @@ public class KeycloakUtil {
         kcUser.setEmail(user.getEmail());
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
-        kcUser.setEnabled(user.isEnabled());
-        kcUser.setEmailVerified(user.getActivationCode() == null);
+        kcUser.setEnabled(true);
         return kcUser;
     }
 

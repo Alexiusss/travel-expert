@@ -42,8 +42,6 @@ public class UserDTO implements HasIdAndEmail {
 
     private boolean enabled;
 
-    private String activationCode;
-
     public void setEmail(String email) {
         this.email = StringUtils.hasText(email) ? email.toLowerCase() : null;
     }

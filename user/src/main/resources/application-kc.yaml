@@ -74,8 +74,8 @@ myhostname: localhost:8080
 keycloak.auth-server-url: http://localhost:8180/
 keycloak.resource: user-manage-client
 keycloak.realm: travel-expert-realm
-keycloak.ssl: external
-keycloak.credentials.secret: ptaoj2kXdeZcjMUtUzx4fkEaa5Jib2Yq
+#keycloak.ssl: external
+keycloak.credentials.secret: g5anEaKSrY0tRb0WTnRsYe1Kw1y4nxbc
 keycloak.use-resource-role-mapping: true
 
 client.url: http://localhost:9191/
