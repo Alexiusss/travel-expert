@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,6 +39,16 @@ public class KeycloakUserController {
         log.info("get {}", id);
         UserDTO user = userService.get(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @Operation(summary = "Get a current user profile", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/profile")
+    public ResponseEntity<UserDTO> getProfile(@AuthenticationPrincipal Jwt jwt) {
+        log.info("get profile for {}", jwt.getSubject());
+        UserDTO profile = userService.get(jwt.getSubject());
+        return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
     @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")
