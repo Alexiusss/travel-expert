@@ -17,6 +17,10 @@ export const RESTAURANT_API_DOCS_URL = BASE_URL + '/restaurant/swagger-ui';
 export const REVIEW_API_DOCS_URL = BASE_URL + '/review/swagger-ui';
 export const IMAGE_API_DOCS_URL = BASE_URL + '/image/swagger-ui';
 export const USER_API_DOCS_URL = BASE_URL + '/user/swagger-ui';
+export const KEYCLOAK_URI = "http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect";
+export const KEYCLOAK_REALM = "travel-expert-realm";
+export const CLIENT_ID = "travel-expert-client";
+
 
 export const getLocalizedErrorMessages = (messages) => {
     return messages.split('\n').map(message => {
