@@ -32,13 +32,14 @@
     "react-scripts": "5.0.0",
     "reactstrap": "^8.10.0",
     "redux-persist": "^6.0.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.87.0"
   },
   "scripts": {
-    "start": "HTTPS=false react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "HTTPS=false craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "predeploy": "npm run build && cp build/index.html build/404.html",
     "deploy": "gh-pages -d build"
   },
@@ -61,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "gh-pages": "^5.0.0"
   }
 }
