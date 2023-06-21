@@ -57,8 +57,10 @@ public class RestaurantController {
     @PostMapping
     public ResponseEntity<Restaurant> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Restaurant restaurant) {
 
-        ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
-        if (isUnauthorized != null) return isUnauthorized;
+        if (restaurantService.currentProfileName("!kc")) {
+            ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
+            if (isUnauthorized != null) return isUnauthorized;
+        }
 
         Restaurant created = restaurantService.create(restaurant);
 
@@ -77,8 +79,10 @@ public class RestaurantController {
     public ResponseEntity<Restaurant> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
         log.info("delete restaurant {}", id);
 
-        ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
-        if (isUnauthorized != null) return isUnauthorized;
+        if (restaurantService.currentProfileName("!kc")) {
+            ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
+            if (isUnauthorized != null) return isUnauthorized;
+        }
 
         restaurantService.delete(id);
         return ResponseEntity.noContent().build();
@@ -90,8 +94,10 @@ public class RestaurantController {
     public ResponseEntity<?> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
                                     @Valid @RequestBody Restaurant restaurant, @PathVariable String id) {
 
-        ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
-        if (isUnauthorized != null) return isUnauthorized;
+        if (restaurantService.currentProfileName("!kc")) {
+            ResponseEntity<Restaurant> isUnauthorized = restaurantService.checkAuth(authorization);
+            if (isUnauthorized != null) return isUnauthorized;
+        }
 
         restaurantService.update(id, restaurant);
 
