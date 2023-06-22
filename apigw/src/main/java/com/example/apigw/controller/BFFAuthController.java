@@ -59,7 +59,7 @@ public class BFFAuthController {
         mapForm.add("grant_type", grantTypeCode);
         mapForm.add("client_id", clientId);
         mapForm.add("client_secret", clientSecret);
-        mapForm.add("code", code);
+        mapForm.add("code", code.replaceAll("^\"|\"$", ""));
         mapForm.add("redirect_uri", clientUrl);
 
         return bffAuthService.requestTokens(headers, mapForm);

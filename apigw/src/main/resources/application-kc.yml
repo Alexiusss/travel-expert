@@ -53,7 +53,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
-client.url: http://localhost:9191
+client.url: http://localhost:3000/travel-expert/
 
 keycloak.secret: wuMwx3GXsgHCEhse1bAB8Rwk1u17tjHs
 keycloak.clientid: travel-expert-client
