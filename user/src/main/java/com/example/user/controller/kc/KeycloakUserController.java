@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
+import static com.example.user.util.UserUtil.addRoles;
 import static com.example.user.util.UserUtil.checkModificationAllowed;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -48,6 +49,7 @@ public class KeycloakUserController {
     public ResponseEntity<UserDTO> getProfile(@AuthenticationPrincipal Jwt jwt) {
         log.info("get profile for {}", jwt.getSubject());
         UserDTO profile = userService.get(jwt.getSubject());
+        addRoles(profile, jwt);
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 

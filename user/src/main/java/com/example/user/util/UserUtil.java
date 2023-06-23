@@ -8,9 +8,12 @@ import lombok.experimental.UtilityClass;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @UtilityClass
@@ -50,5 +53,12 @@ public class UserUtil {
                 .username(userRepresentation.getUsername())
                 .enabled(userRepresentation.isEnabled())
                 .build();
+    }
+
+    public static void addRoles(UserDTO user, Jwt jwt) {
+        Map<String, List<String>> realmAccess;
+        if ((realmAccess = (Map<String, List<String>>) jwt.getClaims().get("realm_access")) != null) {
+            user.setRoles(realmAccess.get("roles"));
+        }
     }
 }

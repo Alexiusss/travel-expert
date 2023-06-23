@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -41,6 +42,8 @@ public class UserDTO implements HasIdAndEmail {
     private String username;
 
     private boolean enabled;
+
+    private List<String> roles;
 
     public void setEmail(String email) {
         this.email = StringUtils.hasText(email) ? email.toLowerCase() : null;
