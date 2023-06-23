@@ -10,6 +10,8 @@ import {removeUser} from "../store/slices/userSlice";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import keycloakAuthService from '../services/kc/KeycloakAuthService';
+import {useKeycloak} from "@react-keycloak/web";
 
 const NavBar = () => {
     const {t} = useTranslation(['translation', 'hotel']);
@@ -20,7 +22,7 @@ const NavBar = () => {
     const [expanded, setExpanded] = useState(false);
 
     const logout = () => {
-        authService.logout()
+        keycloakAuthService.logout()
             .then(
                 () => {
                     dispatch(removeUser());
@@ -88,9 +90,13 @@ const NavBar = () => {
                                     Logout
                                 </MyButton>
                                 :
-                                <Link to="/login" className="nav-link" onClick={() => setExpanded(false)}>
+                                // <Link to="/login" className="nav-link" onClick={() => setExpanded(false)}>
+                                //     {t("sign in")}
+                                // </Link>
+                                <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
+                                          onClick={() => keycloak.login()}>
                                     {t("sign in")}
-                                </Link>
+                                </MyButton>
                             }
                         </Nav.Item>
                     </Nav>

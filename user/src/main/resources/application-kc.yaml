@@ -78,7 +78,7 @@ keycloak.realm: travel-expert-realm
 keycloak.credentials.secret: g5anEaKSrY0tRb0WTnRsYe1Kw1y4nxbc
 keycloak.use-resource-role-mapping: true
 
-client.url: http://localhost:9191/
+client.url: http://localhost:3000/
 
 cookies.domain: localhost
 
