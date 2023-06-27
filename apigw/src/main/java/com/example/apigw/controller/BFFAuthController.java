@@ -30,7 +30,7 @@ public class BFFAuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue("IT") String idToken) {
+    public ResponseEntity<String> logout(@CookieValue("IT") String idToken) {
         return tokenService.logout(idToken);
     }
 }

@@ -24,7 +24,7 @@ public class CookieUtils {
 
     private static final String REFRESH_TOKEN_COOKIE_KEY = "RT";
 
-     public HttpHeaders createCookies(ResponseEntity<String> response) throws JsonProcessingException {
+    public HttpHeaders createCookies(ResponseEntity<String> response) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
         JsonNode root = mapper.readTree(response.getBody());
@@ -48,7 +48,7 @@ public class CookieUtils {
         return responseHeaders;
     }
 
-    private HttpCookie createCookie(String name, String value, int durationInSeconds){
+    private HttpCookie createCookie(String name, String value, int durationInSeconds) {
         return ResponseCookie
                 .from(name, value)
                 .maxAge(durationInSeconds)
@@ -73,7 +73,7 @@ public class CookieUtils {
         return responseHeaders;
     }
 
-    private HttpCookie deleteCookie(String name){
+    private HttpCookie deleteCookie(String name) {
         return ResponseCookie
                 .from(name, "")
                 .maxAge(0)
