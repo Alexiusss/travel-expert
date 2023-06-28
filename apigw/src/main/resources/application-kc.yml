@@ -32,6 +32,12 @@ spring:
           predicates:
             - Path=/api/v1/hotels/**, /hotel/**
 
+logging:
+  level:
+    root: WARN
+    com.example.apigw: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
 management:
   endpoint:
     health:
