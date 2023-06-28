@@ -29,22 +29,22 @@ const $api = axios.create({
 //     return config;
 // });
 
-$api.interceptors.response.use((config) => {
-    return config;
-}, async (error) => {
-    const originalRequest = error.config;
-    if (error.response.status === 401 && error.config && !error.config._isRetry) {
-        originalRequest._isRetry = true;
-        //const response = await axios.get(`${API_URL}/auth/refresh`, {withCredentials: true})
-        try {
-            //updateLocalAccessToken(response.data.accessToken)
-            await keycloakAuthService.updateAccessToken()
-            return $api.request(originalRequest)
-        } catch (e) {
-            console.error('Unauthorized')
-        }
-    }
-    throw error;
-})
+// $api.interceptors.response.use((config) => {
+//     return config;
+// }, async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response.status === 401 && error.config && !error.config._isRetry) {
+//         originalRequest._isRetry = true;
+//         //const response = await axios.get(`${API_URL}/auth/refresh`, {withCredentials: true})
+//         try {
+//             //updateLocalAccessToken(response.data.accessToken)
+//             await keycloakAuthService.updateAccessToken()
+//             return $api.request(originalRequest)
+//         } catch (e) {
+//             console.error('Unauthorized')
+//         }
+//     }
+//     throw error;
+// })
 
 export default $api;

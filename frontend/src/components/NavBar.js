@@ -37,8 +37,13 @@ const NavBar = () => {
     }
 
     useEffect(() => {
+        if (isAuth) {
+            keycloakAuthService.updateAccessToken()
+                .catch(() => dispatch(removeUser()));
+            return;
+        }
         const authCode = location.hash.split('code=')[1]
-        if (!isAuthCodeReceived && authCode) {
+        if (!isAuth && !isAuthCodeReceived && authCode) {
             keycloakAuthService.exchangeCodeForToken(authCode)
                 .then(() => {
                     setIsAuthCodeReceived(true)

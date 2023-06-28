@@ -25,8 +25,17 @@ public class BFFAuthController {
     }
 
     @GetMapping("/newaccesstoken")
-    public ResponseEntity<String> newAccessToken(@CookieValue("RT") String oldRefreshToken) throws JsonProcessingException {
-        return tokenService.refreshAccessToken(oldRefreshToken);
+    public ResponseEntity<String> newAccessToken(
+            @CookieValue(value = "RT", required = false) String oldRefreshToken,
+            @CookieValue(value = "AT", required = false) String accessToken
+    ) throws JsonProcessingException {
+        if (accessToken != null) {
+            return ResponseEntity.noContent().build();
+        }
+        if (oldRefreshToken != null) {
+            return tokenService.refreshAccessToken(oldRefreshToken);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/logout")

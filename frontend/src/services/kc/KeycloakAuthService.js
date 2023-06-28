@@ -5,7 +5,6 @@ import {BFF_ROUTE, KC_PROFILE} from "../../utils/consts";
 export const keycloak = new Keycloak("/keycloak.json");
 
 export const initOptions = {
-    onLoad: 'check-sso',
     responseType: "code",
     scope: "openid",
     redirectUri: "http://localhost:3000/travel-expert/",
