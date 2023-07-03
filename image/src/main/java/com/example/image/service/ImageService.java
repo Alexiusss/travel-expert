@@ -7,6 +7,7 @@ import com.example.image.model.Image;
 import com.example.image.repository.ImageRepository;
 import lombok.AllArgsConstructor;
 import org.joda.time.DateTime;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class ImageService {
 
     private ImageRepository imageRepository;
     private final AuthClient authClient;
+    private final Environment env;
 
     public Image findImageByFileName(String fileName) throws IOException {
        Image image = imageRepository.findByFileName(fileName);
@@ -36,10 +38,10 @@ public class ImageService {
        return image;
     }
 
-    public List<String> uploadImages(MultipartFile[] files) {
+    public List<String> uploadImages(MultipartFile[] files, String userId) {
         return Arrays.stream(files).map((MultipartFile file) -> {
             try {
-                return save(file).getFileName();
+                return save(file, userId).getFileName();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -47,9 +49,9 @@ public class ImageService {
         }).collect(Collectors.toList());
     }
 
-    public Image save(MultipartFile file) throws IOException  {
+    public Image save(MultipartFile file, String userId) throws IOException  {
         String newFileName = generateFileName(file.getOriginalFilename());
-        Image image = new Image(null, null, null, 0, newFileName, file.getContentType(), file.getSize(), file.getBytes());
+        Image image = new Image(null, null, null, 0, newFileName, file.getContentType(), file.getSize(), file.getBytes(), userId);
         return imageRepository.save(image);
     }
 
@@ -88,5 +90,9 @@ public class ImageService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    public boolean currentProfileName(String profileName) {
+        return Arrays.asList(env.getActiveProfiles()).contains(profileName);
     }
 }

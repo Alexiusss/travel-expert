@@ -10,11 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.example.common.util.JWTUtil.isAuthorOrModer;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -36,16 +40,22 @@ public class ImageController {
 
     @Operation(summary = "Upload the image set")
     @PostMapping
-    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files) throws Exception {
-        List<String> images = imageService.uploadImages(files);
+    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files, @AuthenticationPrincipal Jwt jwt) throws Exception {
+        List<String> images = imageService.uploadImages(files, jwt.getSubject());
         return ResponseEntity.ok(images);
     }
 
     @Operation(summary = "Delete a picture by its id")
     @DeleteMapping("/{fileName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String fileName) throws Exception {
+    public ResponseEntity<?> delete(@PathVariable String fileName, JwtAuthenticationToken principal) throws Exception {
+        if (imageService.currentProfileName("kc")) {
+            if (!isAuthorOrModer(principal, imageService.findImageByFileName(fileName).getUserId())) {
+                ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
         imageService.deleteByFileName(fileName);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Delete a group of pictures per ids", description = "A JWT token is required to access this API")
@@ -54,8 +64,8 @@ public class ImageController {
     @PostMapping("/fileNames")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAllByFileNames(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
-                                     @RequestBody String[] fileNames,
-                                     @RequestParam("action") String action) throws Exception {
+                                                  @RequestBody String[] fileNames,
+                                                  @RequestParam("action") String action) throws Exception {
         ResponseEntity<?> isProhibited = imageService.checkAuth(authorization);
         if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
 
