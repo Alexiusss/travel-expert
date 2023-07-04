@@ -29,67 +29,13 @@ import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@Testcontainers
-@Transactional
-@AutoConfigureMockMvc
-@ActiveProfiles(resolver = TestProfileResolver.class)
-@Sql(value = {"/data.sql"})
-class RestaurantControllerTest {
 
-    private static final String REST_URL = RestaurantController.REST_URL + "/";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    private ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(builder);
-    }
-
+class RestaurantControllerTest extends CommonRestaurantControllerTest{
     @BeforeAll
     static void init() {
         WireMockServer wireMockServer = new WireMockServer(new WireMockConfiguration().port(7070));
         wireMockServer.start();
         WireMock.configureFor("localhost", 7070);
-    }
-
-    @Test
-    public void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(RESTAURANT_MATCHER.contentJson(RESTAURANT1));
-    }
-
-    @Test
-    public void getByName() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1.getName() + "/name"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(RESTAURANT_MATCHER.contentJson(RESTAURANT1));
-    }
-
-    @Test
-    public void getNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
-    }
-
-    @Test
-    public void getNotFoundByName() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
-    }
-
-    @Test
-    public void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL)
-                .param("size", "2")
-                .param("page", "1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(RESTAURANT3))));
     }
 
     @Test
