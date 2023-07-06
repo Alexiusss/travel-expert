@@ -18,8 +18,7 @@ import java.util.UUID;
 @UtilityClass
 public class TestJwtTokenGenerator {
 
-    public static String generateAccessToken(List<String> roles) throws JoseException {
-        RsaJsonWebKey rsaJsonWebKey = generateJwk();
+    public static String generateAccessToken(RsaJsonWebKey rsaJsonWebKey, List<String> roles) throws JoseException {
         JwtClaims claims = generateClaims(roles);
         JsonWebSignature jws = generateJws(claims, rsaJsonWebKey);
         return jws.getCompactSerialization();
@@ -67,10 +66,10 @@ public class TestJwtTokenGenerator {
     private static JsonWebSignature generateJws(JwtClaims claims, RsaJsonWebKey rsaJsonWebKey) {
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
-        jws.setKey(rsaJsonWebKey.getRsaPrivateKey());
+        jws.setKey(rsaJsonWebKey.getPrivateKey());
         jws.setKeyIdHeaderValue(rsaJsonWebKey.getKeyId());
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-        jws.setHeader("typ", "Bearer");
+        jws.setHeader("typ", "JWT");
         return jws;
     }
 }
