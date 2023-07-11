@@ -29,12 +29,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
-@Profile("!kc")
+//@Profile("!kc")
 public class UserController {
     static final String REST_URL = "/api/v1/users";
     @Autowired
     UserService userService;
 
+    @Profile("!kc")
     @Operation(summary = "Get a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -69,6 +70,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Profile("!kc")
     @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
@@ -81,6 +83,7 @@ public class UserController {
         return userService.findAllPaginated(PageRequest.of(page, size));
     }
 
+    @Profile("!kc")
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -91,6 +94,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @Profile("!kc")
     @Operation(summary = "Update a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -103,6 +107,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @Profile("!kc")
     @Operation(summary = "Enable/disable a user account by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
@@ -114,6 +119,7 @@ public class UserController {
         userService.enableUser(id, enable);
     }
 
+    @Profile("!kc")
     @Operation(summary = "Delete a user account by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")

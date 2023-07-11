@@ -9,7 +9,6 @@ import com.example.user.repository.UserRepository;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +29,7 @@ import static com.example.user.util.UserUtil.prepareToSave;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Profile("!kc")
+//@Profile("!kc")
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
