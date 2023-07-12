@@ -36,8 +36,13 @@ public class ReviewController {
 
     @Operation(summary = "Get a review by its id")
     @GetMapping("/{id}")
-    public ResponseEntity<Review> get(@PathVariable String id) {
+    public ResponseEntity<Review> get(@PathVariable String id, JwtAuthenticationToken principal) {
         log.info("get review {}", id);
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
         return ResponseEntity.ok(reviewService.get(id));
     }
 
@@ -132,7 +137,7 @@ public class ReviewController {
                                          JwtAuthenticationToken principal) {
 
         if (reviewService.currentProfileName("kc")) {
-            if (!isContainsRole(principal, "ADMIN")) {
+            if (!isContainsRole(principal, "USER")) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         } else {
@@ -266,10 +271,19 @@ public class ReviewController {
 
     @Operation(summary = "Like for review by its id, description = \"A JWT token is required to access this API.")
     @PatchMapping("/{reviewId}/like")
-    public ResponseEntity<?> like(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String reviewId, @RequestBody String userId) {
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
-
+    public ResponseEntity<?> like(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @PathVariable String reviewId,
+            @RequestBody String userId,
+            JwtAuthenticationToken principal) {
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "USER")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
         reviewService.like(reviewId, userId);
         return ResponseEntity.noContent().build();
     }

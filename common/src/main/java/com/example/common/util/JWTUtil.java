@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 public class JWTUtil {
 
     public static boolean isContainsRole(JwtAuthenticationToken principal, String role){
+        if (principal == null) {
+            return false;
+        }
         Collection<String> roles = principal.getAuthorities()
                 .stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
@@ -18,10 +21,16 @@ public class JWTUtil {
     }
 
     public static boolean isAuthorOrAdmin(JwtAuthenticationToken principal, String userId){
+        if (principal == null) {
+            return false;
+        }
         return isContainsRole(principal, "ADMIN") && principal.getName().equals(userId);
     }
 
     public static boolean isAuthorOrModer(JwtAuthenticationToken principal, String userId){
+        if (principal == null) {
+            return false;
+        }
         return isContainsRole(principal, "ADMIN") && principal.getName().equals(userId);
     }
 }
