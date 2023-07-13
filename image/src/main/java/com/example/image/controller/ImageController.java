@@ -10,15 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.common.util.JWTUtil.isAuthorOrModer;
+import static com.example.common.util.JWTUtil.isContainsRole;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -40,8 +40,15 @@ public class ImageController {
 
     @Operation(summary = "Upload the image set")
     @PostMapping
-    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files, @AuthenticationPrincipal Jwt jwt) throws Exception {
-        List<String> images = imageService.uploadImages(files, jwt.getSubject());
+    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] files, @RequestParam(required = false) String userId, JwtAuthenticationToken principal) throws Exception {
+        List<String> images = new ArrayList<>();
+        if (imageService.currentProfileName("kc")) {
+            if (isContainsRole(principal, "USER")) {
+                images = imageService.uploadImages(files, principal.getToken().getSubject());
+            }
+        } else {
+            images = imageService.uploadImages(files, userId);
+        }
         return ResponseEntity.ok(images);
     }
 
@@ -65,9 +72,17 @@ public class ImageController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAllByFileNames(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
                                                   @RequestBody String[] fileNames,
-                                                  @RequestParam("action") String action) throws Exception {
-        ResponseEntity<?> isProhibited = imageService.checkAuth(authorization);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+                                                  @RequestParam("action") String action,
+                                                  JwtAuthenticationToken principal
+    ) {
+        if (imageService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<?> isProhibited = imageService.checkAuth(authorization);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         imageService.deleteAllByFileName(fileNames, action);
         return ResponseEntity.noContent().build();
