@@ -72,7 +72,8 @@ public class ImageControllerTest {
     @Test
     void upload() throws Exception {
         perform(MockMvcRequestBuilders.multipart(REST_URL)
-                .file(getNewImage("image3.jpeg")))
+                .file(getNewImage("image3.jpeg"))
+                .param("userid", USER_ID))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0]", containsString(getNewImage("image1.jpeg").getOriginalFilename())));

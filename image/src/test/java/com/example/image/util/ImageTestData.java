@@ -15,6 +15,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @UtilityClass
 public class ImageTestData {
 
+    public static final String USER_ID = "3";
+
     public static final AuthCheckResponse AUTH_ADMIN_RESPONSE = new AuthCheckResponse("1", List.of("ADMIN", "MODERATOR", "USER"));
     public static final AuthCheckResponse UN_AUTH_RESPONSE = new AuthCheckResponse("", List.of());
 
