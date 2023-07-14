@@ -31,6 +31,6 @@ public class JWTUtil {
         if (principal == null) {
             return false;
         }
-        return isContainsRole(principal, "ADMIN") && principal.getName().equals(userId);
+        return isContainsRole(principal, "MODERATOR") && principal.getName().equals(userId);
     }
 }

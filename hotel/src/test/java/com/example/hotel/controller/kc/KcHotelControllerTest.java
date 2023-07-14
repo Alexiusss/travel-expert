@@ -19,9 +19,7 @@ import java.util.List;
 import static com.example.common.test.KeycloakTestData.stubKeycloak;
 import static com.example.common.test.TestJwtTokenGenerator.generateAccessToken;
 import static com.example.common.test.TestJwtTokenGenerator.generateJwk;
-import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.hotel.util.HotelTestData.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("kc")
