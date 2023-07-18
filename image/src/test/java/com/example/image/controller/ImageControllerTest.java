@@ -1,24 +1,12 @@
 package com.example.image.controller;
 
-import com.example.common.util.TestProfileResolver;
-import com.example.image.repository.ImageRepository;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
@@ -29,24 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@Testcontainers
-@Transactional
-@AutoConfigureMockMvc
-@ActiveProfiles(resolver = TestProfileResolver.class)
-@Sql(value = {"/data.sql"})
-public class ImageControllerTest {
 
-    private static final String REST_URL = ImageController.REST_URL + "/";
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ImageRepository imageRepository;
-
-    private ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(builder);
-    }
+public class ImageControllerTest extends CommonImageControllerTest{
 
     @BeforeAll
     static void init() {
@@ -56,23 +28,10 @@ public class ImageControllerTest {
     }
 
     @Test
-    void getImage() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "image1.jpg"))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void getNotFoundImage() throws Exception{
-        perform(MockMvcRequestBuilders.get(REST_URL + "NotFound"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG));
-    }
-
-    @Test
     void upload() throws Exception {
         perform(MockMvcRequestBuilders.multipart(REST_URL)
-                .file(getNewImage("image3.jpeg")))
+                .file(getNewImage("image3.jpeg"))
+                .param("userid", USER_ID))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0]", containsString(getNewImage("image1.jpeg").getOriginalFilename())));

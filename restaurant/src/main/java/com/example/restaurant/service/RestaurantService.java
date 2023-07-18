@@ -6,6 +6,7 @@ import com.example.common.util.ValidationUtil;
 import com.example.restaurant.model.Restaurant;
 import com.example.restaurant.repository.RestaurantRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import java.util.Arrays;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -23,6 +26,7 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final AuthClient authClient;
+    private final Environment environment;
 
     public Restaurant create(Restaurant restaurant) {
         Assert.notNull(restaurant, "restaurant must not be null");
@@ -69,5 +73,9 @@ public class RestaurantService {
         restaurantFromDB.setWebsite(restaurant.getWebsite());
         restaurantFromDB.setCuisine(restaurant.getCuisine());
         restaurantFromDB.setFileNames(restaurant.getFileNames());
+    }
+
+    public boolean currentProfileName(String envName) {
+        return Arrays.asList(environment.getActiveProfiles()).contains(envName);
     }
 }

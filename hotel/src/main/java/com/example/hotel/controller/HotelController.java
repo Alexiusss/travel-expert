@@ -48,8 +48,10 @@ public class HotelController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<Hotel> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Hotel hotel) {
-        ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
-        if (isUnauthorized != null) return isUnauthorized;
+        if (hotelService.currentProfileName("!kc")) {
+            ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
+            if (isUnauthorized != null) return isUnauthorized;
+        }
 
         Hotel created = hotelService.create(hotel);
         log.info("create new hotel {}", created);
@@ -64,8 +66,10 @@ public class HotelController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
     public ResponseEntity<Hotel> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Hotel hotel, @PathVariable String id) {
-        ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
-        if (isUnauthorized != null) return isUnauthorized;
+        if (hotelService.currentProfileName("!kc")) {
+            ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
+            if (isUnauthorized != null) return isUnauthorized;
+        }
 
         hotelService.update(hotel, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -75,8 +79,10 @@ public class HotelController {
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
     public ResponseEntity<Hotel> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
-        ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
-        if (isUnauthorized != null) return isUnauthorized;
+        if (hotelService.currentProfileName("!kc")) {
+            ResponseEntity<Hotel> isUnauthorized = hotelService.checkAuth(authorization);
+            if (isUnauthorized != null) return isUnauthorized;
+        }
         log.info("delete hotel {}", id);
         hotelService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

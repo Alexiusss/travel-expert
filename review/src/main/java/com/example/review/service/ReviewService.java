@@ -10,6 +10,7 @@ import com.example.review.model.dto.ReviewDTO;
 import com.example.review.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
@@ -35,6 +33,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final AuthClient authClient;
+    private final Environment env;
 
     public Rating getRatingByItemId(String itemId) {
         List<Review> reviewList = reviewRepository.findAllByItemId(itemId);
@@ -216,4 +215,7 @@ public class ReviewService {
         reviewRepository.deleteAllByItemId(itemId);
     }
 
+    public boolean currentProfileName(String profileName) {
+        return Arrays.asList(env.getActiveProfiles()).contains(profileName);
+    }
 }

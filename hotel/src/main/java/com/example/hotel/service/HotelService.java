@@ -5,6 +5,7 @@ import com.example.clients.auth.AuthClient;
 import com.example.hotel.model.Hotel;
 import com.example.hotel.repository.HotelRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import java.util.Arrays;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -22,6 +25,7 @@ public class HotelService {
 
     private final HotelRepository hotelRepository;
     private final AuthClient authClient;
+    private final Environment environment;
 
     public Hotel get(String id) {
         return hotelRepository.getExisted(id);
@@ -70,5 +74,9 @@ public class HotelService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return null;
+    }
+
+    public boolean currentProfileName(String envName) {
+        return Arrays.asList(environment.getActiveProfiles()).contains(envName);
     }
 }

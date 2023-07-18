@@ -1,0 +1,7 @@
+{
+  "realm": "travel-expert-realm",
+  "auth-server-url": "http://localhost:8180/",
+  "ssl-required": "none",
+  "resource": "travel-expert-client",
+  "public-client": true
+}

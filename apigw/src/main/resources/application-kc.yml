@@ -1,0 +1,69 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: api-gateway
+  zipkin:
+    base-url: http://localhost:9411
+  cloud:
+    gateway:
+      routes:
+        - id: restaurant
+          uri: lb://RESTAURANT
+          predicates:
+            - Path=/api/v1/restaurants/**, /restaurant/**
+        - id: user
+          uri: lb://USER
+# https://accesscontrolalloworigin-multiple-values-with-spring-boot-and-vuejs
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+          predicates:
+            - Path=/api/v1/kc-users/**
+        - id: review
+          uri: lb://REVIEW
+          predicates:
+            - Path=/api/v1/reviews/**, /review/**
+        - id: image
+          uri: lb://IMAGE
+          predicates:
+            - Path=/api/v1/images/**, /image/**
+        - id: hotel
+          uri: lb://HOTEL
+          predicates:
+            - Path=/api/v1/hotels/**, /hotel/**
+
+logging:
+  level:
+    root: WARN
+    com.example.apigw: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        readiness:
+          include: "*"
+          show-details: always
+        liveness:
+          include: ping
+          show-details: always
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+
+client.url: http://localhost:3000/travel-expert/
+
+keycloak.secret: wuMwx3GXsgHCEhse1bAB8Rwk1u17tjHs
+keycloak.clientid: travel-expert-client
+keycloak.granttype.code: authorization_code
+keycloak.granttype.refresh: refresh_token
+
+cookie.domain: localhost

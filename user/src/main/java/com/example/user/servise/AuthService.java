@@ -10,6 +10,7 @@ import com.example.user.model.dto.RegistrationDTO;
 import com.example.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import java.util.UUID;
 import static com.example.user.util.UserUtil.prepareToSave;
 
 @Service
+@Profile("!kc")
 public class AuthService {
 
     @Autowired

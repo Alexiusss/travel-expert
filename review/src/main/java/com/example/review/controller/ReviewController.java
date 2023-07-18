@@ -11,7 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,6 +21,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+import static com.example.common.util.JWTUtil.isContainsRole;
+import static com.example.common.util.JWTUtil.isAuthorOrAdmin;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
@@ -32,8 +36,13 @@ public class ReviewController {
 
     @Operation(summary = "Get a review by its id")
     @GetMapping("/{id}")
-    public ResponseEntity<Review> get(@PathVariable String id) {
+    public ResponseEntity<Review> get(@PathVariable String id, JwtAuthenticationToken principal) {
         log.info("get review {}", id);
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
         return ResponseEntity.ok(reviewService.get(id));
     }
 
@@ -76,10 +85,17 @@ public class ReviewController {
             @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "") String filter
+            @RequestParam(defaultValue = "") String filter,
+            JwtAuthenticationToken principal
     ) {
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         log.info("get all reviews");
         return ResponseEntity.ok(reviewService.getAllPaginated(PageRequest.of(page, size), filter));
@@ -116,10 +132,18 @@ public class ReviewController {
     @Operation(summary = "Create a new review", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public ResponseEntity<Review> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Review review) {
+    public ResponseEntity<Review> create(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+                                         @Valid @RequestBody Review review,
+                                         JwtAuthenticationToken principal) {
 
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, review);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "USER")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, review);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         Review created = reviewService.create(review);
 
@@ -135,11 +159,21 @@ public class ReviewController {
     @Operation(summary = "Delete a review by its id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Review> delete(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
+    public ResponseEntity<Review> delete(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @PathVariable String id,
+            JwtAuthenticationToken principal
+    ) {
         log.info("delete review {}", id);
 
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.get(id));
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        if (reviewService.currentProfileName("kc")) {
+            if (!isAuthorOrAdmin(principal, reviewService.get(id).getUserId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.get(id));
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         reviewService.delete(id);
         return ResponseEntity.noContent().build();
@@ -148,11 +182,21 @@ public class ReviewController {
     @Operation(summary = "Delete all reviews by user id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{userId}/user")
-    public ResponseEntity<Review> deleteAllByUserId(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String userId) {
+    public ResponseEntity<Review> deleteAllByUserId(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @PathVariable String userId,
+            JwtAuthenticationToken principal
+    ) {
         log.info("delete all reviews from user {}", userId);
 
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.getAnyByUserId(userId));
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.getAnyByUserId(userId));
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         reviewService.deleteAllByUserId(userId);
         return ResponseEntity.noContent().build();
@@ -161,11 +205,21 @@ public class ReviewController {
     @Operation(summary = "Delete all reviews by item id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{itemId}/item")
-    public ResponseEntity<Review> deleteAllByItemId(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String itemId) {
+    public ResponseEntity<Review> deleteAllByItemId(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @PathVariable String itemId,
+            JwtAuthenticationToken principal
+            ) {
         log.info("delete all reviews from item {}", itemId);
 
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
         ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, reviewService.getAnyByItemId(itemId));
         if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         reviewService.deleteAllByItemId(itemId);
         return ResponseEntity.noContent().build();
@@ -174,10 +228,19 @@ public class ReviewController {
     @Operation(summary = "Update a review by its id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @Valid @RequestBody Review review, @PathVariable String id) {
-
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, review);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+    public ResponseEntity<?> update(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @Valid @RequestBody Review review, @PathVariable String id,
+            JwtAuthenticationToken principal
+    ) {
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, review);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         reviewService.update(id, review);
 
@@ -187,9 +250,19 @@ public class ReviewController {
     @Operation(summary = "Activate a review by its id", description = "A JWT token is required to access this API.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{id}")
-    public ResponseEntity<?> activate(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String id) {
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+    public ResponseEntity<?> activate(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @PathVariable String id,
+            JwtAuthenticationToken principal
+    ) {
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "ADMIN")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
 
         log.info("activate review {}", id);
         reviewService.activate(id);
@@ -198,10 +271,19 @@ public class ReviewController {
 
     @Operation(summary = "Like for review by its id, description = \"A JWT token is required to access this API.")
     @PatchMapping("/{reviewId}/like")
-    public ResponseEntity<?> like(@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization, @PathVariable String reviewId, @RequestBody String userId) {
-        ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
-        if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
-
+    public ResponseEntity<?> like(
+            @RequestHeader(name = "Authorization", defaultValue = "empty") String authorization,
+            @PathVariable String reviewId,
+            @RequestBody String userId,
+            JwtAuthenticationToken principal) {
+        if (reviewService.currentProfileName("kc")) {
+            if (!isContainsRole(principal, "USER")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            ResponseEntity<Review> isProhibited = reviewService.checkAuth(authorization, null);
+            if (!isProhibited.getStatusCode().is2xxSuccessful()) return isProhibited;
+        }
         reviewService.like(reviewId, userId);
         return ResponseEntity.noContent().build();
     }

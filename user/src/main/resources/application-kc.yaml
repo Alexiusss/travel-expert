@@ -1,0 +1,85 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: user
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://localhost/user
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  data:
+    rest:
+      base-path: /api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect/certs
+    filter:
+      order: 10
+  zipkin:
+    base-url: http://localhost:9411
+  rabbitmq:
+    addresses: localhost:5672
+
+logging:
+  level:
+    root: WARN
+    com.example.user: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        readiness:
+          include: "*"
+          show-details: always
+        liveness:
+          include: ping
+          show-details: always
+
+springdoc:
+  api-docs:
+    path: /user/v3/api-docs
+  swagger-ui:
+    path: /user/swagger-ui
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+clients:
+  notification:
+    url: http://localhost:8081
+  review:
+    url: http://localhost:8084
+
+myhostname: localhost:8080
+
+keycloak.auth-server-url: http://localhost:8180/
+keycloak.resource: user-manage-client
+keycloak.realm: travel-expert-realm
+#keycloak.ssl: external
+keycloak.credentials.secret: g5anEaKSrY0tRb0WTnRsYe1Kw1y4nxbc
+keycloak.use-resource-role-mapping: true
+
+client.url: http://localhost:3000/
+
+cookies.domain: localhost
+
+application-version: 1.0.0

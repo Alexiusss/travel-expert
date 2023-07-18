@@ -30,22 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@Testcontainers
-@Transactional
-@AutoConfigureMockMvc
-@ActiveProfiles(resolver = TestProfileResolver.class)
-@Sql(value = {"/data.sql"})
-class HotelControllerTest {
-
-    private static final String REST_URL = HotelController.REST_URL + "/";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    private ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(builder);
-    }
+class HotelControllerTest extends CommonControllerTest{
 
     @BeforeAll
     static void init() {

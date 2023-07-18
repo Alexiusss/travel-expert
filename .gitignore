@@ -22,7 +22,7 @@ target/
 .vscode/
 /.mvn/**/
 
-/docker/deploy/.env
+/**/**/.env
 /docker/deploy/nginx/ssl/*
 
 k8s/minikube/env-vars.yaml

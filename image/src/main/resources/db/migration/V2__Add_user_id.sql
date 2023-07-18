@@ -1,0 +1,1 @@
+alter table images add column user_id varchar(255) not null default '';

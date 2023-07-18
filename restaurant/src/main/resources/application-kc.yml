@@ -1,0 +1,65 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: restaurant
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect/certs
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  datasource:
+    url: jdbc:postgresql://localhost/restaurant
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  data:
+    rest:
+      base-path: /api
+  zipkin:
+    base-url: http://localhost:9411
+
+logging:
+  level:
+    root: WARN
+    com.example.restaurant: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        readiness:
+          include: "*"
+          show-details: always
+        liveness:
+          include: ping
+          show-details: always
+springdoc:
+  api-docs:
+    path: /restaurant/v3/api-docs
+  swagger-ui:
+    path: /restaurant/swagger-ui
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+clients:
+  auth:
+   url: http://localhost:8080
+
+application-version: 1.0.0

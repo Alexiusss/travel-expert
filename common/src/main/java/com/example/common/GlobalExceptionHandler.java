@@ -62,7 +62,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     // https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<?> conflict(WebRequest request, DataIntegrityViolationException ex) {
         String rootMsg = getRootCause(ex).getMessage();
         for (Map.Entry<String, String> entry: constraintsMap.entrySet()) {

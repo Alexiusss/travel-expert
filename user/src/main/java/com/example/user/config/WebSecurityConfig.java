@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -24,6 +25,7 @@ import static com.example.user.util.UserUtil.PASSWORD_ENCODER;
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Profile("!kc")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
@@ -38,10 +40,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // https://www.toptal.com/spring/spring-security-tutorial
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http = http.csrf().disable();
-               // https://stackoverflow.com/a/55312420
-               // .csrfTokenRepository(getCsrfRepository())
-                //.ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
+        // https://stackoverflow.com/a/55312420
+        // .csrfTokenRepository(getCsrfRepository())
+        //.ignoringAntMatchers("/api/v1/auth/**", "/api/v1/users/authorList").and();
 
         http = http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -66,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         );
     }
 
-    private static CookieCsrfTokenRepository  getCsrfRepository() {
+    private static CookieCsrfTokenRepository getCsrfRepository() {
         CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
         repository.setCookieHttpOnly(false);
         repository.setSecure(true);
