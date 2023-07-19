@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Profile("kc")
@@ -79,6 +77,7 @@ public class KeycloakUtil {
     public List<UserRepresentation> searchKeycloakUsers(String text) {
         return usersResource.searchByAttributes(text);
     }
+
     public List<UserRepresentation> findAll() {
         return usersResource.list();
     }
@@ -97,6 +96,7 @@ public class KeycloakUtil {
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEnabled(true);
+        kcUser.setAttributes(Map.of("fileName", List.of(user.getFileName())));
         return kcUser;
     }
 

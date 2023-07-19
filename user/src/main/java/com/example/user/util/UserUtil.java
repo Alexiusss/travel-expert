@@ -52,6 +52,7 @@ public class UserUtil {
                 .lastName(userRepresentation.getLastName())
                 .username(userRepresentation.getUsername())
                 .enabled(userRepresentation.isEnabled())
+                .fileName(userRepresentation.getAttributes().get("fileName").get(0))
                 .build();
     }
 

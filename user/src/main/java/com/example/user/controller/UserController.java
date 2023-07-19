@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
-//@Profile("!kc")
+@Profile("!kc")
 public class UserController {
     static final String REST_URL = "/api/v1/users";
     @Autowired

@@ -43,6 +43,8 @@ public class UserDTO implements HasIdAndEmail {
 
     private boolean enabled;
 
+    private String fileName;
+
     private List<String> roles;
 
     public void setEmail(String email) {
