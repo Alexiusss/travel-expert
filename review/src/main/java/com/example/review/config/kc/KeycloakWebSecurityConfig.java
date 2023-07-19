@@ -1,6 +1,5 @@
 package com.example.review.config.kc;
 
-
 import com.example.common.util.KCRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,24 +12,26 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
-@Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
 @Profile("kc")
 public class KeycloakWebSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KCRoleConverter());
 
+        // https://stackoverflow.com/a/74633151
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET).permitAll()
-                .antMatchers(HttpMethod.POST).hasRole("USER")
-                .antMatchers(HttpMethod.PUT).hasAnyRole("USER", "ADMIN", "MODERATOR")
-                .antMatchers(HttpMethod.DELETE).hasAnyRole("USER", "ADMIN")
+                .mvcMatchers(HttpMethod.GET).permitAll()
+                .mvcMatchers(HttpMethod.POST, "/api/v1/reviews/user/reviewCountActive").permitAll()
+                .mvcMatchers(HttpMethod.POST).hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.PUT).hasAnyRole("USER", "ADMIN", "MODERATOR")
+                .mvcMatchers(HttpMethod.DELETE).hasAnyRole("USER", "ADMIN")
 
-                .and()
+                .and().csrf().disable()
 
                 .oauth2ResourceServer()
                 .jwt()

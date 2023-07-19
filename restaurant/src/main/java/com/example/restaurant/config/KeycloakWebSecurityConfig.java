@@ -28,7 +28,6 @@ public class KeycloakWebSecurityConfig {
                 .antMatchers(HttpMethod.POST).hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT).hasAnyRole("ADMIN", "MODERATOR")
                 .antMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                .anyRequest().authenticated()
 
                 .and()
 
