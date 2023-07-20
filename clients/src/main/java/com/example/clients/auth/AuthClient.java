@@ -14,6 +14,6 @@ public interface AuthClient {
     @GetMapping(path = "/api/v1/auth/validate")
     AuthCheckResponse isAuth (@RequestHeader(name = "Authorization", defaultValue = "empty") String authorization);
 
-    @PostMapping(path = "/api/v1/users/authorList")
+    @PostMapping(path = "${clients.user.path}")
     List<AuthorDTO> getAuthorList(@RequestBody Set<String> authors);
 }
