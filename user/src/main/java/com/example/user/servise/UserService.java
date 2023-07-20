@@ -9,6 +9,7 @@ import com.example.user.repository.UserRepository;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,17 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.*;
-import static com.example.user.util.UserUtil.getAuthorDTO;
-import static com.example.user.util.UserUtil.prepareToSave;
+import static com.example.user.util.UserUtil.*;
 
 @Service
 @Slf4j
 @AllArgsConstructor
-//@Profile("!kc")
+@Profile("!kc")
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -94,14 +93,6 @@ public class UserService implements UserDetailsService {
                 .map(UserUtil::getAuthorDTO)
                 .peek(setReviewsCount(list))
                 .collect(Collectors.toList());
-    }
-
-    private Consumer<AuthorDTO> setReviewsCount(List<ReviewResponse> list) {
-        return author ->
-                list.stream()
-                        .filter(item -> item.getId().equals(author.getAuthorId()))
-                        .findAny()
-                        .ifPresent(response -> author.setReviewsCount(response.getCount()));
     }
 
     public AuthorDTO getAuthorByUserName(String username) {

@@ -1,5 +1,6 @@
 package com.example.user.controller.kc;
 
+import com.example.clients.auth.AuthorDTO;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.servise.kc.KeycloakUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
@@ -51,6 +53,30 @@ public class KeycloakUserController {
         UserDTO profile = userService.get(jwt.getSubject());
         addRoles(profile, jwt);
         return ResponseEntity.status(HttpStatus.OK).body(profile);
+    }
+
+    @Operation(summary = "Get a author DTO by its id")
+    @GetMapping(value = "/{id}/author")
+    public ResponseEntity<AuthorDTO> getAuthor(@PathVariable String id) {
+        log.info("get author for {}", id);
+        final AuthorDTO author = userService.getAuthorById(id);
+        return ResponseEntity.ok(author);
+    }
+
+    @Operation(summary = "Get a author DTO by username")
+    @GetMapping(value = "/{username}/authorByUsername")
+    public ResponseEntity<AuthorDTO> getByAuthorUsername(@PathVariable String username) {
+        log.info("get authorName for {}", username);
+        final AuthorDTO user = userService.getAuthorByUserName(username);
+        return ResponseEntity.ok(user);
+    }
+
+    @Operation(summary = "Get a list of author DTO by id array")
+    @PostMapping("/authorList")
+    public ResponseEntity<List<AuthorDTO>> getAuthorList(@RequestBody String[] authors) {
+        log.info("get authorList for {}", Arrays.toString(authors));
+        final List<AuthorDTO> authorList = userService.getAllAuthorsById(authors);
+        return ResponseEntity.ok(authorList);
     }
 
     @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")

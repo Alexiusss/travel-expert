@@ -1,6 +1,7 @@
 package com.example.user.util;
 
 import com.example.clients.auth.AuthorDTO;
+import com.example.clients.review.ReviewResponse;
 import com.example.common.error.ModificationRestrictionException;
 import com.example.user.model.User;
 import com.example.user.model.dto.UserDTO;
@@ -15,6 +16,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 @UtilityClass
 public class UserUtil {
@@ -44,6 +46,16 @@ public class UserUtil {
         return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, subscribers, subscriptions, 0L);
     }
 
+    public static AuthorDTO getAuthorDTO(UserRepresentation user) {
+        String username = user.getUsername();
+        String authorName = user.getFirstName() + " " + user.getLastName();
+        String fileName = user.getAttributes().get("fileName") != null ? user.getAttributes().get("fileName").get(0) : "Empty";
+        Instant registeredAt = Instant.ofEpochMilli(user.getCreatedTimestamp());
+//        Set<String> subscribers = user.getSubscribers();
+//        Set<String> subscriptions = user.getSubscriptions();
+        return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, Set.of(), Set.of(), 0L);
+    }
+
     public static UserDTO convertUserRepresentationToUserDTO(UserRepresentation userRepresentation) {
         return UserDTO.builder()
                 .id(userRepresentation.getId())
@@ -53,6 +65,7 @@ public class UserUtil {
                 .username(userRepresentation.getUsername())
                 .enabled(userRepresentation.isEnabled())
                 .fileName(userRepresentation.getAttributes().get("fileName").get(0))
+                .roles(List.of("USER"))
                 .build();
     }
 
@@ -61,5 +74,13 @@ public class UserUtil {
         if ((realmAccess = (Map<String, List<String>>) jwt.getClaims().get("realm_access")) != null) {
             user.setRoles(realmAccess.get("roles"));
         }
+    }
+
+    public static Consumer<AuthorDTO> setReviewsCount(List<ReviewResponse> list) {
+        return author ->
+                list.stream()
+                        .filter(item -> item.getId().equals(author.getAuthorId()))
+                        .findAny()
+                        .ifPresent(response -> author.setReviewsCount(response.getCount()));
     }
 }

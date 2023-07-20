@@ -74,6 +74,10 @@ public class KeycloakUtil {
         return usersResource.get(userId).toRepresentation();
     }
 
+    public UserRepresentation findByUserName(String userName) {
+        return usersResource.search(userName).get(0);
+    }
+
     public List<UserRepresentation> searchKeycloakUsers(String text) {
         return usersResource.searchByAttributes(text);
     }

@@ -1,5 +1,8 @@
 package com.example.user.servise.kc;
 
+import com.example.clients.auth.AuthorDTO;
+import com.example.clients.review.ReviewClient;
+import com.example.clients.review.ReviewResponse;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.util.KeycloakUtil;
 import com.example.user.util.UserUtil;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
-import static com.example.user.util.UserUtil.convertUserRepresentationToUserDTO;
+import static com.example.user.util.UserUtil.*;
 
 @Service
 @Slf4j
@@ -26,6 +29,7 @@ import static com.example.user.util.UserUtil.convertUserRepresentationToUserDTO;
 public class KeycloakUserService {
 
     private final KeycloakUtil keycloakUtil;
+    private final ReviewClient reviewClient;
 
     @Transactional
     public UserDTO saveUser(UserDTO user, List<String> roles) {
@@ -62,6 +66,25 @@ public class KeycloakUserService {
         }
         return userRepresentations.stream()
                 .map(UserUtil::convertUserRepresentationToUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    public AuthorDTO getAuthorById(String id) {
+        return getAuthorDTO(keycloakUtil.findUserById(id));
+    }
+
+    public AuthorDTO getAuthorByUserName(String username) {
+        return getAuthorDTO(keycloakUtil.findByUserName(username));
+    }
+
+    public List<AuthorDTO> getAllAuthorsById(String[] authors) {
+        List<String> authorsList = List.of(authors);
+        List<ReviewResponse> list = reviewClient.getActiveList(authors);
+
+        return keycloakUtil.findAll()
+                .stream().filter(userRepresentation -> authorsList.contains(userRepresentation.getId()))
+                .map(UserUtil::getAuthorDTO)
+                .peek(setReviewsCount(list))
                 .collect(Collectors.toList());
     }
 }
