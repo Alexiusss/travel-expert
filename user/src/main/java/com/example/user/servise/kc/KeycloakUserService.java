@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.common.util.ValidationUtil.checkNew;
 import static com.example.user.util.UserUtil.*;
 
@@ -42,9 +41,16 @@ public class KeycloakUserService {
     }
 
     @Transactional
-    public UserDTO updateUser(UserDTO user, String id) {
-        assureIdConsistent(user, user.id());
+    public UserDTO updateProfile(UserDTO user, String id) {
+        checkModificationAllowed(id);
         keycloakUtil.updateKeycloakUser(user, id);
+        return user;
+    }
+
+    @Transactional
+    public UserDTO updateUser(UserDTO user, String id) {
+        checkModificationAllowed(id);
+        keycloakUtil.updateKeycloakUser(user, user.getRoles(), id);
         return user;
     }
 

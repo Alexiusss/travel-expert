@@ -36,6 +36,12 @@ public class UserUtil {
         }
     }
 
+    public static void checkModificationAllowed(String userId, String idFromToken) {
+        if (!userId.equals(idFromToken)) {
+            throw new ModificationRestrictionException();
+        }
+    }
+
     public static AuthorDTO getAuthorDTO(User user) {
         String username = user.getUsername();
         String authorName = user.getFirstName() + " " + user.getLastName();

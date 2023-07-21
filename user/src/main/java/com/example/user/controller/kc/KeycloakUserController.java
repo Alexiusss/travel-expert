@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -53,6 +54,18 @@ public class KeycloakUserController {
         UserDTO profile = userService.get(jwt.getSubject());
         addRoles(profile, jwt);
         return ResponseEntity.status(HttpStatus.OK).body(profile);
+    }
+
+    @Operation(summary = "Update a user profile by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping(value = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> updateProfile(@RequestBody UserDTO user, @AuthenticationPrincipal Jwt jwt) {
+        log.info("update {} with id={}", user, jwt.getSubject());
+        assureIdConsistent(user, jwt.getSubject());
+        checkModificationAllowed(user.getId(), jwt.getSubject());
+        UserDTO updatedUserProfile = userService.updateProfile(user, jwt.getSubject());
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUserProfile);
     }
 
     @Operation(summary = "Get a author DTO by its id")

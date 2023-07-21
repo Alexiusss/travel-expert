@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Profile("kc")
@@ -70,12 +73,18 @@ public class KeycloakUtil {
         userResource.update(createUserRepresentation(user));
     }
 
+    public void updateKeycloakUser(UserDTO user, List<String> roles, String userId) {
+        UserResource userResource = usersResource.get(userId);
+        addRoles(userId, roles);
+        userResource.update(createUserRepresentation(user));
+    }
+
     public UserRepresentation findUserById(String userId) {
         return usersResource.get(userId).toRepresentation();
     }
 
-    public UserRepresentation findByUserName(String userName) {
-        return usersResource.search(userName).get(0);
+    public UserRepresentation findByUserName(String username) {
+        return usersResource.search(username).get(0);
     }
 
     public List<UserRepresentation> searchKeycloakUsers(String text) {
