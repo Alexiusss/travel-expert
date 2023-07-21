@@ -1,5 +1,7 @@
 import $api from "../http/http-common";
-import {LOGIN, LOGOUT, PROFILE, REGISTER} from "../utils/consts";
+import {LOGIN, LOGOUT, REGISTER} from "../utils/consts";
+
+const {REACT_APP_PROFILE_PATH:PROFILE} = process.env;
 
 export default class AuthService {
     static async login(email, password) {

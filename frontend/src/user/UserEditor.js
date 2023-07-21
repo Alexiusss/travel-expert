@@ -18,8 +18,9 @@ const UserEditor = (props) => {
     const [id, setId] = useState(null)
     const {t} = useTranslation();
     const currentUserId = useAuth().authUserId;
-    const {isAdmin} = useAuth();
-    const [fileNames, setFileNames] = useState([]);
+    const {authUserId, isAdmin} = useAuth();
+    const isOwner = (id != null) && (authUserId === id);
+    const [fileNames, setFileNames] = useState(['']);
     const [images, setImages] = useState([]);
 
     const cleanForm = () => {
@@ -133,7 +134,7 @@ const UserEditor = (props) => {
             setUsername('' + props.userFromDB.username)
             setRoles(props.userFromDB.roles || [])
             setId('' + props.userFromDB.id)
-            setFileNames([props.userFromDB.fileName] || [])
+            setFileNames([props.userFromDB.fileName] || [''])
         }
     }, [props.userFromDB])
 
@@ -214,7 +215,7 @@ const UserEditor = (props) => {
                     <small>{fileNames.length ? fileNames : t('not uploaded')}</small>
                 </div>
 
-                {isAdmin && (
+                {(isAdmin && !isOwner) ? (
                     <div className="form-group" style={{marginTop: 10}}>
                         <label>
                             <input
@@ -246,7 +247,7 @@ const UserEditor = (props) => {
                             USER
                         </label>
                     </div>
-                )}
+                ): <></>}
 
                 <ButtonSection save={saveUser} close={close}/>
             </form>

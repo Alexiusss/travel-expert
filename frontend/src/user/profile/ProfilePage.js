@@ -112,6 +112,7 @@ const ProfilePage = () => {
                     enabled: data.enabled,
                     fileName: data.fileName,
                     registeredAt: data.createdAt,
+                    roles: isAdmin ? data.roles : [],
                 })
             })
             .then(() => setModal(true))

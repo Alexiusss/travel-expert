@@ -23,7 +23,7 @@ const ProfileHeader = (props) => {
         loadSubscribers = Function.prototype
     } = props;
     const {t} = useTranslation();
-    const {isAuth, isAdmin, authUserId} = useAuth();
+    const {isAuth, authUserId} = useAuth();
     const isOwner = authUserId === id;
     const isAuthUserSubscribed = subscribers.includes(authUserId) || false;
 
@@ -81,7 +81,7 @@ const ProfileHeader = (props) => {
                                 </MyButton> : <></>
                             }
 
-                            {(isOwner || isAdmin)
+                            { isOwner
                                 ?
                                 <MyButton className={"btn btn-outline-primary ml-2 btn-sm"}
                                           onClick={() => editProfile()}
