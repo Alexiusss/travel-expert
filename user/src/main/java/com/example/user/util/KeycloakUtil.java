@@ -1,6 +1,7 @@
 package com.example.user.util;
 
 import com.example.user.model.dto.UserDTO;
+import com.example.user.model.kc.UserRepresentationWithRoles;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Profile("kc")
@@ -58,7 +60,7 @@ public class KeycloakUtil {
         return usersResource.create(createUserRepresentation(user));
     }
 
-    public void addRoles(String userId, List<String> roles) {
+    public void addRoleRepresentations(String userId, List<String> roles) {
         List<RoleRepresentation> kcRoles = new ArrayList<>();
         roles.forEach(role -> {
             RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
@@ -75,24 +77,46 @@ public class KeycloakUtil {
 
     public void updateKeycloakUser(UserDTO user, List<String> roles, String userId) {
         UserResource userResource = usersResource.get(userId);
-        addRoles(userId, roles);
+        if (roles != null && !roles.isEmpty()) {
+            addRoleRepresentations(userId, roles);
+        }
         userResource.update(createUserRepresentation(user));
     }
 
-    public UserRepresentation findUserById(String userId) {
-        return usersResource.get(userId).toRepresentation();
+    public UserRepresentationWithRoles findUserById(String userId) {
+        return createUserRepresentationWithRoles(usersResource.get(userId).toRepresentation());
     }
 
     public UserRepresentation findByUserName(String username) {
         return usersResource.search(username).get(0);
     }
 
-    public List<UserRepresentation> searchKeycloakUsers(String text) {
-        return usersResource.searchByAttributes(text);
+    public List<UserRepresentationWithRoles> searchKeycloakUsers(String text) {
+        return usersResource.searchByAttributes(text).stream()
+                .map(KeycloakUtil::createUserRepresentationWithRoles)
+                .collect(Collectors.toList());
     }
 
-    public List<UserRepresentation> findAll() {
-        return usersResource.list();
+    public List<UserRepresentationWithRoles> findAll() {
+        return usersResource.list().stream()
+                .map(KeycloakUtil::createUserRepresentationWithRoles)
+                .collect(Collectors.toList());
+    }
+
+    private static UserRepresentationWithRoles createUserRepresentationWithRoles(UserRepresentation user) {
+        UserRepresentationWithRoles userWithRoles = new UserRepresentationWithRoles();
+        userWithRoles.setId(user.getId());
+        userWithRoles.setCreatedTimestamp(user.getCreatedTimestamp());
+        userWithRoles.setUsername(user.getUsername());
+        userWithRoles.setEmail(user.getEmail());
+        userWithRoles.setFirstName(user.getFirstName());
+        userWithRoles.setLastName(user.getLastName());
+        userWithRoles.setEnabled(user.isEnabled());
+        userWithRoles.setAttributes(user.getAttributes());
+
+        List<RoleRepresentation> roles = realmResource.users().get(user.getId()).roles().realmLevel().listEffective();
+        userWithRoles.setRoles(roles.stream().map(RoleRepresentation::getName).collect(Collectors.toList()));
+        return userWithRoles;
     }
 
     public void deleteKeycloakUser(String userId) {

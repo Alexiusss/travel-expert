@@ -20,7 +20,7 @@ const UserEditor = (props) => {
     const currentUserId = useAuth().authUserId;
     const {authUserId, isAdmin} = useAuth();
     const isOwner = (id != null) && (authUserId === id);
-    const [fileNames, setFileNames] = useState(['']);
+    const [fileNames, setFileNames] = useState(['empty']);
     const [images, setImages] = useState([]);
 
     const cleanForm = () => {
@@ -29,10 +29,10 @@ const UserEditor = (props) => {
         setLastName('');
         setUsername('');
         setPassword('');
-        setRoles([]);
+        setRoles(['USER']);
         setId(null);
         setImages([]);
-        setFileNames([]);
+        setFileNames(['empty']);
     };
 
     const saveUser = (e) => {

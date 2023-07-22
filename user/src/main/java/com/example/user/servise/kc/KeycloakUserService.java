@@ -4,12 +4,12 @@ import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewClient;
 import com.example.clients.review.ReviewResponse;
 import com.example.user.model.dto.UserDTO;
+import com.example.user.model.kc.UserRepresentationWithRoles;
 import com.example.user.util.KeycloakUtil;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,14 +36,14 @@ public class KeycloakUserService {
         Response response = keycloakUtil.createKeycloakUser(user);
         String userId = CreatedResponseUtil.getCreatedId(response);
         user.setId(userId);
-        keycloakUtil.addRoles(userId, roles);
+        keycloakUtil.addRoleRepresentations(userId, roles);
         return user;
     }
 
     @Transactional
     public UserDTO updateProfile(UserDTO user, String id) {
         checkModificationAllowed(id);
-        keycloakUtil.updateKeycloakUser(user, id);
+        keycloakUtil.updateKeycloakUser(user, List.of(), id);
         return user;
     }
 
@@ -59,12 +59,12 @@ public class KeycloakUserService {
     }
 
     public UserDTO get(String id) {
-        UserRepresentation userRepresentation = keycloakUtil.findUserById(id);
+        UserRepresentationWithRoles userRepresentation = keycloakUtil.findUserById(id);
         return convertUserRepresentationToUserDTO(userRepresentation);
     }
 
     public List<UserDTO> getAll(String filter) {
-        List<UserRepresentation> userRepresentations;
+        List<UserRepresentationWithRoles> userRepresentations;
         if (filter.length() > 0) {
             userRepresentations = keycloakUtil.searchKeycloakUsers(filter);
         } else {

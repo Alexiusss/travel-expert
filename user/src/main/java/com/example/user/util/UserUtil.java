@@ -5,6 +5,7 @@ import com.example.clients.review.ReviewResponse;
 import com.example.common.error.ModificationRestrictionException;
 import com.example.user.model.User;
 import com.example.user.model.dto.UserDTO;
+import com.example.user.model.kc.UserRepresentationWithRoles;
 import lombok.experimental.UtilityClass;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -62,7 +63,7 @@ public class UserUtil {
         return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, Set.of(), Set.of(), 0L);
     }
 
-    public static UserDTO convertUserRepresentationToUserDTO(UserRepresentation userRepresentation) {
+    public static UserDTO convertUserRepresentationToUserDTO(UserRepresentationWithRoles userRepresentation) {
         return UserDTO.builder()
                 .id(userRepresentation.getId())
                 .email(userRepresentation.getEmail())
