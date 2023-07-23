@@ -15,6 +15,7 @@ const UserEditor = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [roles, setRoles] = useState(['USER']);
+    const [enabled, setEnabled] = useState(true);
     const [id, setId] = useState(null)
     const {t} = useTranslation();
     const currentUserId = useAuth().authUserId;
@@ -30,6 +31,7 @@ const UserEditor = (props) => {
         setUsername('');
         setPassword('');
         setRoles(['USER']);
+        setEnabled(true);
         setId(null);
         setImages([]);
         setFileNames(['empty']);
@@ -37,7 +39,7 @@ const UserEditor = (props) => {
 
     const saveUser = (e) => {
         e.preventDefault()
-        const user = {email, firstName, lastName, username, password, roles, fileName: fileNames[0], id}
+        const user = {email, firstName, lastName, username, password, roles, fileName: fileNames[0], enabled, id}
         if (id) {
             if (currentUserId === id) {
                 authService.updateProfile(user)
@@ -132,7 +134,8 @@ const UserEditor = (props) => {
             setFirstName('' + props.userFromDB.firstName)
             setLastName('' + props.userFromDB.lastName)
             setUsername('' + props.userFromDB.username)
-            setRoles(props.userFromDB.roles || [])
+            setRoles(props.userFromDB.roles || ['USER'])
+            setEnabled(props.userFromDB.enabled)
             setId('' + props.userFromDB.id)
             setFileNames([props.userFromDB.fileName] || [''])
         }

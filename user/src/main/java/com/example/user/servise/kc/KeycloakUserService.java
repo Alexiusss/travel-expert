@@ -54,6 +54,11 @@ public class KeycloakUserService {
         return user;
     }
 
+    @Transactional
+    public void enableUser(String id, boolean enable) {
+        keycloakUtil.enableUser(id, enable);
+    }
+
     public void deleteUser(String id) {
         keycloakUtil.deleteKeycloakUser(id);
     }

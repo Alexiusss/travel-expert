@@ -45,7 +45,7 @@ const unSubscribe = (id) => {
 }
 
 const enable = (id, enabled) => {
-    return httpClient.patch(USERS_ROUTE + `${id}` + "?enable=" + enabled);
+    return httpClient.patch(USERS + `${id}` + "?enable=" + enabled);
 };
 
 const remove = (id) => {

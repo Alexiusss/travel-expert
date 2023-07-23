@@ -111,8 +111,7 @@ public class KeycloakUserController {
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) {
         log.info("create {}", user);
-        List<String> roles = List.of("ADMIN", "USER");
-        UserDTO savedUser = userService.saveUser(user, roles);
+        UserDTO savedUser = userService.saveUser(user, user.getRoles());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
@@ -126,6 +125,17 @@ public class KeycloakUserController {
         assureIdConsistent(user, id);
         UserDTO updatedUser = userService.updateUser(user, id);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @Operation(summary = "Enable/disable a user account by its id", description = "A JWT token is required to access this API")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void enableUser(@PathVariable String id, @RequestParam boolean enable) {
+        log.info(enable ? "enable {}" : "disable {}", id);
+        checkModificationAllowed(id);
+        userService.enableUser(id, enable);
     }
 
     @Operation(summary = "Delete a user account by its id", description = "A JWT token is required to access this API")

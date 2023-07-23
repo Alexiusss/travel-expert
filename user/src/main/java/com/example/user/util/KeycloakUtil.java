@@ -94,6 +94,13 @@ public class KeycloakUtil {
         userResource.update(createUserRepresentation(user));
     }
 
+    public void enableUser(String userId, boolean enable) {
+        UserResource userResource = usersResource.get(userId);
+        UserRepresentation updatedUser = userResource.toRepresentation();
+        updatedUser.setEnabled(enable);
+        userResource.update(updatedUser);
+    }
+
     public UserRepresentationWithRoles findUserById(String userId) {
         return createUserRepresentationWithRoles(usersResource.get(userId).toRepresentation());
     }
@@ -143,7 +150,7 @@ public class KeycloakUtil {
         kcUser.setEmail(user.getEmail());
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
-        kcUser.setEnabled(true);
+        kcUser.setEnabled(user.isEnabled());
         kcUser.setAttributes(Map.of("fileName", List.of(user.getFileName())));
         return kcUser;
     }
