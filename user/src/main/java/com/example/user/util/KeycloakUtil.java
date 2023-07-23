@@ -61,24 +61,35 @@ public class KeycloakUtil {
     }
 
     public void addRoleRepresentations(String userId, List<String> roles) {
+        List<RoleRepresentation> kcRoles = getRoleRepresentations(roles);
+        UserResource uniqueUserResource = usersResource.get(userId);
+        uniqueUserResource.roles().realmLevel().add(kcRoles);
+    }
+
+    public void updateRoleRepresentations(UserResource userResource, List<RoleRepresentation> kcRoles) {
+        List<RoleRepresentation> userRoles = userResource.roles().realmLevel().listEffective();
+        List<RoleRepresentation> rolesToRemove = userRoles.stream()
+                .filter(userRole -> !kcRoles.contains(userRole))
+                .collect(Collectors.toList());
+        if (!rolesToRemove.isEmpty()) {
+            userResource.roles().realmLevel().remove(rolesToRemove);
+        }
+        userResource.roles().realmLevel().add(kcRoles);
+    }
+
+    private List<RoleRepresentation> getRoleRepresentations(List<String> roles) {
         List<RoleRepresentation> kcRoles = new ArrayList<>();
         roles.forEach(role -> {
             RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
             kcRoles.add(roleRep);
         });
-        UserResource uniqueUserResource = usersResource.get(userId);
-        uniqueUserResource.roles().realmLevel().add(kcRoles);
-    }
-
-    public void updateKeycloakUser(UserDTO user, String userId) {
-        UserResource userResource = usersResource.get(userId);
-        userResource.update(createUserRepresentation(user));
+        return kcRoles;
     }
 
     public void updateKeycloakUser(UserDTO user, List<String> roles, String userId) {
         UserResource userResource = usersResource.get(userId);
         if (roles != null && !roles.isEmpty()) {
-            addRoleRepresentations(userId, roles);
+            updateRoleRepresentations(userResource, getRoleRepresentations(roles));
         }
         userResource.update(createUserRepresentation(user));
     }

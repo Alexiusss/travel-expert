@@ -72,7 +72,7 @@ public class UserUtil {
                 .username(userRepresentation.getUsername())
                 .enabled(userRepresentation.isEnabled())
                 .fileName(userRepresentation.getAttributes().get("fileName").get(0))
-                .roles(List.of("USER"))
+                .roles(userRepresentation.getRoles())
                 .build();
     }
 
