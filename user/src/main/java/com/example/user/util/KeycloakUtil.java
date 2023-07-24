@@ -3,6 +3,7 @@ package com.example.user.util;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.model.kc.UserRepresentationWithRoles;
 import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +36,12 @@ public class KeycloakUtil {
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
 
-    private static Keycloak keycloak;
-    private static RealmResource realmResource;
-    private static UsersResource usersResource;
+    private Keycloak keycloak;
+    private RealmResource realmResource;
+    private UsersResource usersResource;
 
     @PostConstruct
-    public Keycloak intKeycloak() {
+    public Keycloak initKeycloak() {
         if (keycloak == null) {
             keycloak = KeycloakBuilder.builder()
                     .realm(realm)
@@ -56,34 +56,13 @@ public class KeycloakUtil {
         return keycloak;
     }
 
-    public Response createKeycloakUser(UserDTO user) {
-        return usersResource.create(createUserRepresentation(user));
-    }
-
-    public void addRoleRepresentations(String userId, List<String> roles) {
-        List<RoleRepresentation> kcRoles = getRoleRepresentations(roles);
-        UserResource uniqueUserResource = usersResource.get(userId);
-        uniqueUserResource.roles().realmLevel().add(kcRoles);
-    }
-
-    public void updateRoleRepresentations(UserResource userResource, List<RoleRepresentation> kcRoles) {
-        List<RoleRepresentation> userRoles = userResource.roles().realmLevel().listEffective();
-        List<RoleRepresentation> rolesToRemove = userRoles.stream()
-                .filter(userRole -> !kcRoles.contains(userRole))
-                .collect(Collectors.toList());
-        if (!rolesToRemove.isEmpty()) {
-            userResource.roles().realmLevel().remove(rolesToRemove);
-        }
-        userResource.roles().realmLevel().add(kcRoles);
-    }
-
-    private List<RoleRepresentation> getRoleRepresentations(List<String> roles) {
-        List<RoleRepresentation> kcRoles = new ArrayList<>();
-        roles.forEach(role -> {
-            RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
-            kcRoles.add(roleRep);
-        });
-        return kcRoles;
+    public UserDTO createKeycloakUser(UserDTO user, List<String> roles) {
+        Response response = usersResource.create(createUserRepresentation(user));
+        String userId = CreatedResponseUtil.getCreatedId(response);
+        UserResource userResource = usersResource.get(userId);
+        user.setId(userId);
+        addRoleRepresentations(userResource, getRoleRepresentations(roles));
+        return user;
     }
 
     public void updateKeycloakUser(UserDTO user, List<String> roles, String userId) {
@@ -92,6 +71,36 @@ public class KeycloakUtil {
             updateRoleRepresentations(userResource, getRoleRepresentations(roles));
         }
         userResource.update(createUserRepresentation(user));
+    }
+
+    public void addRoleRepresentations(UserResource userResource, List<RoleRepresentation> kcRoles) {
+        userResource.roles().realmLevel().add(kcRoles);
+    }
+
+    public void updateRoleRepresentations(UserResource userResource, List<RoleRepresentation> kcRoles) {
+        List<RoleRepresentation> userRoles = userResource.roles().realmLevel().listEffective();
+
+        List<RoleRepresentation> rolesToAdd = kcRoles.stream()
+                .filter(kcRole -> !userRoles.contains(kcRole))
+                .collect(Collectors.toList());
+
+        List<RoleRepresentation> rolesToRemove = userRoles.stream()
+                .filter(userRole -> !kcRoles.contains(userRole))
+                .collect(Collectors.toList());
+
+        if (!rolesToRemove.isEmpty()) {
+            userResource.roles().realmLevel().remove(rolesToRemove);
+        }
+
+        if (!rolesToAdd.isEmpty()) {
+            addRoleRepresentations(userResource, rolesToAdd);
+        }
+    }
+
+    private List<RoleRepresentation> getRoleRepresentations(List<String> roles) {
+        return roles.stream()
+                .map(role -> realmResource.roles().get(role).toRepresentation())
+                .collect(Collectors.toList());
     }
 
     public void enableUser(String userId, boolean enable) {
@@ -111,17 +120,17 @@ public class KeycloakUtil {
 
     public List<UserRepresentationWithRoles> searchKeycloakUsers(String text) {
         return usersResource.searchByAttributes(text).stream()
-                .map(KeycloakUtil::createUserRepresentationWithRoles)
+                .map(this::createUserRepresentationWithRoles)
                 .collect(Collectors.toList());
     }
 
     public List<UserRepresentationWithRoles> findAll() {
         return usersResource.list().stream()
-                .map(KeycloakUtil::createUserRepresentationWithRoles)
+                .map(this::createUserRepresentationWithRoles)
                 .collect(Collectors.toList());
     }
 
-    private static UserRepresentationWithRoles createUserRepresentationWithRoles(UserRepresentation user) {
+    private UserRepresentationWithRoles createUserRepresentationWithRoles(UserRepresentation user) {
         UserRepresentationWithRoles userWithRoles = new UserRepresentationWithRoles();
         userWithRoles.setId(user.getId());
         userWithRoles.setCreatedTimestamp(user.getCreatedTimestamp());

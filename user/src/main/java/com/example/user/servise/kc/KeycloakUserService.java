@@ -9,12 +9,10 @@ import com.example.user.util.KeycloakUtil;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.CreatedResponseUtil;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +23,7 @@ import static com.example.user.util.UserUtil.*;
 @Slf4j
 @AllArgsConstructor
 @Profile("kc")
+@Transactional(readOnly = true)
 public class KeycloakUserService {
 
     private final KeycloakUtil keycloakUtil;
@@ -33,11 +32,7 @@ public class KeycloakUserService {
     @Transactional
     public UserDTO saveUser(UserDTO user, List<String> roles) {
         checkNew(user);
-        Response response = keycloakUtil.createKeycloakUser(user);
-        String userId = CreatedResponseUtil.getCreatedId(response);
-        user.setId(userId);
-        keycloakUtil.addRoleRepresentations(userId, roles);
-        return user;
+        return keycloakUtil.createKeycloakUser(user, roles);
     }
 
     @Transactional
