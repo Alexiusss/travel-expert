@@ -23,7 +23,7 @@ const SubItem = (props) => {
     } = props;
     const {isAuth, authUserId} = useAuth();
     const isOwner = authUserId === authorId;
-    const isAuthUserSubscribed = subscribers.includes(authUserId) || false;
+    const isAuthUserSubscribed = subscribers ? subscribers.includes(authUserId) : false;
 
     return (
         <a href={`/profile/${username}`}>
@@ -41,7 +41,7 @@ const SubItem = (props) => {
                     <div className="author-info">
                     <span className="author-subs">
                         <span className="bC">
-                        {subscribers.length}
+                        {subscribers ? subscribers.length : 0}
                             </span>
                         {t('followers')}
                     </span>

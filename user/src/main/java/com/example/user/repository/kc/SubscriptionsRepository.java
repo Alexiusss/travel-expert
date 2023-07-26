@@ -5,12 +5,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 @Repository
 @Profile("kc")
@@ -63,5 +59,24 @@ public class SubscriptionsRepository {
             e.printStackTrace();
         }
         return subsSet;
+    }
+
+    public Map<String, Set<String>> getAllSubscribersByIds(List<String> authorsIds) {
+        Map<String, Set<String>> map = new HashMap<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT channel_id, subscriber_id FROM subscriptions WHERE channel_id=ANY(?)")) {
+
+            Array idsArray = connection.createArrayOf("VARCHAR", authorsIds.toArray());
+            statement.setArray(1, idsArray);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    map.computeIfAbsent(resultSet.getString("channel_id"), channelId -> new HashSet<>()).add(resultSet.getString("subscriber_id"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 }

@@ -1,5 +1,4 @@
 import httpClient from "../http/http-common";
-import {USERS_ROUTE} from "../utils/consts";
 
 const {REACT_APP_USERS_PATH:USERS} = process.env;
 
@@ -25,7 +24,7 @@ const getAuthor = (id) => {
 };
 
 const getAuthorList = (ids) => {
-    return httpClient.post(USERS_ROUTE + 'authorList', ids);
+    return httpClient.post(USERS + 'authorList', ids);
 };
 
 const getAuthorByUsername = (username) => {
@@ -37,11 +36,11 @@ const update = (data, id) => {
 };
 
 const subscribe = (id) => {
-    return httpClient.get(USERS_ROUTE + 'subscribe/' + `${id}`)
+    return httpClient.get(USERS + 'subscribe/' + `${id}`)
 }
 
 const unSubscribe = (id) => {
-    return httpClient.get(USERS_ROUTE + 'unSubscribe/' + `${id}`)
+    return httpClient.get(USERS + 'unSubscribe/' + `${id}`)
 }
 
 const enable = (id, enabled) => {

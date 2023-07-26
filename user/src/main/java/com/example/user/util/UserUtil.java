@@ -58,8 +58,6 @@ public class UserUtil {
         String authorName = user.getFirstName() + " " + user.getLastName();
         String fileName = user.getAttributes().get("fileName") != null ? user.getAttributes().get("fileName").get(0) : "Empty";
         Instant registeredAt = Instant.ofEpochMilli(user.getCreatedTimestamp());
-//        Set<String> subscribers = user.getSubscribers();
-//        Set<String> subscriptions = user.getSubscriptions();
         return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, Set.of(), Set.of(), 0L);
     }
 

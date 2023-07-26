@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -147,5 +148,21 @@ public class KeycloakUserController {
         log.info("delete {}", id);
         checkModificationAllowed(id);
         userService.deleteUser(id);
+    }
+
+    @Operation(summary = "Subscribe to user per its id")
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("subscribe/{userId}")
+    public void subscribe(@AuthenticationPrincipal Jwt jwt, @PathVariable String userId) throws SQLException {
+        log.info("user {} subscribe to user {}", jwt.getSubject(), userId);
+        userService.subscribe(jwt.getSubject(), userId);
+    }
+
+    @Operation(summary = "Unsubscribe from the user by his id")
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("unSubscribe/{userId}")
+    public void unSubscribe(@AuthenticationPrincipal Jwt jwt, @PathVariable String userId) throws SQLException {
+        log.info("user {} unsubscribe from user {}", jwt.getSubject(), userId);
+        userService.unSubscribe(jwt.getSubject(), userId);
     }
 }

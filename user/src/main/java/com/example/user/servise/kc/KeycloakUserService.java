@@ -5,6 +5,7 @@ import com.example.clients.review.ReviewClient;
 import com.example.clients.review.ReviewResponse;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.model.kc.UserRepresentationWithRoles;
+import com.example.user.repository.kc.SubscriptionsRepository;
 import com.example.user.util.KeycloakUtil;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.common.util.ValidationUtil.checkNew;
@@ -28,6 +32,7 @@ public class KeycloakUserService {
 
     private final KeycloakUtil keycloakUtil;
     private final ReviewClient reviewClient;
+    private final SubscriptionsRepository subscriptionsRepository;
 
     @Transactional
     public UserDTO saveUser(UserDTO user, List<String> roles) {
@@ -76,21 +81,78 @@ public class KeycloakUserService {
     }
 
     public AuthorDTO getAuthorById(String id) {
-        return getAuthorDTO(keycloakUtil.findUserById(id));
+        AuthorDTO author = getAuthorDTO(keycloakUtil.findUserById(id));
+        setSubscriptionsAndSubscribers(author);
+        return author;
     }
 
     public AuthorDTO getAuthorByUserName(String username) {
-        return getAuthorDTO(keycloakUtil.findByUserName(username));
+        AuthorDTO author = getAuthorDTO(keycloakUtil.findByUserName(username));
+        setSubscriptionsAndSubscribers(author);
+        return author;
     }
 
     public List<AuthorDTO> getAllAuthorsById(String[] authors) {
         List<String> authorsList = List.of(authors);
         List<ReviewResponse> list = reviewClient.getActiveList(authors);
 
-        return keycloakUtil.findAll()
-                .stream().filter(userRepresentation -> authorsList.contains(userRepresentation.getId()))
+        List<AuthorDTO> authorList = keycloakUtil.findAll()
+                .stream()
+                .filter(userRepresentation -> authorsList.contains(userRepresentation.getId()))
                 .map(UserUtil::getAuthorDTO)
-                .peek(setReviewsCount(list))
                 .collect(Collectors.toList());
+
+        setReviewCounts(authorList, list);
+        setSubscribersForAuthors(authorList);
+
+        return authorList;
+    }
+
+    private void setReviewCounts(List<AuthorDTO> authors, List<ReviewResponse> reviewResponses) {
+        Map<String, Long> reviewCounts = reviewResponses.stream()
+                .collect(Collectors.groupingBy(ReviewResponse::getId, Collectors.counting()));
+
+        authors.forEach(author -> {
+            Long count = reviewCounts.getOrDefault(author.getAuthorId(), 0L);
+            author.setReviewsCount(count);
+        });
+    }
+
+    private void setSubscribersForAuthors(List<AuthorDTO> authors) {
+        List<String> authorIds = authors.stream()
+                .map(AuthorDTO::getAuthorId)
+                .collect(Collectors.toList());
+
+        Map<String, Set<String>> subscribersMap = subscriptionsRepository.getAllSubscribersByIds(authorIds);
+
+        authors.forEach(author -> {
+            Set<String> subscribers = subscribersMap.getOrDefault(author.getAuthorId(), new HashSet<>());
+            author.setSubscribers(subscribers);
+        });
+    }
+
+    private void setSubscriptionsAndSubscribers(AuthorDTO author) {
+        setSubscriptions(author);
+        setSubscribers(author);
+    }
+
+    private void setSubscriptions(AuthorDTO author) {
+        Set<String> subscriptions = subscriptionsRepository.getAllSubscriptionsById(author.getAuthorId());
+        author.setSubscriptions(subscriptions);
+    }
+
+    private void setSubscribers(AuthorDTO author) {
+        Set<String> subscribers = subscriptionsRepository.getAllSubscribersById(author.getAuthorId());
+        author.setSubscribers(subscribers);
+    }
+
+    @Transactional
+    public void subscribe(String authUserId, String userId) {
+        subscriptionsRepository.subscribe(authUserId, userId);
+    }
+
+    @Transactional
+    public void unSubscribe(String authUserId, String userId) {
+        subscriptionsRepository.unsubscribe(authUserId, userId);
     }
 }
