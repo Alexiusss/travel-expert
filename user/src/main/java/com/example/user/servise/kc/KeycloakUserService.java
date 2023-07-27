@@ -59,8 +59,9 @@ public class KeycloakUserService {
         keycloakUtil.enableUser(id, enable);
     }
 
-    public void deleteUser(String id) {
-        keycloakUtil.deleteKeycloakUser(id);
+    public void deleteUser(String userId) {
+        keycloakUtil.deleteKeycloakUser(userId);
+        subscriptionsRepository.deleteAllByUserId(userId);
     }
 
     public UserDTO get(String id) {

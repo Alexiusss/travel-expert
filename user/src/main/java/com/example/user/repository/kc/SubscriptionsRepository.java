@@ -46,9 +46,10 @@ public class SubscriptionsRepository {
     }
 
     private Set<String> getSubscribersOrSubscriptions(String id, String fieldName) {
+        String sql = "SELECT " + fieldName + " FROM subscriptions WHERE " + (fieldName.equals("subscriber_id") ? "channel_id" : "subscriber_id") + "=?";
         Set<String> subsSet = new HashSet<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT " + fieldName + " FROM subscriptions WHERE " + (fieldName.equals("subscriber_id") ? "channel_id" : "subscriber_id") + "=?")) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -78,5 +79,18 @@ public class SubscriptionsRepository {
             e.printStackTrace();
         }
         return map;
+    }
+
+    public void deleteAllByUserId(String userId) {
+        String sql = "DELETE FROM subscriptions WHERE channel_id=? OR subscriber_id=?";
+
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.setString(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
