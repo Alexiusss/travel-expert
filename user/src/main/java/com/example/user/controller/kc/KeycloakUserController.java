@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -97,13 +98,14 @@ public class KeycloakUserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAll(
+    public ResponseEntity<Page<UserDTO>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "", required = false) String filter
-
     ) {
         log.info("getAll");
-        List<UserDTO> users = userService.getAll(filter);
-        return ResponseEntity.status(HttpStatus.OK).body(users);
+        Page<UserDTO> usersPage = userService.getAll(page, size, filter);
+        return ResponseEntity.status(HttpStatus.OK).body(usersPage);
     }
 
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")

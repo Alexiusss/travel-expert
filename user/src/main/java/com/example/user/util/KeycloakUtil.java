@@ -130,6 +130,16 @@ public class KeycloakUtil {
                 .collect(Collectors.toList());
     }
 
+    public List<UserRepresentationWithRoles> findAll(int page, int size) {
+        return usersResource.list(page, size).stream()
+                .map(this::createUserRepresentationWithRoles)
+                .collect(Collectors.toList());
+    }
+
+    public int getTotalCountOfUsers() {
+        return usersResource.count();
+    }
+
     private UserRepresentationWithRoles createUserRepresentationWithRoles(UserRepresentation user) {
         UserRepresentationWithRoles userWithRoles = new UserRepresentationWithRoles();
         userWithRoles.setId(user.getId());

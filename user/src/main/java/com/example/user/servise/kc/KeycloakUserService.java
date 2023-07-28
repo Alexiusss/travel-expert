@@ -11,6 +11,7 @@ import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,16 +70,24 @@ public class KeycloakUserService {
         return convertUserRepresentationToUserDTO(userRepresentation);
     }
 
-    public List<UserDTO> getAll(String filter) {
+    public Page<UserDTO> getAll(int page, int size, String filter) {
         List<UserRepresentationWithRoles> userRepresentations;
         if (filter.length() > 0) {
             userRepresentations = keycloakUtil.searchKeycloakUsers(filter);
         } else {
-            userRepresentations = keycloakUtil.findAll();
+            userRepresentations = keycloakUtil.findAll(page, size);
         }
-        return userRepresentations.stream()
+
+        List<UserDTO> userList = userRepresentations.stream()
                 .map(UserUtil::convertUserRepresentationToUserDTO)
                 .collect(Collectors.toList());
+
+        int countOfUsers = keycloakUtil.getTotalCountOfUsers();
+        PageRequest pageable = PageRequest.of(page, size);
+
+        Page<UserDTO> usersPage = new PageImpl<>(userList, pageable, countOfUsers);
+
+        return usersPage;
     }
 
     public AuthorDTO getAuthorById(String id) {

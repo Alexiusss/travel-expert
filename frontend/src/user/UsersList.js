@@ -29,8 +29,7 @@ const UsersList = () => {
 
     useEffect(() => {
         trackPromise(userService.getAll(size, page), area).then(({data}) => {
-            //setUsers(data.content);
-            setUsers(data);
+            setUsers(data.content);
             setTotalPages(data.totalPages)
         });
     }, [setUsers, page, size]);
