@@ -23,7 +23,7 @@ import static com.example.user.util.JwtUtil.validateAccessToken;
 
 @Component
 @AllArgsConstructor
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class JwtFilter extends OncePerRequestFilter {
 
     private final UserService userService;

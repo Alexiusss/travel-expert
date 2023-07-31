@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@Profile("kc")
+@Profile({"kc", "test_kc"})
 public class KeycloakUtil {
 
     @Value("${keycloak.auth-server-url}")

@@ -26,7 +26,7 @@ import java.util.UUID;
 import static com.example.user.util.UserUtil.prepareToSave;
 
 @Service
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class AuthService {
 
     @Autowired

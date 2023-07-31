@@ -28,7 +28,7 @@ import static com.example.user.util.UserUtil.*;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;

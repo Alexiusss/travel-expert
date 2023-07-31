@@ -31,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(path = KeycloakUserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
-@Profile("kc")
+@Profile({"test_kc", "kc"})
 public class KeycloakUserController {
 
     public static final String REST_URL = "/api/v1/kc-users/";

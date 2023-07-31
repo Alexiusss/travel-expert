@@ -25,7 +25,7 @@ import static com.example.user.util.UserUtil.PASSWORD_ENCODER;
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;

@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = ProfileController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAnyAuthority('MODERATOR', 'USER')")
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class ProfileController {
     static final String REST_URL = "/api/v1/profile";
 

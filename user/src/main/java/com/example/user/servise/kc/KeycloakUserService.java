@@ -27,7 +27,7 @@ import static com.example.user.util.UserUtil.*;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Profile("kc")
+@Profile({"test_kc", "kc"})
 @Transactional(readOnly = true)
 public class KeycloakUserService {
 

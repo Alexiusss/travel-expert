@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.*;
 
 @Repository
-@Profile("kc")
+@Profile({"kc", "test_kc"})
 @AllArgsConstructor
 public class SubscriptionsRepository {
 

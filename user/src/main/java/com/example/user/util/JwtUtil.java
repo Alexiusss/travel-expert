@@ -21,7 +21,7 @@ import java.util.function.Function;
 import static java.time.LocalDateTime.now;
 
 @Component
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class JwtUtil {
 
     private static String accessTokenSecret;
@@ -119,7 +119,7 @@ public class JwtUtil {
                 .compact();
     }
 
-// https://stackoverflow.com/a/70292828
+    // https://stackoverflow.com/a/70292828
     public static ResponseCookie generateCookie(String refreshToken, String domain) {
         return ResponseCookie.from("refresh-token", refreshToken)
                 .domain(domain)

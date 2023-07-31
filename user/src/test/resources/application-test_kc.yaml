@@ -1,0 +1,40 @@
+#https://medium.com/javarevisited/spring-boot-testing-testcontainers-and-flyway-df4a71376db4
+spring:
+  flyway:
+    locations: classpath:db.migration.kc
+  datasource:
+    url: jdbc:tc:postgresql:12.10:///test_users_kc
+    username: postgres
+    password: 1234
+  data:
+    rest:
+      base-path: /api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/realms/travel-expert-realm/protocol/openid-connect/certs
+    filter:
+      order: 10
+
+eureka:
+  client:
+    enabled: false
+
+clients:
+  review:
+    url: http://localhost:7070
+
+myhostname: localhost:8080
+
+keycloak.auth-server-url: http://localhost:8180
+keycloak.resource: user-manage-client
+keycloak.realm: travel-expert-realm
+keycloak.credentials.secret: g5anEaKSrY0tRb0WTnRsYe1Kw1y4nxbc
+keycloak.use-resource-role-mapping: true
+
+client.url: http://localhost:3000/
+
+cookies.domain: localhost
+
+application-version: 1.0.0

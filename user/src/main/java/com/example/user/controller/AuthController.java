@@ -36,7 +36,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RestController
 @RequestMapping(path = AuthController.AUTH_URL, produces = APPLICATION_JSON_VALUE)
-@Profile("!kc")
+@Profile({ "!test_kc & !kc" })
 public class AuthController {
 
     public static final String AUTH_URL = "/api/v1/auth";
