@@ -1,29 +1,26 @@
 package com.example.user.controller.kc;
 
-import com.example.common.util.TestProfileResolver;
+import com.example.common.util.TestKcProfileResolver;
 import dasniko.testcontainers.keycloak.KeycloakContainer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static com.example.user.util.kc.KcUserTesData.getBearerToken;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // https://www.baeldung.com/spring-boot-keycloak-integration-testing
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = "test_kc", resolver = TestProfileResolver.class)
-@AutoConfigureMockMvc
+@SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
 @ActiveProfiles(resolver = TestKcProfileResolver.class)
@@ -31,16 +28,19 @@ public class KeycloakUserControllerTest {
 
     private static final String REST_URL = KeycloakUserController.REST_URL + "/";
 
-    @Autowired
-    protected MockMvc mockMvc;
-
     @Container
-    public static KeycloakContainer keycloak = new KeycloakContainer().withRealmImportFile("keycloak/realm-export.json");
+    static KeycloakContainer keycloak = new KeycloakContainer("keycloak/keycloak:18.0")
+            .withExposedPorts(8080)
+            .withRealmImportFile("keycloak/realm-export.json");
 
-    @DynamicPropertySource
-    static void registerResourceServerIssuerProperty(DynamicPropertyRegistry registry) {
-        registry.add("spring.security.oauth2.resourceserver.jwt.issuer-uri", () -> keycloak.getAuthServerUrl() + "/realms/travel-expert-realm");
+    @BeforeAll
+    static void setUp() {
+        keycloak.start();
+        changeKeycloakPorts();
     }
+
+    @Autowired
+    MockMvc mockMvc;
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
@@ -51,5 +51,12 @@ public class KeycloakUserControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    private static void changeKeycloakPorts() {
+        int port = keycloak.getMappedPort(8080);
+        String url = "http://localhost:" + port;
+        System.setProperty("keycloak.auth-server-url", url + "/auth");
+        System.setProperty("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", url + "/realms/travel-expert-realm/protocol/openid-connect/certs");
     }
 }
