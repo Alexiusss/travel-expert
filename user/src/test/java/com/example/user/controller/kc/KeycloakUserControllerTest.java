@@ -25,7 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "test_kc", resolver = TestProfileResolver.class)
 @AutoConfigureMockMvc
 @Testcontainers
-@Transactional
+@AutoConfigureMockMvc
+@ActiveProfiles(resolver = TestKcProfileResolver.class)
 public class KeycloakUserControllerTest {
 
     private static final String REST_URL = KeycloakUserController.REST_URL + "/";
