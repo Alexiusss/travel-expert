@@ -30,7 +30,7 @@ myhostname: localhost:8080
 keycloak.auth-server-url: http://localhost:8180
 keycloak.resource: user-manage-client
 keycloak.realm: travel-expert-realm
-keycloak.credentials.secret: g5anEaKSrY0tRb0WTnRsYe1Kw1y4nxbc
+keycloak.credentials.secret: secret
 keycloak.use-resource-role-mapping: true
 
 client.url: http://localhost:3000/
