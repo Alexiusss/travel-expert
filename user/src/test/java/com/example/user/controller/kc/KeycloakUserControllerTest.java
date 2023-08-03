@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -43,10 +45,10 @@ public class KeycloakUserControllerTest {
             .withExposedPorts(8080)
             .withRealmImportFile("keycloak/realm-export.json");
 
-    @BeforeAll
-    static void setUp() {
-        keycloakContainer.start();
-        changeKeycloakPorts(keycloakContainer);
+    @DynamicPropertySource
+    static void setUp(DynamicPropertyRegistry registry) {
+        registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> keycloakContainer.getAuthServerUrl() + "/realms/travel-expert-realm/protocol/openid-connect/certs");
+        registry.add("keycloak.auth-server-url", () -> keycloakContainer.getAuthServerUrl());
     }
 
     @Autowired
