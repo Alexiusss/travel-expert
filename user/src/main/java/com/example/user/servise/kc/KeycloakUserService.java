@@ -120,7 +120,7 @@ public class KeycloakUserService {
 
     private void setReviewCounts(List<AuthorDTO> authors, List<ReviewResponse> reviewResponses) {
         Map<String, Long> reviewCounts = reviewResponses.stream()
-                .collect(Collectors.groupingBy(ReviewResponse::getId, Collectors.counting()));
+                .collect(Collectors.toMap(ReviewResponse::getId, ReviewResponse::getCount));
 
         authors.forEach(author -> {
             Long count = reviewCounts.getOrDefault(author.getAuthorId(), 0L);
