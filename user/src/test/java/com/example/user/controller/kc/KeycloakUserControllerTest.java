@@ -3,6 +3,11 @@ package com.example.user.controller.kc;
 import com.example.common.util.TestKcProfileResolver;
 import com.example.user.controller.config.KeycloakTestConfig;
 import com.example.user.model.dto.UserDTO;
+import com.example.user.repository.kc.SubscriptionsRepository;
+import com.example.user.util.KeycloakUtil;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,9 +31,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.ws.rs.NotFoundException;
+import java.util.List;
+
 import static com.example.common.util.JsonUtil.asParsedJson;
+import static com.example.common.util.JsonUtil.writeValue;
 import static com.example.user.util.kc.KcUserTestData.*;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -43,6 +54,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class KeycloakUserControllerTest {
 
     private static final String REST_URL = KeycloakUserController.REST_URL + "/";
+
+    @Autowired
+    private KeycloakUtil keycloakUtil;
+
+    @Autowired
+    private SubscriptionsRepository subscriptionsRepository;
 
     @Autowired
     private Keycloak keycloakAdminClient;
@@ -82,8 +99,8 @@ public class KeycloakUserControllerTest {
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
-                .param("size", "2")
-                .param("page", "1")
+                .param("size", "1")
+                .param("page", "2")
                 .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0]", equalTo(asParsedJson(MODER_DTO))));
@@ -100,10 +117,10 @@ public class KeycloakUserControllerTest {
 
     @Test
     void getNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "1001")
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID)
                 .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
     }
 
     @Test
@@ -128,5 +145,67 @@ public class KeycloakUserControllerTest {
         newUser.setId(savedUser.getId());
 
         USER_DTO_MATCHER.assertMatch(savedUser, newUser);
+    }
+
+    @Test
+    void getAuthor() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + MODER_ID + "/author")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(AUTHOR_DTO_MATCHER.contentJson(MODER_AUTHOR))
+                .andDo(print());
+    }
+
+    @Test
+    void getAuthorByUsername() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + MODER_USERNAME + "/authorByUsername")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(AUTHOR_DTO_MATCHER.contentJson(MODER_AUTHOR))
+                .andDo(print());
+    }
+
+    @Test
+    void getAuthorList() throws Exception {
+        stubReviewResponse();
+        perform(MockMvcRequestBuilders.post(REST_URL + "/authorList")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValue(List.of(MODER_ID, USER_ID)))
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(AUTHOR_DTO_MATCHER.contentJson(List.of(MODER_AUTHOR, USER_AUTHOR)));
+    }
+
+    @Test
+    void deleteUser() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + DELETE_USER_ID)
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isNoContent());
+
+        assertThrows(NotFoundException.class, () -> keycloakUtil.findUserById(DELETE_USER_ID));
+        Boolean isSubscribersDeleted = subscriptionsRepository.getAllSubscribersById(DELETE_USER_ID).size() == 0;
+        Boolean isSubscriptionsDeleted = subscriptionsRepository.getAllSubscriptionsById(DELETE_USER_ID).size() == 0;
+        assertTrue(isSubscribersDeleted && isSubscriptionsDeleted);
+    }
+
+    @Test
+    void deleteForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + ADMIN_ID)
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("message", equalTo(MODIFICATION_FORBIDDEN_MESSAGE)));
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + NOT_FOUND_ID)
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
     }
 }

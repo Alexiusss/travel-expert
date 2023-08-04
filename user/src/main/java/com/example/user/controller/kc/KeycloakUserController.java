@@ -154,6 +154,7 @@ public class KeycloakUserController {
     @Operation(summary = "Subscribe to user per its id")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("subscribe/{userId}")
+    @ResponseStatus(value = HttpStatus.OK)
     public void subscribe(@AuthenticationPrincipal Jwt jwt, @PathVariable String userId) {
         log.info("user {} subscribe to user {}", jwt.getSubject(), userId);
         userService.subscribe(jwt.getSubject(), userId);
@@ -162,6 +163,7 @@ public class KeycloakUserController {
     @Operation(summary = "Unsubscribe from the user by his id")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("unSubscribe/{userId}")
+    @ResponseStatus(value = HttpStatus.OK)
     public void unSubscribe(@AuthenticationPrincipal Jwt jwt, @PathVariable String userId) {
         log.info("user {} unsubscribe from user {}", jwt.getSubject(), userId);
         userService.unSubscribe(jwt.getSubject(), userId);
