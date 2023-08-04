@@ -4,6 +4,7 @@ import com.example.common.util.JsonUtil;
 import com.example.common.util.MatcherFactory;
 import com.example.user.model.User;
 import com.example.user.model.dto.UserDTO;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.experimental.UtilityClass;
 import org.keycloak.admin.client.Keycloak;
 
@@ -37,5 +38,10 @@ public class KcUserTestData {
 
     public static String jsonWithPassword(UserDTO user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);
+    }
+
+    public void  stubReviewResponse() {
+        stubFor(WireMock.post(WireMock.urlMatching("/api/v1/reviews/user/reviewCountActive"))
+                .willReturn(okForContentType("application/json",JsonUtil.writeValue(List.of(MODER_REVIEW_RESPONSE, USER_REVIEW_RESPONSE)))));
     }
 }

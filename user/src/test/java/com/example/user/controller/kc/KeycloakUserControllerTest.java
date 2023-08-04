@@ -4,6 +4,8 @@ import com.example.common.util.TestKcProfileResolver;
 import com.example.user.controller.config.KeycloakTestConfig;
 import com.example.user.model.dto.UserDTO;
 import dasniko.testcontainers.keycloak.KeycloakContainer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.keycloak.admin.client.Keycloak;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,8 @@ public class KeycloakUserControllerTest {
     @Autowired
     private Keycloak keycloakAdminClient;
 
+    private static WireMockServer wireMockServer;
+
     @Container
     static KeycloakContainer keycloakContainer = new KeycloakContainer("keycloak/keycloak:18.0")
             .withExposedPorts(8080)
@@ -54,6 +58,18 @@ public class KeycloakUserControllerTest {
     static void setUp(DynamicPropertyRegistry registry) {
         registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> keycloakContainer.getAuthServerUrl() + "/realms/travel-expert-realm/protocol/openid-connect/certs");
         registry.add("keycloak.auth-server-url", () -> keycloakContainer.getAuthServerUrl());
+    }
+
+    @BeforeAll
+    static void init() {
+        wireMockServer = new WireMockServer(new WireMockConfiguration().port(7070));
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 7070);
+    }
+
+    @AfterAll
+    static void destroy() {
+        wireMockServer.stop();
     }
 
     @Autowired
