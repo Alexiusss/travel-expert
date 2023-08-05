@@ -26,6 +26,8 @@ public class KcUserTestData {
     public static final String MODER_ID = "2";
     public static final String USER_ID = "3";
     public static final String DELETE_USER_ID = "4";
+    public static final String UPDATE_USER_ID = "5";
+
     public static final String NOT_FOUND_ID = "1111";
     public static final String ADMIN_MAIL = "admin@gmail.com";
     public static final String MODER_MAIL = "moder@gmail.com";
@@ -45,6 +47,7 @@ public class KcUserTestData {
 
     public final String NOT_FOUND_MESSAGE = "HTTP 404 Not Found";
     public final String MODIFICATION_FORBIDDEN_MESSAGE = "modification is forbidden";
+    public final String DUPLICATE_EMAIL = "Duplicate email or username";
 
     public static String getKeycloakToken(Keycloak keycloakAdminClient) {
         String access_token = keycloakAdminClient.tokenManager().getAccessToken().getToken();
@@ -53,6 +56,10 @@ public class KcUserTestData {
 
     public static UserDTO getNewUser() {
         return new UserDTO(null, "new@gmail.com", "new name", "new lastname", "newpassword", "newusername", true, "new filename", List.of("USER"));
+    }
+
+    public static UserDTO getUpdatedUser() {
+        return new UserDTO(UPDATE_USER_ID, "updated-profile@gmail.com", "updated", "updated", "updated-password", "updatedUsername", true, "updated-file-name", List.of("ADMIN", "USER", "MODERATOR"));
     }
 
     public static String jsonWithPassword(UserDTO user, String passw) {

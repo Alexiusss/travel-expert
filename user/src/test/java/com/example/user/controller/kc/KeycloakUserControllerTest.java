@@ -148,6 +148,58 @@ public class KeycloakUserControllerTest {
     }
 
     @Test
+    void addInvalid() throws Exception {
+        UserDTO newUser = getNewUser();
+        newUser.setUsername("");
+        newUser.setEmail("");
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(newUser, newUser.getPassword()))
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void addWithDuplicateEmail() throws Exception {
+        UserDTO newUser = getNewUser();
+        newUser.setEmail(USER_MAIL);
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(newUser, newUser.getPassword()))
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message", equalTo(DUPLICATE_EMAIL)));
+    }
+
+    @Test
+    void updateUser() throws Exception {
+        UserDTO user = getUpdatedUser();
+
+        ResultActions action = perform(MockMvcRequestBuilders.put(REST_URL + UPDATE_USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(user, user.getPassword()))
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)));
+
+        UserDTO updatedProfile = USER_DTO_MATCHER.readFromJson(action);
+        USER_DTO_MATCHER.assertMatch(updatedProfile, user);
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        UserDTO user = getUpdatedUser();
+        user.setUsername("");
+        user.setEmail("");
+
+        perform(MockMvcRequestBuilders.put(REST_URL + UPDATE_USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(user, user.getPassword()))
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void getAuthor() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + MODER_ID + "/author")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -207,5 +259,12 @@ public class KeycloakUserControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("message", equalTo(NOT_FOUND_MESSAGE)));
+    }
+
+    @Test
+    void getProfile() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "/profile")
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isOk());
     }
 }
