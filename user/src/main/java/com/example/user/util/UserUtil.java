@@ -62,6 +62,12 @@ public class UserUtil {
     }
 
     public static UserDTO convertUserRepresentationToUserDTO(UserRepresentationWithRoles userRepresentation) {
+        String fileName;
+        if (userRepresentation.getAttributes() != null && userRepresentation.getAttributes().containsKey("fileName")) {
+            fileName = userRepresentation.getAttributes().get("fileName").get(0);
+        } else {
+            fileName = "Empty filename";
+        }
         return UserDTO.builder()
                 .id(userRepresentation.getId())
                 .email(userRepresentation.getEmail())
@@ -69,7 +75,7 @@ public class UserUtil {
                 .lastName(userRepresentation.getLastName())
                 .username(userRepresentation.getUsername())
                 .enabled(userRepresentation.isEnabled())
-                .fileName(userRepresentation.getAttributes().get("fileName").get(0))
+                .fileName(fileName)
                 .roles(userRepresentation.getRoles())
                 .build();
     }
