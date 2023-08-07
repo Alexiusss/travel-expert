@@ -38,11 +38,11 @@ public class SubscriptionsRepository {
     }
 
     public Set<String> getAllSubscriptionsById(String authorId) {
-        return getSubscribersOrSubscriptions(authorId, "subscriber_id");
+        return getSubscribersOrSubscriptions(authorId, "channel_id");
     }
 
     public Set<String> getAllSubscribersById(String authorId) {
-        return getSubscribersOrSubscriptions(authorId, "channel_id");
+        return getSubscribersOrSubscriptions(authorId, "subscriber_id");
     }
 
     private Set<String> getSubscribersOrSubscriptions(String id, String fieldName) {

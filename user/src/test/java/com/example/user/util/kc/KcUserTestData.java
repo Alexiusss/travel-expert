@@ -20,7 +20,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 public class KcUserTestData {
 
     public static final MatcherFactory.Matcher<UserDTO> USER_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(UserDTO.class, "password");
-    public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class, "subscribers", "subscriptions");
+    public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_LIST_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class,  "subscriptions");
+    public static final MatcherFactory.Matcher<AuthorDTO> AUTHOR_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AuthorDTO.class);
 
     public static final String ADMIN_ID = "1";
     public static final String MODER_ID = "2";
@@ -35,12 +36,17 @@ public class KcUserTestData {
     public static final String USERNAME = "username";
     public static final String MODER_USERNAME = "moderusername";
 
+    public static final Set<String> USER_SUBSCRIBERS = Set.of(MODER_ID, DELETE_USER_ID);
+    public static final Set<String> USER_SUBSCRIPTIONS = Set.of(ADMIN_ID);
+    public static final Set<String> MODER_SUBSCRIBERS = Set.of(ADMIN_ID);
+    public static final Set<String> MODER_SUBSCRIPTIONS = Set.of(ADMIN_ID, USER_ID, DELETE_USER_ID);
+
     public static final UserDTO ADMIN_DTO = new UserDTO(ADMIN_ID, ADMIN_MAIL, "Admin", "AdminLast", "adminPassword", "adminusername", true, "adminFileName", List.of("ADMIN", "MODERATOR", "USER"));
     public static final UserDTO MODER_DTO = new UserDTO(MODER_ID, MODER_MAIL, "Moder", "ModerLast", "moderPassword", MODER_USERNAME, true, "moderFileName", List.of("MODERATOR", "USER"));
     public static final UserDTO USER_DTO = new UserDTO(USER_ID, USER_MAIL, "User", "UserLast", "userPassword", USERNAME, true, "userFileName", List.of("USER"));
 
-    public static final AuthorDTO MODER_AUTHOR = new AuthorDTO(MODER_ID, "Moder ModerLast", MODER_USERNAME, "moderFileName", Instant.ofEpochMilli(1691142410700L), Set.of(), Set.of(), 0L);
-    public static final AuthorDTO USER_AUTHOR = new AuthorDTO(USER_ID,"User UserLast", USERNAME, "userFileName", Instant.ofEpochMilli(1691142410777L), Set.of(), Set.of(), 0L);
+    public static final AuthorDTO MODER_AUTHOR = new AuthorDTO(MODER_ID, "Moder ModerLast", MODER_USERNAME, "moderFileName", Instant.ofEpochMilli(1691142410700L), MODER_SUBSCRIBERS, MODER_SUBSCRIPTIONS, 0L);
+    public static final AuthorDTO USER_AUTHOR = new AuthorDTO(USER_ID,"User UserLast", USERNAME, "userFileName", Instant.ofEpochMilli(1691142410777L), USER_SUBSCRIBERS, USER_SUBSCRIPTIONS, 0L);
 
     private static final ReviewResponse MODER_REVIEW_RESPONSE = new ReviewResponse(MODER_ID, 0L);
     private static final ReviewResponse USER_REVIEW_RESPONSE = new ReviewResponse(USER_ID, 0L);

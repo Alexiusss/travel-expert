@@ -27,7 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -46,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // https://www.baeldung.com/spring-boot-keycloak-integration-testing
 @SpringBootTest
 @Testcontainers
-@Transactional
 @AutoConfigureMockMvc
 @ActiveProfiles(resolver = TestKcProfileResolver.class)
 @Import(KeycloakTestConfig.class)
@@ -230,7 +228,7 @@ public class KeycloakUserControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(AUTHOR_DTO_MATCHER.contentJson(List.of(MODER_AUTHOR, USER_AUTHOR)));
+                .andExpect(AUTHOR_LIST_DTO_MATCHER.contentJson(List.of(MODER_AUTHOR, USER_AUTHOR)));
     }
 
     @Test
@@ -264,6 +262,21 @@ public class KeycloakUserControllerTest {
     @Test
     void getProfile() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "/profile")
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void subscribe() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "subscribe/" + ADMIN_ID)
+                .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void unSubscribe() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "unSubscribe/" + ADMIN_ID)
                 .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
                 .andExpect(status().isOk());
     }
