@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.user.util.UserUtil.checkModificationAllowed;
+import static com.example.user.util.UserUtil.getAuthUserIdFromPrincipal;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -35,8 +36,9 @@ public class ProfileController {
     @Operation(summary = "Get a user profile by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
-    public ResponseEntity<User> get(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("get profile {}", authUser.id());
+    public ResponseEntity<User> get(@AuthenticationPrincipal Object principal) {
+        String authUserId = getAuthUserIdFromPrincipal(principal);
+        log.info("get profile {}", authUserId);
         final Optional<User> user = Optional.of(authUser.getUser());
         return ResponseEntity.ok(user.get());
     }
@@ -44,11 +46,12 @@ public class ProfileController {
     @Operation(summary = "Update a user profile by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody User user) {
-        log.info("update {} with id={}", user, authUser.id());
-        assureIdConsistent(user, authUser.id());
-        checkModificationAllowed(authUser.id());
-        User updatedUser = userService.updateUser(user, authUser.id());
+    public ResponseEntity<User> update(@AuthenticationPrincipal Object principal, @Valid @RequestBody User user) {
+        String authUserId = getAuthUserIdFromPrincipal(principal);
+        log.info("update {} with id={}", user, authUserId);
+        assureIdConsistent(user, authUserId);
+        checkModificationAllowed(authUserId);
+        User updatedUser = userService.updateUser(user, authUserId);
         return ResponseEntity.ok(updatedUser);
     }
 }

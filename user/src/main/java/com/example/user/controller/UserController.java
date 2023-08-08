@@ -25,6 +25,7 @@ import java.util.List;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.user.util.UserUtil.checkModificationAllowed;
+import static com.example.user.util.UserUtil.getAuthUserIdFromPrincipal;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -36,7 +37,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Profile("!kc")
     @Operation(summary = "Get a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
@@ -71,7 +71,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @Profile("!kc")
     @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminOrModerRoleAccess
@@ -84,7 +83,6 @@ public class UserController {
         return userService.findAllPaginated(PageRequest.of(page, size));
     }
 
-    @Profile("!kc")
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
@@ -95,7 +93,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @Profile("!kc")
     @Operation(summary = "Update a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
@@ -108,7 +105,6 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @Profile("!kc")
     @Operation(summary = "Enable/disable a user account by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminOrModerRoleAccess
@@ -120,7 +116,6 @@ public class UserController {
         userService.enableUser(id, enable);
     }
 
-    @Profile("!kc")
     @Operation(summary = "Delete a user account by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
@@ -136,17 +131,19 @@ public class UserController {
     @PreAuthorize("hasAuthority('USER')")
     @UserRoleAccess
     @GetMapping("subscribe/{userId}")
-    public void subscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
-        log.info("user {} subscribe to user {}", authUser.id(), userId);
-        userService.subscribe(authUser, userId);
+    public void subscribe(@AuthenticationPrincipal Object principal, @PathVariable String userId) {
+        String authUserId = getAuthUserIdFromPrincipal(principal);
+        log.info("user {} subscribe to user {}", authUserId, userId);
+        userService.subscribe(authUserId, userId);
     }
 
     @Operation(summary = "Unsubscribe from the user by his id")
     @PreAuthorize("hasAuthority('USER')")
     @UserRoleAccess
     @GetMapping("unSubscribe/{userId}")
-    public void unSubscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
-        log.info("user {} unsubscribe from user {}", authUser.id(), userId);
-        userService.unSubscribe(authUser, userId);
+    public void unSubscribe(@AuthenticationPrincipal Object principal, @PathVariable String userId) {
+        String authUserId = getAuthUserIdFromPrincipal(principal);
+        log.info("user {} unsubscribe from user {}", authUserId, userId);
+        userService.unSubscribe(authUserId, userId);
     }
 }

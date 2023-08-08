@@ -59,15 +59,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void subscribe(AuthUser authUser, String userId) {
+    public void subscribe(String authUserId, String userId) {
         User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(userId), userId);
-        user.getSubscribers().add(authUser.id());
+        user.getSubscribers().add(authUserId);
     }
 
     @Transactional
-    public void unSubscribe(AuthUser authUser, String userId) {
+    public void unSubscribe(String authUserId, String userId) {
         User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(userId), userId);
-        user.getSubscribers().remove(authUser.id());
+        user.getSubscribers().remove(authUserId);
     }
 
     @Transactional

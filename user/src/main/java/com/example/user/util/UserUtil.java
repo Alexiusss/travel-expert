@@ -3,6 +3,7 @@ package com.example.user.util;
 import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewResponse;
 import com.example.common.error.ModificationRestrictionException;
+import com.example.user.AuthUser;
 import com.example.user.model.User;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.model.kc.UserRepresentationWithRoles;
@@ -93,5 +94,14 @@ public class UserUtil {
                         .filter(item -> item.getId().equals(author.getAuthorId()))
                         .findAny()
                         .ifPresent(response -> author.setReviewsCount(response.getCount()));
+    }
+
+    public static String getAuthUserIdFromPrincipal(Object principal) {
+        if (principal instanceof AuthUser) {
+            return ((AuthUser) principal).id();
+        } else if (principal instanceof Jwt) {
+            return ((Jwt) principal).getSubject();
+        }
+        throw new IllegalArgumentException("Unknown authentication principal type");
     }
 }
