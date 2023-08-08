@@ -1,7 +1,9 @@
 package com.example.user.controller;
 
 import com.example.clients.auth.AuthorDTO;
-import com.example.user.AuthUser;
+import com.example.user.annotation.AdminRoleAccess;
+import com.example.user.annotation.AdminOrModerRoleAccess;
+import com.example.user.annotation.UserRoleAccess;
 import com.example.user.model.User;
 import com.example.user.servise.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class UserController {
     @Profile("!kc")
     @Operation(summary = "Get a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @AdminRoleAccess
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
         log.info("get {}", id);
@@ -73,7 +74,7 @@ public class UserController {
     @Profile("!kc")
     @Operation(summary = "Return a list of users and filtered according the query parameters", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
+    @AdminOrModerRoleAccess
     @GetMapping
     public Page<User> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -86,7 +87,7 @@ public class UserController {
     @Profile("!kc")
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @AdminRoleAccess
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         log.info("create {}", user);
@@ -97,7 +98,7 @@ public class UserController {
     @Profile("!kc")
     @Operation(summary = "Update a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @AdminRoleAccess
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
         log.info("update {} with id={}", user, id);
@@ -110,7 +111,7 @@ public class UserController {
     @Profile("!kc")
     @Operation(summary = "Enable/disable a user account by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
+    @AdminOrModerRoleAccess
     @PatchMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void enableUser(@PathVariable String id, @RequestParam boolean enable) {
@@ -122,7 +123,7 @@ public class UserController {
     @Profile("!kc")
     @Operation(summary = "Delete a user account by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @AdminRoleAccess
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
@@ -133,6 +134,7 @@ public class UserController {
 
     @Operation(summary = "Subscribe to user per its id")
     @PreAuthorize("hasAuthority('USER')")
+    @UserRoleAccess
     @GetMapping("subscribe/{userId}")
     public void subscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
         log.info("user {} subscribe to user {}", authUser.id(), userId);
@@ -141,6 +143,7 @@ public class UserController {
 
     @Operation(summary = "Unsubscribe from the user by his id")
     @PreAuthorize("hasAuthority('USER')")
+    @UserRoleAccess
     @GetMapping("unSubscribe/{userId}")
     public void unSubscribe(@AuthenticationPrincipal AuthUser authUser, @PathVariable String userId){
         log.info("user {} unsubscribe from user {}", authUser.id(), userId);
