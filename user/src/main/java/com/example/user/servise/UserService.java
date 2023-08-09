@@ -1,119 +1,44 @@
 package com.example.user.servise;
 
 import com.example.clients.auth.AuthorDTO;
-import com.example.clients.review.ReviewClient;
-import com.example.clients.review.ReviewResponse;
-import com.example.user.AuthUser;
-import com.example.user.model.User;
-import com.example.user.repository.UserRepository;
-import com.example.user.util.UserUtil;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import com.example.user.model.dto.UserDTO;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.example.common.util.ValidationUtil.*;
-import static com.example.user.util.UserUtil.*;
+public interface UserService {
 
-@Service
-@Slf4j
-@AllArgsConstructor
-@Profile({ "!test_kc & !kc" })
-public class UserService implements UserDetailsService {
+    UserDTO get(String id);
 
-    private final UserRepository userRepository;
-    private final ReviewClient reviewClient;
+    AuthorDTO getAuthorById(String id);
 
-    @Transactional
-    public User saveUser(User user) {
-        checkNew(user);
-        user.setRoles(user.getRoles());
-        return userRepository.save(prepareToSave(user));
-    }
+    UserDTO getProfile(Object principal);
+
+    List<AuthorDTO> getAllAuthorsById(String[] authors);
+
+    AuthorDTO getAuthorByUserName(String username);
+
+    Page<?> getAll(int page, int size, String filter);
 
     @Transactional
-    public User updateUser(User user, String id) {
-        assureIdConsistent(user, user.id());
-        User userFromDB = userRepository.getExisted(id);
-        userFromDB.setEmail(user.getEmail());
-        userFromDB.setFirstName(user.getFirstName());
-        userFromDB.setLastName(user.getLastName());
-        userFromDB.setFileName(user.getFileName());
-        userFromDB.setUsername(user.getUsername());
-        userFromDB.setRoles(user.getRoles());
-        if (!ObjectUtils.isEmpty(user.getPassword())) {
-            userFromDB.setPassword(user.getPassword());
-            prepareToSave(userFromDB);
-        }
-        return userFromDB;
-    }
+    UserDTO saveUser(UserDTO userDTO, List<String> roles);
 
     @Transactional
-    public void subscribe(String authUserId, String userId) {
-        User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(userId), userId);
-        user.getSubscribers().add(authUserId);
-    }
+    UserDTO updateUser(UserDTO user, String id);
 
     @Transactional
-    public void unSubscribe(String authUserId, String userId) {
-        User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(userId), userId);
-        user.getSubscribers().remove(authUserId);
-    }
+    UserDTO updateProfile(UserDTO user, String id) ;
 
     @Transactional
-    public void enableUser(String id, boolean enable) {
-        User user = userRepository.getExisted(id);
-        user.setEnabled(enable);
-    }
+    void deleteUser(String userId);
 
-    public void deleteUser(String id) {
-        userRepository.deleteExisted(id);
-    }
+    @Transactional
+    void enableUser(String id, boolean enable);
 
-    public AuthorDTO getAuthorById(String id) {
-        User user = checkNotFoundWithId(userRepository.findByIdWithSubscriptions(id), id);
-        return getAuthorDTO(user);
-    }
+    @Transactional
+    void subscribe(String authUserId, String userId);
 
-    public List<AuthorDTO> getAllAuthorsById(String[] authors) {
-        List<User> users = userRepository.findAllByIdWithSubscriptions(authors);
-        List<ReviewResponse> list = reviewClient.getActiveList(authors);
-
-        return users.stream()
-                .map(UserUtil::getAuthorDTO)
-                .peek(setReviewsCount(list))
-                .collect(Collectors.toList());
-    }
-
-    public AuthorDTO getAuthorByUserName(String username) {
-        User user = checkNotFoundWithName(userRepository.findByUsername(username), username);
-        return getAuthorDTO(user);
-    }
-
-
-    public User get(String id) {
-        return userRepository.getExisted(id);
-    }
-
-    public Page<User> findAllPaginated(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Authenticating '{}'", email);
-        return new AuthUser(userRepository.findByEmailIgnoreCase(email.toLowerCase()).orElseThrow(
-                () -> new UsernameNotFoundException("User '" + email + "' was not found")
-        ));
-    }
+    @Transactional
+    void unSubscribe(String authUserId, String userId);
 }

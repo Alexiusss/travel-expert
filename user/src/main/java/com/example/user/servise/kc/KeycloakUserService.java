@@ -6,12 +6,14 @@ import com.example.clients.review.ReviewResponse;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.model.kc.UserRepresentationWithRoles;
 import com.example.user.repository.kc.SubscriptionsRepository;
+import com.example.user.servise.UserService;
 import com.example.user.util.KeycloakUtil;
 import com.example.user.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.*;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,47 +31,50 @@ import static com.example.user.util.UserUtil.*;
 @AllArgsConstructor
 @Profile({"test_kc", "kc"})
 @Transactional(readOnly = true)
-public class KeycloakUserService {
+public class KeycloakUserService implements UserService {
 
     private final KeycloakUtil keycloakUtil;
     private final ReviewClient reviewClient;
     private final SubscriptionsRepository subscriptionsRepository;
 
-    @Transactional
+    @Override
     public UserDTO saveUser(UserDTO user, List<String> roles) {
         checkNew(user);
         return keycloakUtil.createKeycloakUser(user, roles);
     }
 
-    @Transactional
+    @Override
     public UserDTO updateProfile(UserDTO user, String id) {
         checkModificationAllowed(id);
         keycloakUtil.updateKeycloakUser(user, List.of(), id);
         return user;
     }
 
-    @Transactional
+    @Override
     public UserDTO updateUser(UserDTO user, String id) {
         checkModificationAllowed(id);
         keycloakUtil.updateKeycloakUser(user, user.getRoles(), id);
         return user;
     }
 
-    @Transactional
+    @Override
     public void enableUser(String id, boolean enable) {
         keycloakUtil.enableUser(id, enable);
     }
 
+    @Override
     public void deleteUser(String userId) {
         keycloakUtil.deleteKeycloakUser(userId);
         subscriptionsRepository.deleteAllByUserId(userId);
     }
 
+    @Override
     public UserDTO get(String id) {
         UserRepresentationWithRoles userRepresentation = keycloakUtil.findUserById(id);
-        return convertUserRepresentationToUserDTO(userRepresentation);
+        return getUserDTO(userRepresentation);
     }
 
+    @Override
     public Page<UserDTO> getAll(int page, int size, String filter) {
         List<UserRepresentationWithRoles> userRepresentations;
         if (filter.length() > 0) {
@@ -79,29 +84,40 @@ public class KeycloakUserService {
         }
 
         List<UserDTO> userList = userRepresentations.stream()
-                .map(UserUtil::convertUserRepresentationToUserDTO)
+                .map(UserUtil::getUserDTO)
                 .collect(Collectors.toList());
 
         int countOfUsers = keycloakUtil.getTotalCountOfUsers();
         PageRequest pageable = PageRequest.of(page, size);
 
-        Page<UserDTO> usersPage = new PageImpl<>(userList, pageable, countOfUsers);
-
-        return usersPage;
+        return new PageImpl<>(userList, pageable, countOfUsers);
     }
 
+    @Override
     public AuthorDTO getAuthorById(String id) {
         AuthorDTO author = getAuthorDTO(keycloakUtil.findUserById(id));
         setSubscriptionsAndSubscribers(author);
         return author;
     }
 
+    @Override
+    public UserDTO getProfile(Object principal) {
+        if (principal instanceof Jwt) {
+            UserDTO profile = get(((Jwt) principal).getSubject());
+            addRoles(profile, (Jwt) principal);
+        }
+        throw new IllegalArgumentException("Unknown authentication principal type");
+
+    }
+
+    @Override
     public AuthorDTO getAuthorByUserName(String username) {
         AuthorDTO author = getAuthorDTO(keycloakUtil.findByUserName(username));
         setSubscriptionsAndSubscribers(author);
         return author;
     }
 
+    @Override
     public List<AuthorDTO> getAllAuthorsById(String[] authors) {
         List<String> authorsList = List.of(authors);
         List<ReviewResponse> list = reviewClient.getActiveList(authors);
@@ -156,12 +172,12 @@ public class KeycloakUserService {
         author.setSubscribers(subscribers);
     }
 
-    @Transactional
+    @Override
     public void subscribe(String authUserId, String userId) {
         subscriptionsRepository.subscribe(authUserId, userId);
     }
 
-    @Transactional
+    @Override
     public void unSubscribe(String authUserId, String userId) {
         subscriptionsRepository.unsubscribe(authUserId, userId);
     }

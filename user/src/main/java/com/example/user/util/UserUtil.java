@@ -4,6 +4,7 @@ import com.example.clients.auth.AuthorDTO;
 import com.example.clients.review.ReviewResponse;
 import com.example.common.error.ModificationRestrictionException;
 import com.example.user.AuthUser;
+import com.example.user.model.Role;
 import com.example.user.model.User;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.model.kc.UserRepresentationWithRoles;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class UserUtil {
@@ -62,7 +64,46 @@ public class UserUtil {
         return new AuthorDTO(user.getId(), authorName, username, fileName, registeredAt, Set.of(), Set.of(), 0L);
     }
 
-    public static UserDTO convertUserRepresentationToUserDTO(UserRepresentationWithRoles userRepresentation) {
+    public static UserDTO getUserDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .enabled(user.isEnabled())
+                .fileName(user.getFileName())
+                .roles(convertRoles(user.getRoles()))
+                .build();
+    }
+
+    public static User convertDtoToUser(UserDTO userDTO) {
+        User user = User.builder()
+                .email(userDTO.getEmail())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .username(userDTO.getUsername())
+                .enabled(userDTO.isEnabled())
+                .fileName(userDTO.getFileName())
+                .roles(convertRoles(userDTO.getRoles()))
+                .build();
+        user.setId(userDTO.getId());
+        return user;
+    }
+
+    private List<String> convertRoles(Set<Role> roles) {
+        return roles.stream()
+                .map(Role::getAuthority)
+                .collect(Collectors.toList());
+    }
+
+    public Set<Role> convertRoles(List<String> roles) {
+        return roles.stream()
+                .map(role -> Role.valueOf(Role.class, role))
+                .collect(Collectors.toSet());
+    }
+
+    public static UserDTO getUserDTO(UserRepresentationWithRoles userRepresentation) {
         String fileName;
         if (userRepresentation.getAttributes() != null && userRepresentation.getAttributes().containsKey("fileName")) {
             fileName = userRepresentation.getAttributes().get("fileName").get(0);

@@ -1,10 +1,10 @@
 package com.example.user.controller;
 
 import com.example.clients.auth.AuthorDTO;
-import com.example.user.annotation.AdminRoleAccess;
 import com.example.user.annotation.AdminOrModerRoleAccess;
+import com.example.user.annotation.AdminRoleAccess;
 import com.example.user.annotation.UserRoleAccess;
-import com.example.user.model.User;
+import com.example.user.model.dto.UserDTO;
 import com.example.user.servise.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +32,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @Profile({ "!test_kc & !kc" })
 public class UserController {
-    static final String REST_URL = "/api/v1/users";
+
+    public static final String REST_URL = "/api/v1/users";
+
     @Autowired
     UserService userService;
 
@@ -41,9 +42,9 @@ public class UserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> getUser(@PathVariable String id) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable String id) {
         log.info("get {}", id);
-        final User user = userService.get(id);
+        final UserDTO user = userService.get(id);
         return ResponseEntity.ok(user);
     }
 
@@ -75,21 +76,23 @@ public class UserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminOrModerRoleAccess
     @GetMapping
-    public Page<User> getAll(
+    @ResponseStatus(HttpStatus.OK)
+    public Page<?> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "", required = false) String filter
     ) {
         log.info("getAll");
-        return userService.findAllPaginated(PageRequest.of(page, size));
+        return userService.getAll(page, size, filter);
     }
 
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) {
         log.info("create {}", user);
-        User savedUser = userService.saveUser(user);
+        UserDTO savedUser = userService.saveUser(user, user.getRoles());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
@@ -97,11 +100,11 @@ public class UserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @AdminRoleAccess
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user, @PathVariable String id) {
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO user, @PathVariable String id) {
         log.info("update {} with id={}", user, id);
         checkModificationAllowed(id);
         assureIdConsistent(user, id);
-        User updatedUser = userService.updateUser(user, id);
+        UserDTO updatedUser = userService.updateUser(user, id);
         return ResponseEntity.ok(updatedUser);
     }
 

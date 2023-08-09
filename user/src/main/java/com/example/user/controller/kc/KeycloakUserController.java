@@ -2,7 +2,7 @@ package com.example.user.controller.kc;
 
 import com.example.clients.auth.AuthorDTO;
 import com.example.user.model.dto.UserDTO;
-import com.example.user.servise.kc.KeycloakUserService;
+import com.example.user.servise.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class KeycloakUserController {
 
     public static final String REST_URL = "/api/v1/kc-users/";
-    private final KeycloakUserService userService;
+    private final UserService userService;
 
     @Operation(summary = "Get a user by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -52,9 +52,7 @@ public class KeycloakUserController {
     @GetMapping(value = "/profile")
     public ResponseEntity<UserDTO> getProfile(@AuthenticationPrincipal Jwt jwt) {
         log.info("get profile for {}", jwt.getSubject());
-        UserDTO profile = userService.get(jwt.getSubject());
-        addRoles(profile, jwt);
-        return ResponseEntity.status(HttpStatus.OK).body(profile);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getProfile(jwt));
     }
 
     @Operation(summary = "Update a user profile by its id", description = "A JWT token is required to access this API")
@@ -97,14 +95,13 @@ public class KeycloakUserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> getAll(
+    public Page<?> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "", required = false) String filter
     ) {
         log.info("getAll");
-        Page<UserDTO> usersPage = userService.getAll(page, size, filter);
-        return ResponseEntity.status(HttpStatus.OK).body(usersPage);
+        return userService.getAll(page, size, filter);
     }
 
     @Operation(summary = "Create a new user", description = "A JWT token is required to access this API")

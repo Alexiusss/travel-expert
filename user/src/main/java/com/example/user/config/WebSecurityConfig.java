@@ -1,7 +1,7 @@
 package com.example.user.config;
 
 import com.example.user.filter.JwtFilter;
-import com.example.user.servise.UserService;
+import com.example.user.servise.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +28,7 @@ import static com.example.user.util.UserUtil.PASSWORD_ENCODER;
 @Profile({ "!test_kc & !kc" })
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final JwtFilter jwtFilter;
 
     @Autowired

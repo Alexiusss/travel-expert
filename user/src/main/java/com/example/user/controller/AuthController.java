@@ -7,7 +7,7 @@ import com.example.user.model.dto.AuthRequest;
 import com.example.user.model.dto.JwtResponse;
 import com.example.user.model.dto.RegistrationDTO;
 import com.example.user.servise.AuthService;
-import com.example.user.servise.UserService;
+import com.example.user.servise.UserServiceImpl;
 import com.example.user.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class AuthController {
     @Autowired
     AuthService authService;
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Operation(summary = "Log in using email and password")
     @PostMapping("/login")

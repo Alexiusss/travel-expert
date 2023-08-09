@@ -1,6 +1,6 @@
 package com.example.user.filter;
 
-import com.example.user.servise.UserService;
+import com.example.user.servise.UserServiceImpl;
 import com.example.user.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -26,7 +26,7 @@ import static com.example.user.util.JwtUtil.validateAccessToken;
 @Profile({ "!test_kc & !kc" })
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

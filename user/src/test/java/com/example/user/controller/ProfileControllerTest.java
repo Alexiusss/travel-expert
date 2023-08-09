@@ -2,7 +2,7 @@ package com.example.user.controller;
 
 
 import com.example.user.model.User;
-import com.example.user.servise.UserService;
+import com.example.user.servise.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +21,7 @@ public class ProfileControllerTest extends AbstractControllerTest {
     private static final String REST_URL = ProfileController.REST_URL + '/';
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Test
     @WithUserDetails(MODER_MAIL)

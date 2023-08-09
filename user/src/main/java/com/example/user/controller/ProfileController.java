@@ -1,7 +1,6 @@
 package com.example.user.controller;
 
-import com.example.user.AuthUser;
-import com.example.user.model.User;
+import com.example.user.model.dto.UserDTO;
 import com.example.user.servise.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 import static com.example.common.util.ValidationUtil.assureIdConsistent;
 import static com.example.user.util.UserUtil.checkModificationAllowed;
@@ -36,22 +34,21 @@ public class ProfileController {
     @Operation(summary = "Get a user profile by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
-    public ResponseEntity<User> get(@AuthenticationPrincipal Object principal) {
+    public ResponseEntity<UserDTO> get(@AuthenticationPrincipal Object principal) {
         String authUserId = getAuthUserIdFromPrincipal(principal);
         log.info("get profile {}", authUserId);
-        final Optional<User> user = Optional.of(authUser.getUser());
-        return ResponseEntity.ok(user.get());
+        return ResponseEntity.ok(userService.getProfile(principal));
     }
 
     @Operation(summary = "Update a user profile by its id", description = "A JWT token is required to access this API")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> update(@AuthenticationPrincipal Object principal, @Valid @RequestBody User user) {
+    public ResponseEntity<UserDTO> update(@AuthenticationPrincipal Object principal, @Valid @RequestBody UserDTO user) {
         String authUserId = getAuthUserIdFromPrincipal(principal);
         log.info("update {} with id={}", user, authUserId);
         assureIdConsistent(user, authUserId);
         checkModificationAllowed(authUserId);
-        User updatedUser = userService.updateUser(user, authUserId);
+        UserDTO updatedUser = userService.updateProfile(user, authUserId);
         return ResponseEntity.ok(updatedUser);
     }
 }
