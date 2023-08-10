@@ -1,15 +1,14 @@
 package com.example.user.controller;
 
+import com.example.user.annotation.UserRoleAccess;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.servise.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +22,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RestController
 @RequestMapping(path = ProfileController.REST_URL, produces = APPLICATION_JSON_VALUE)
-@PreAuthorize("hasAnyAuthority('MODERATOR', 'USER')")
-@Profile({ "!test_kc & !kc" })
+@UserRoleAccess
 public class ProfileController {
-    static final String REST_URL = "/api/v1/profile";
+    public static final String REST_URL = "/api/v1/profile";
 
     @Autowired
     UserService userService;

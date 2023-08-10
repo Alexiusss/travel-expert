@@ -2,7 +2,7 @@ package com.example.user.controller;
 
 
 import com.example.user.model.User;
-import com.example.user.servise.UserServiceImpl;
+import com.example.user.servise.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.example.user.util.UserTestData.*;
+import static com.example.user.util.UserUtil.convertDtoToUser;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,7 +22,7 @@ public class ProfileControllerTest extends AbstractControllerTest {
     private static final String REST_URL = ProfileController.REST_URL + '/';
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @Test
     @WithUserDetails(MODER_MAIL)
@@ -54,7 +55,7 @@ public class ProfileControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        USER_MATCHER.assertMatch(userService.get(USER_ID), updatedUser);
+        USER_MATCHER.assertMatch(convertDtoToUser(userService.get(USER_ID)), updatedUser);
     }
 
     @Test

@@ -83,6 +83,7 @@ public class UserUtil {
                 .firstName(userDTO.getFirstName())
                 .lastName(userDTO.getLastName())
                 .username(userDTO.getUsername())
+                .password(userDTO.getPassword())
                 .enabled(userDTO.isEnabled())
                 .fileName(userDTO.getFileName())
                 .roles(convertRoles(userDTO.getRoles()))

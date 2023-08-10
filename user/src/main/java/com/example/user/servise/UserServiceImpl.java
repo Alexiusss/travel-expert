@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import static com.example.user.util.UserUtil.*;
 @Slf4j
 @AllArgsConstructor
 @Profile({ "!test_kc & !kc" })
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;

@@ -1,6 +1,8 @@
 package com.example.user.controller.kc;
 
 import com.example.common.util.TestKcProfileResolver;
+import com.example.user.controller.ProfileController;
+import com.example.user.controller.UserController;
 import com.example.user.controller.config.KeycloakTestConfig;
 import com.example.user.model.dto.UserDTO;
 import com.example.user.repository.kc.SubscriptionsRepository;
@@ -51,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"/keycloak/test-data.sql"})
 public class KeycloakUserControllerTest {
 
-    private static final String REST_URL = KeycloakUserController.REST_URL + "/";
+    private static final String REST_URL = UserController.REST_URL + "/";
 
     @Autowired
     private KeycloakUtil keycloakUtil;
@@ -261,7 +263,7 @@ public class KeycloakUserControllerTest {
 
     @Test
     void getProfile() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "/profile")
+        perform(MockMvcRequestBuilders.get(ProfileController.REST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getKeycloakToken(keycloakAdminClient)))
                 .andExpect(status().isOk());
     }

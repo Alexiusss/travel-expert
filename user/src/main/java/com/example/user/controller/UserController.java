@@ -30,7 +30,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = UserController.REST_URL, produces = APPLICATION_JSON_VALUE)
 @Slf4j
-@Profile({ "!test_kc & !kc" })
 public class UserController {
 
     public static final String REST_URL = "/api/v1/users";
@@ -131,7 +130,6 @@ public class UserController {
     }
 
     @Operation(summary = "Subscribe to user per its id")
-    @PreAuthorize("hasAuthority('USER')")
     @UserRoleAccess
     @GetMapping("subscribe/{userId}")
     public void subscribe(@AuthenticationPrincipal Object principal, @PathVariable String userId) {
@@ -141,7 +139,6 @@ public class UserController {
     }
 
     @Operation(summary = "Unsubscribe from the user by his id")
-    @PreAuthorize("hasAuthority('USER')")
     @UserRoleAccess
     @GetMapping("unSubscribe/{userId}")
     public void unSubscribe(@AuthenticationPrincipal Object principal, @PathVariable String userId) {

@@ -105,6 +105,7 @@ public class KeycloakUserService implements UserService {
         if (principal instanceof Jwt) {
             UserDTO profile = get(((Jwt) principal).getSubject());
             addRoles(profile, (Jwt) principal);
+            return profile;
         }
         throw new IllegalArgumentException("Unknown authentication principal type");
 
