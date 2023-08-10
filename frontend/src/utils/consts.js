@@ -8,7 +8,6 @@ export const IMAGE_ROUTE = '/images/';
 export const REVIEWS_ROUTE = '/reviews/';
 export const BFF_ROUTE = '/bff/';
 export const PROFILE = '/profile/';
-export const KC_PROFILE = '/kc-users/profile/';
 export const LOGIN = '/auth/login/';
 export const REGISTER = '/auth/register/';
 export const LOGOUT = '/auth/logout/';

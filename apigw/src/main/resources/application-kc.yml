@@ -18,7 +18,7 @@ spring:
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
           predicates:
-            - Path=/api/v1/kc-users/**
+            - Path=/api/v1/users/**, /api/v1/profile/**
         - id: review
           uri: lb://REVIEW
           predicates:

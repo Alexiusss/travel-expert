@@ -1,6 +1,6 @@
 import Keycloak from "keycloak-js";
 import $api from "../../http/http-common";
-import {BFF_ROUTE, KC_PROFILE} from "../../utils/consts";
+import {BFF_ROUTE, PROFILE} from "../../utils/consts";
 
 export const keycloak = new Keycloak("/keycloak.json");
 
@@ -19,7 +19,7 @@ const updateAccessToken = () => {
 };
 
 const profile = () => {
-    return $api.get(KC_PROFILE);
+    return $api.get(PROFILE);
 }
 
 const logout = () => {
