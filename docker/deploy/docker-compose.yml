@@ -5,8 +5,10 @@ services:
     build:
       dockerfile: Dockerfile.db
     container_name: postgres
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
+#    ports:
+#      - "5432:5432"
     volumes:
       - ~/pg_data:/var/lib/postgresql/data/pgdata
       - ./pg-init-scripts:/docker-entrypoint-initdb.d
@@ -81,12 +83,6 @@ services:
       - JAVA_TOOL_OPTIONS=-XX:+UseSerialGC -Xmx64m -XX:MaxRAM=72m -Xss512k
     env_file:
       - .env
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 188m
-#        reservations:
-#          memory: 164m
     networks:
       - spring
       - db
@@ -203,5 +199,7 @@ services:
 networks:
   db:
     driver: bridge
+    internal: true
   spring:
     driver: bridge
+    internal: true
