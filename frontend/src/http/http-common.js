@@ -3,7 +3,7 @@ import {getAccessToken, updateLocalAccessToken} from "../utils/consts";
 import store from "../store";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
-export const API_URL = "https://travelexpert.sytes.net/api/v1";
+export const API_URL = "https://travelexpert.servehttp.com/api/v1";
 
 const $api = axios.create({
     withCredentials: true,
