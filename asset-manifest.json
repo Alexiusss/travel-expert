@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/travel-expert/static/css/main.e5b9399b.css",
-    "main.js": "/travel-expert/static/js/main.513d346a.js",
+    "main.js": "/travel-expert/static/js/main.4525306d.js",
     "static/media/DefaultAvatar.jpg": "/travel-expert/static/media/DefaultAvatar.e23a6bf14ff28883adfb.jpg",
     "index.html": "/travel-expert/index.html",
     "static/media/getFetch.cjs": "/travel-expert/static/media/getFetch.40f37ddea2378391108f.cjs",
     "main.e5b9399b.css.map": "/travel-expert/static/css/main.e5b9399b.css.map",
-    "main.513d346a.js.map": "/travel-expert/static/js/main.513d346a.js.map"
+    "main.4525306d.js.map": "/travel-expert/static/js/main.4525306d.js.map"
   },
   "entrypoints": [
     "static/css/main.e5b9399b.css",
-    "static/js/main.513d346a.js"
+    "static/js/main.4525306d.js"
   ]
 }
